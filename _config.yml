@@ -1,0 +1,43 @@
+# Site settings
+title: Francis Augusto Medeiros-Logeay
+description: 'Developer, IT-Law expert, runner'
+url: 'http://francisaugusto.com'
+baseurl: ''
+# google_analytics: 'UA-XXXXXX-X'
+# disqus_shortname: 'your-disqus-name'
+
+author:
+  name: 'Francis Augusto Medeiros-Logeay'
+  email: register@francisaugusto.com
+  twitter_username: francisaugusto
+  facebook_username: francisaugusto
+  github_username:  oculos
+  linkedin_username:  francismedeiros
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 10
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    sass_dir: _sass
+    style: compressed
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+gems: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png']
