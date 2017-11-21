@@ -1,6 +1,6 @@
 ---
 title:  "A new blog is born!"
-date:   2017-11-21 21:04:23
+date:   2017-11-21 21:04:23 +0100
 categories: personal
 layout: post
 ---
