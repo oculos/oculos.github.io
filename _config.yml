@@ -3,8 +3,8 @@ title: Francis Augusto Medeiros-Logeay
 description: 'Developer, IT-Law expert, runner'
 url: 'http://francisaugusto.com'
 baseurl: ''
-# google_analytics: 'UA-XXXXXX-X'
-# disqus_shortname: 'your-disqus-name'
+google_analytics: 'UA-110056323-1'
+disqus_shortname: 'francisaugustomedeiros'
 
 author:
   name: 'Francis Augusto Medeiros-Logeay'
