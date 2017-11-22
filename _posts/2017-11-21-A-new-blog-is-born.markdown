@@ -3,6 +3,7 @@ title:  "A new blog is born!"
 date:   2017-11-21 21:04:23 +0100
 categories: personal
 layout: post
+comments: true
 ---
 
 I have blogged for many years, but in my native language (Portuguese). Now I feel it's time to start blogging in English. I don't think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.
