@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <meta name="robots" content="noindex">
-  
 
-  <title>Tags</title>
+  <title>Contact form</title>
   <meta name="description" content="Developer, IT-Law expert, runner">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tags">
+  <meta name="twitter:title" content="Contact form">
   <meta name="twitter:description" content="Developer, IT-Law expert, runner">
   
   <meta name="twitter:creator" content="francisaugusto">
@@ -26,7 +24,7 @@
   <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Tags">
+  <meta property="og:title" content="Contact form">
   <meta property="og:description" content="Developer, IT-Law expert, runner">
   <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
 
@@ -51,7 +49,7 @@
   <meta name="theme-color" content="#ffffff">
   
   <link rel="stylesheet" href="/css/main.css?1511378848068503000">
-  <link rel="canonical" href="http://localhost:4000/tags/">
+  <link rel="canonical" href="http://localhost:4000/contact-form/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
 
@@ -172,13 +170,61 @@
 
     <div class="content-wrapper">
       <div class="content-wrapper__inner">
-        <h2>Tags:</h2>
-<div class="tags"> 
+        <article class="post-container post-container--single">
 
-</div>
+  <header class="post-header">
+    <h1 class="post-title">Contact form</h1>
+  </header>
 
-<!-- iterate through all tags on the site --> 
+  <section class="post">
+    <p>If you want to get in touch, please fill out the form below. I will get back to you as soon as possible.
+<!-- 
+     After implementing this contact form make sure
+     1. you have defined "email: youremail@email.com" in _config.yml file.
+     2. you verify your form on formspree.io.
+--></p>
 
+<form class="wj-contact" action="https://formspree.io/register@francisaugusto.com" method="POST">
+    <input type="text" name="email" placeholder="Email Address" />
+    <textarea type="text" name="content" rows="10" placeholder="Message"></textarea>
+    <input type="hidden" name="_next" value="&lt;REDIRECTION LINK&gt; " />
+    <input type="hidden" name="_subject" value="New Contact Form Submission" />
+    <input type="text" name="_gotcha" style="display:none" />
+    <input type="submit" value="Submit" />
+</form>
+
+<style>
+form.wj-contact input[type="text"], form.wj-contact textarea[type="text"] {
+    width: 100%;
+    vertical-align: middle;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+    padding: 0.75em;
+    font-family: monospace, sans-serif;
+    font-weight: lighter;
+    border-style: solid;
+    border-color: #444;
+    outline-color: #2e83e6;
+    border-width: 1px;
+    border-radius: 3px;
+    transition: box-shadow .2s ease;
+}
+form.wj-contact input[type="submit"] {
+    outline: none;
+    color: white;
+    background-color: #2e83e6;
+    border-radius: 3px;
+    padding: 0.5em;
+    margin: 0.25em 0 0 0;
+    border: 1px solid transparent;
+    height: auto;
+}
+</style>
+
+
+  </section>
+
+</article>
       </div>
 
       <footer class="footer">
