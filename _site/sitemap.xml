@@ -3,7 +3,22 @@
   
     
     <url>
-      <loc>http://localhost:4000/2017/A-new-blog-is-born/</loc>
+      <loc>http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</loc>
+      
+        <lastmod>2017-12-29T20:13:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>http://francisaugusto.com/2017/A-new-blog-is-born/</loc>
       
         <lastmod>2017-11-21T21:04:23+01:00</lastmod>
       
@@ -19,9 +34,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/about</loc>
+      <loc>http://francisaugusto.com/about</loc>
       
-        <lastmod>2017-11-22T20:28:52+01:00</lastmod>
+        <lastmod>2017-12-30T11:56:28+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -36,9 +51,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/contact-form/</loc>
+      <loc>http://francisaugusto.com/contact-form/</loc>
       
-        <lastmod>2017-11-22T20:28:52+01:00</lastmod>
+        <lastmod>2017-12-30T11:56:28+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -51,9 +66,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/feed.xml</loc>
+      <loc>http://francisaugusto.com/feed.xml</loc>
       
-        <lastmod>2017-11-22T20:28:52+01:00</lastmod>
+        <lastmod>2017-12-30T11:56:28+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -70,9 +85,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/css/main.css</loc>
+      <loc>http://francisaugusto.com/css/main.css</loc>
       
-        <lastmod>2017-11-22T20:28:52+01:00</lastmod>
+        <lastmod>2017-12-30T11:56:28+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
