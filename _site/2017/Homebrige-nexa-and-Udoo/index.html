@@ -7,7 +7,7 @@
   
 
   <title>Homebridge, Nexa switches and Udoo Neo</title>
-  <meta name="description" content="The year is ending, and I would like to finish it with a cool project.
+  <meta name="description" content="The year is ending and I would like to finish it with a cool project.
 
 ">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
@@ -19,7 +19,7 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Homebridge, Nexa switches and Udoo Neo">
-  <meta name="twitter:description" content="The year is ending, and I would like to finish it with a cool project.
+  <meta name="twitter:description" content="The year is ending and I would like to finish it with a cool project.
 
 ">
   
@@ -29,7 +29,7 @@
 
   <meta property="og:type" content="article">
   <meta property="og:title" content="Homebridge, Nexa switches and Udoo Neo">
-  <meta property="og:description" content="The year is ending, and I would like to finish it with a cool project.
+  <meta property="og:description" content="The year is ending and I would like to finish it with a cool project.
 
 ">
   <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
@@ -54,7 +54,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1514631388662883000">
+  <link rel="stylesheet" href="/css/main.css?1514666865990503000">
   <link rel="canonical" href="http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -188,17 +188,17 @@
   </header>
 
   <section class="post">
-    <p>The year is ending, and I would like to finish it with a cool project.</p>
+    <p>The year is ending and I would like to finish it with a cool project.</p>
 
-<p>I am a sucker for gadgets, and small cheap computers like the <a href="https://www.raspberrypi.org">Raspberry Pi</a>. Some years ago, I contributed to a <a href="https://Kickstarter.com">Kickstarter</a> project called <a href="https://www.udoo.org/get-started-neo/">Udoo Neo</a>, which is credit-sized computer + Arduino. It also came with some sensors for measuring the temperature and barometric pressure. I used it as a tool to monitor the temperature of our living room and to run some experiments.</p>
+<p>I am a sucker for gadgets, especially small cheap computers like the <a href="https://www.raspberrypi.org">Raspberry Pi</a>. Some years ago, I contributed to a <a href="https://Kickstarter.com">Kickstarter</a> project called <a href="https://www.udoo.org/get-started-neo/">Udoo Neo</a>, which is a credit-sized computer + Arduino. It also came with some sensors for measuring the temperature and barometric pressure. I used it as a tool to monitor the temperature on our living room and to run some experiments.</p>
 
-<p>I have lots of <a href="https://arduino.cc">Arduino boards</a>, which I used in other projects, such as an automatic system to water my plants. I wanted to experiment with 433mhz transmitters, because they are cheap, and I wanted to use them to study basic network concepts.</p>
+<p>I have lots of <a href="https://arduino.cc">Arduino boards</a> that I used on other projects, such as an automatic system to water my plants. I wanted to experiment with 433mhz transmitters, mostly because they are cheap and I wanted to use them to study basic network concepts.</p>
 
-<p>On my flat we have some lights on our living room that are plugged to outlets and controlled via remote control. I use a cheap <a href="https://nexa.se">Nexa</a> kit. <a href="https://www.clasohlson.com/no/Nexa-PE-3-3-pack-fjernstrømbrytere/36-4602">This</a> is the exact model.</p>
+<p>On my flat we have some lights on our living room that are plugged to outlets and controlled via remote control. I use a cheap <a href="https://nexa.se">Nexa</a> PE-3 kit. <a href="https://www.clasohlson.com/no/Nexa-PE-3-3-pack-fjernstrømbrytere/36-4602">This</a> is the exact model.</p>
 
-<p>I realized that those Nexa outlets use the 433mhz frequency, so I kept thinking about controling those lights with an Arduino at some point, but didn’t have a reason for that (other than the gimmick aspect of it). That changed when I came across <a href="https://medium.com/arvin-singla/apple-homekit-hacking-3d2902e7a1df">this post</a>, where the author describes how he used <a href="https://github.com/nfarina/homebridge">Homebridge</a> to control his remote lights. But what is Homebridge?</p>
+<p>I realized that those Nexa outlets use the 433mhz frequency, so I kept thinking about controlling the lights plugged into them with an Arduino at some point, but didn’t have a reason for that (other than the gimmick aspect of it). That changed when I came across <a href="https://medium.com/arvin-singla/apple-homekit-hacking-3d2902e7a1df">this post</a>, where the author describes how he used <a href="https://github.com/nfarina/homebridge">Homebridge</a> to control his remote lights. But what is Homebridge?</p>
 
-<p>Well, if you are an Apple-fanboy like me, you know that Apple has a tecnology called HomeKit, which allows you to control devices on your home from your iPhone, iPad or Apple TV. But there are not so many devices available for HomeKit yet, and they are expensive. Enter Homebridge, an open source project that allows you to create your own accessories for HomeKit. You see where I am going: if I can control my outlets with Arduino, maybe I could connect that with Homebridge and ta-daaa, I would be able to switch my lights on and off (as well as I could see my room’s temperature using a temperature sensor).</p>
+<p>Well, if you are an Apple-fanboy like me, you know that Apple has a technology called HomeKit that allows you to control devices on your home from your iPhone, iPad or Apple TV. But there are not so many devices available for HomeKit yet, and those that are available  are expensive. Enter Homebridge, an open source project that allows you to create your own accessories for HomeKit. You see where I am going: if I can control my outlets with Arduino, maybe I could connect that with Homebridge and ta-daaa, I would be able to switch my lights on and off (as well as I could see my room’s temperature on my phone using a temperature sensor connected to the Udoo).</p>
 
 <p>As I said, I had an Udoo laying around, and lots of cheap 433 receivers and transmitters. So my goal was:</p>
 
@@ -217,30 +217,34 @@
   <li><a href="https://433mhz.codeplex.com/SourceControl/latest#rc-switch-fork/RCTransmitter.cpp">rc-switch-fork</a> worked great as well. The original <a href="https://github.com/sui77/rc-switch/wiki">rc-switch</a> didn’t work.</li>
 </ul>
 
-<p>The problem is that <em>none of those worked on my Udoo Neo</em>. You see, the Arduino on the Udoo Neo is not based on the ARV architecture of the “common” arduinos. Therefore, the solutions above didn’t work at the Udoo Neo. I suspect the liraries used by those products rely on stuff available only to Arduinos based on AVR. I could simply connect an Arduino to the Udoo Neo and get this done, but I thought it would be a waste of resources.</p>
+<p>The problem is that <em>none of those worked on my Udoo Neo</em>. You see, the Arduino on the Udoo Neo is not based on the AVR architecture of the “common” arduinos. Therefore, the solutions above didn’t work with my Udoo Neo. I suspect the libraries used by those packages rely on stuff available only to Arduinos based on AVR. I could simply connect an Arduino to the Udoo Neo and get this done, but I thought it would be a waste of resources.</p>
 
-<p>I decided then to give <a href="http://arduinobasics.blogspot.no/2014/06/433-mhz-rf-module-with-arduino-tutorial.html">this great tutorial</a> a try. I have bookmarked it a while ago because it is not a ready-made solution - well, it offers that as well - but remember when I said I wanted to study some basic network concepts? This tutorial teaches basic signal recognition and I always thought I could try to replicate what he did one day. Well, this day has come.</p>
+<p>I then decided to give <a href="http://arduinobasics.blogspot.no/2014/06/433-mhz-rf-module-with-arduino-tutorial.html">this great tutorial</a> a try. I have bookmarked it a while ago because it is not a tutorial for a ready-made solution - well, it offers that as well - but remember when I said I wanted to study some basic network concepts? This tutorial teaches how to recognize basic signals typically used for this kind of communication between devices and I always thought I could try to replicate what he did one day. Well, this day has come.</p>
 
-<p>What I did was I used the <a href="http://arduinobasics.blogspot.no/2014/07/433-mhz-rf-module-with-arduino-tutorial_30.html">code he made to learn commands from a remote control</a>, printed the array of each command for my remote control, and created another sketch to send these codes. Not super elegant, but it works.</p>
+<p>What I did was that I used the <a href="http://arduinobasics.blogspot.no/2014/07/433-mhz-rf-module-with-arduino-tutorial_30.html">code he made to learn commands from a remote control</a>, then I printed the array of each command for my remote control on Arduino’s serial monitor, and created another sketch where I hard coded the commands by pasting the array so that I could send these codes. Not super elegant, but it works.</p>
 
-<p>Since using the Arduino interface on the Udoo Neo is irritating (I access it via VNC), I decided to read the commands on an Arduino connected to my Mac, and transfer a sketch with the codes to the Udoo Neo. That sketch would read the serial interface, and when it receives a certain command, it would send the right code to turn a specific light on or off.</p>
+<p>Since using the Arduino interface on the Udoo Neo is irritating (I access it via VNC), I decided to read the commands on an Arduino connected to my Mac, and transfer a sketch with the codes to the Udoo Neo. That sketch would read the serial interface, and when it receives a certain instruction from the Linux side of the Udoo Neo, it would then send the right code to turn a specific light on or off. The same scenario as if one were using a Raspberry Pi connected to an Arduino. It is also possible to send those signals using a Raspberry Pi, without an Arduino. I might try that at some point.</p>
 
 <p>It worked! It wasn’t as reliable as on the Arduino connected to my Mac - I have to power off the transmitter every time I am not using it, but it worked.</p>
 
-<p>Then I created a python script to send the commands via serial to the built-in arduino of the Udoo Neo. Something like this:</p>
+<p>Then I created a python script to send the commands via serial to the built-in Arduino of the Udoo Neo. Something like this:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>&gt; python lightcontrol.py 1 off # turn the light 1 off
 Light 1 is off
 </code></pre>
 </div>
 
-<p>After that was done, it was time to install Homebridge. I did it following <a href="https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi">this tutorial here</a>, but make sure you are installing the absolutely latest version of NodeJS.</p>
+<p>After that was done, it was time to install Homebridge.</p>
 
-<p>I wasn’t familiar with <code class="highlighter-rouge">npm</code>, so I found strange that on the docs of the project or on <a href="http://blog.theodo.fr/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/">this excellent guide on how to write a Homebridge plugin</a> it was always suggested to publish plugins to a plugin repository. I didn’t do it. I simply created a local plugin by creating a directory on <code class="highlighter-rouge">/usr/lib/node_modules</code>, and then I created the proper <code class="highlighter-rouge">index.js</code> and <code class="highlighter-rouge">package.json</code>. Remember:</p>
+<h3 id="installing-homebridge-on-the-udoo-neo">Installing Homebridge on the Udoo Neo</h3>
+
+<p>I did it following <a href="https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi">this tutorial here</a>. One note: make sure you are installing the absolutely latest version of NodeJS.</p>
+
+<p>I wasn’t familiar with <code class="highlighter-rouge">npm</code>, so I found strange that on the docs of the project or on <a href="http://blog.theodo.fr/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/">this excellent guide on how to write a Homebridge plugin</a> it was always suggested to publish plugins to a plugin repository. I didn’t do it. I simply created a local plugin by creating a directory on <code class="highlighter-rouge">/usr/lib/node_modules</code>, and then I created the proper <code class="highlighter-rouge">index.js</code> and <code class="highlighter-rouge">package.json</code>. I don’t see a reason to make my plugin public, as I imagine that my solution is very tied to the system I am using. Of course, if anyone feels he might benefit from it, just drop me a note. Remember:</p>
 
 <ul>
   <li>Your plugin must start with <code class="highlighter-rouge">homebridge</code>, for example, <code class="highlighter-rouge">homebridge-myplugin</code></li>
-  <li>Do not follow the code he shows on the tutorial, but <a href="https://github.com/fredericbarthelet/homebridge-smappee/blob/master/index.js">the code he actually wrote for his project</a>. I found it more up to date.</li>
+  <li>Do not follow the code he shows on the tutorial, but rather <a href="https://github.com/fredericbarthelet/homebridge-smappee/blob/master/index.js">the code he actually wrote for his project</a>. I found it more up to date.</li>
 </ul>
 
 <p>The result is that now I can control all the lights on my room with my iPhone/Apple watch, even with Siri, with very cheap equipment I already had!</p>
@@ -341,7 +345,7 @@ Light 1 is off
    <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
  <span class="p">}</span></code></pre></figure>
 
-<p>The only caveat with this system is that if I turn the light off using the remote control, the state of the lamp on the Home app will not reflect the actual state. This is the only limitation, and it can be a problem if you are considering some form for automation, as the system my skip turning something on as the state is already on.</p>
+<p>The only caveat with this system is that if I turn the light off using the remote control, the state of the lamp on the Home app will not reflect the actual state. This is the only limitation, and it can be a problem if you are considering some form for automation, as the system might skip turning something on as the state is already on.</p>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -372,7 +376,7 @@ Light 1 is off
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1514631388662883000"></script>
+<script type="text/javascript" src="/js/main.js?1514666865990503000"></script>
 
 
     </div>
