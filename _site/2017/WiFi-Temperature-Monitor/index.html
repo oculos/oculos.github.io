@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
 
-  <title>A new blog is born!</title>
-  <meta name="description" content="I have blogged for many years, but in my native language (Portuguese). Now I feel it’s time to start blogging in English. I don’t think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.
+  <title>WiFi Temperature Monitor</title>
+  <meta name="description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
 
 ">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
@@ -18,8 +18,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="A new blog is born!">
-  <meta name="twitter:description" content="I have blogged for many years, but in my native language (Portuguese). Now I feel it’s time to start blogging in English. I don’t think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.
+  <meta name="twitter:title" content="WiFi Temperature Monitor">
+  <meta name="twitter:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
 
 ">
   
@@ -28,8 +28,8 @@
   <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="A new blog is born!">
-  <meta property="og:description" content="I have blogged for many years, but in my native language (Portuguese). Now I feel it’s time to start blogging in English. I don’t think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.
+  <meta property="og:title" content="WiFi Temperature Monitor">
+  <meta property="og:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
 
 ">
   <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
@@ -55,7 +55,7 @@
   <meta name="theme-color" content="#ffffff">
   
   <link rel="stylesheet" href="/css/main.css?1515450771032899000">
-  <link rel="canonical" href="http://francisaugusto.com/2017/A-new-blog-is-born/">
+  <link rel="canonical" href="http://francisaugusto.com/2017/WiFi-Temperature-Monitor/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
 
@@ -179,16 +179,43 @@
         <article class="post-container post-container--single">
   <header class="post-header">
     <div class="post-meta">
-      <time datetime="21 Nov 2017" class="post-meta__date date">21 Nov 2017</time>
+      <time datetime="29 Dec 2017" class="post-meta__date date">29 Dec 2017</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#projects">projects</a> <a href="/tags/#homebridge">homebridge</a> <a href="/tags/#arduino">arduino</a> <a href="/tags/#ESP8266">ESP8266</a> </span>
       
     </div>
-    <h1 class="post-title">A new blog is born!</h1>
+    <h1 class="post-title">WiFi Temperature Monitor</h1>
   </header>
 
   <section class="post">
-    <p>I have blogged for many years, but in my native language (Portuguese). Now I feel it’s time to start blogging in English. I don’t think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.</p>
+    <p>After finishing my <a href="http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/">previous project</a>, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.</p>
 
-<p>I am still trying to understand how <a href="http://jekyllrb.com">Jekyll</a> works, as I am a long time WordPress user. I love <a href="https://daringfireball.net/projects/markdown/">Markdown</a>, and I always wanted to get used to write texts without all the fuss of text editors, formatting and the likes. So let’s see how that works. :)</p>
+<p>My goal was to transmit the temperature of her room to our <a href="https://github.com/nfarina/homebridge">Homebridge</a>, so we could check it on our phone. I also wanted a solution that would allow me to switch the radio transmitter while not transferring data.</p>
+
+<p>I had a couple of DHT11 sensors around, and I decided to try the <a href="https://www.sparkfun.com/products/13678">ESP8266-01</a>. I got them at <a href="https://www.kjell.com">Kjell &amp; Co.</a>, and, as usual, when going there I end up buying more than I need, so I got this <a href="https://www.kjell.com/no/produkter/elektro-og-verktoy/elektronikk/optokomponenter/led-lcd-skjermer/luxorparts-grafisk-oled-skjerm-128-x-64-piksler-0-96--p87945">OLED screen</a>, which I then thought I could use to display the temperature (and humidity, since the DHT11 provides that as well) without my phone.</p>
+
+<p>The ESP8266 is used mainly to read the sensor and transmit the data to the computer running Homebridge. It transmits UDP packets, to make it simple. On the computer side, I use a small NodeJS app to receive the packets (and send and ACK back).</p>
+
+<p>I had a couple of Arduino Mini’s at home, which I never used because they didn’t have soldered pins to the GPIO’s. But I manned up and soldered some pins to it. Not the nicest job I ever did, but nothing got broken in the process.</p>
+
+<p>I added a button to the circuit, so that we could read the temperature with the touch of a button.</p>
+
+<p>It works like this:</p>
+
+<p>ESP8266: It keeps reading the sensor all the time, and transmitting the data via serial to the Arduino. In addition to that, the data is sent by WiFi to the Homebridge. The radio turns itself on, connects to the network, sends the packets and, upon after getting the confirmation that the packets were received, it turns itself off for 1 minute.</p>
+
+<p>Arduino: It receives the temperature and humidity info fromthe ESP8266, and then it shows it on a screen. The screen is off, and is turned on for 10 seconds when a button is pressed.</p>
+
+<p><img src="http://francisaugusto.com/assets/ESP8266.JPG" alt="It looks shabby, but it works" /></p>
+
+<p>It is not very elegant, because there was no space to put the Arduino on the small breadboard. I wanna improve it later by:</p>
+
+<ul>
+  <li>changing the power supply to a small circuit to provide power (with voltage regulator and capacitors);</li>
+  <li>put an ATMega chip on the breadboard instead of an arduino.</li>
+  <li>order a pcb?</li>
+  <li>Get rid of the arduino and use a bigger ESP8266 instead.</li>
+</ul>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -196,8 +223,8 @@
 
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'http://francisaugusto.com/2017/A-new-blog-is-born/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '/2017/A-new-blog-is-born'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://francisaugusto.com/2017/WiFi-Temperature-Monitor/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2017/WiFi Temperature Monitor'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
 
       (function() { // DON'T EDIT BELOW THIS LINE

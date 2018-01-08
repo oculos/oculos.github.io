@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>http://francisaugusto.com/2017/WiFi-Temperature-Monitor/</loc>
+      
+        <lastmod>2017-12-29T20:13:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</loc>
       
         <lastmod>2017-12-29T20:13:23+01:00</lastmod>
@@ -36,7 +51,7 @@
     <url>
       <loc>http://francisaugusto.com/about</loc>
       
-        <lastmod>2017-12-30T22:42:01+01:00</lastmod>
+        <lastmod>2018-01-08T23:32:51+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -53,7 +68,7 @@
     <url>
       <loc>http://francisaugusto.com/contact-form/</loc>
       
-        <lastmod>2017-12-30T22:42:01+01:00</lastmod>
+        <lastmod>2018-01-08T23:32:51+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -68,7 +83,7 @@
     <url>
       <loc>http://francisaugusto.com/feed.xml</loc>
       
-        <lastmod>2017-12-30T22:42:01+01:00</lastmod>
+        <lastmod>2018-01-08T23:32:51+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -87,7 +102,7 @@
     <url>
       <loc>http://francisaugusto.com/css/main.css</loc>
       
-        <lastmod>2017-12-30T22:42:01+01:00</lastmod>
+        <lastmod>2018-01-08T23:32:51+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
