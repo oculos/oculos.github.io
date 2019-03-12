@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
 
-  <title>WiFi Temperature Monitor</title>
-  <meta name="description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <title>WiFi ESXi on the 2018 Mac Mini - networking</title>
+  <meta name="description" content="My workplace aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read here that it appeared that ESXi 6.7 runs fine on those machines.
 
 ">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
@@ -18,8 +18,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="WiFi Temperature Monitor">
-  <meta name="twitter:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <meta name="twitter:title" content="WiFi ESXi on the 2018 Mac Mini - networking">
+  <meta name="twitter:description" content="My workplace aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read here that it appeared that ESXi 6.7 runs fine on those machines.
 
 ">
   
@@ -28,8 +28,8 @@
   <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WiFi Temperature Monitor">
-  <meta property="og:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <meta property="og:title" content="WiFi ESXi on the 2018 Mac Mini - networking">
+  <meta property="og:description" content="My workplace aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read here that it appeared that ESXi 6.7 runs fine on those machines.
 
 ">
   <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
@@ -55,7 +55,7 @@
   <meta name="theme-color" content="#ffffff">
   
   <link rel="stylesheet" href="/css/main.css?1552418039967091000">
-  <link rel="canonical" href="http://francisaugusto.com/2017/WiFi-Temperature-Monitor/">
+  <link rel="canonical" href="http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
 
@@ -179,43 +179,52 @@
         <article class="post-container post-container--single">
   <header class="post-header">
     <div class="post-meta">
-      <time datetime="29 Dec 2017" class="post-meta__date date">29 Dec 2017</time>
+      <time datetime="12 Mar 2019" class="post-meta__date date">12 Mar 2019</time>
       
-      &#8226; <span class="post-meta__tags">on <a href="/tags/#projects">projects</a> <a href="/tags/#homebridge">homebridge</a> <a href="/tags/#arduino">arduino</a> <a href="/tags/#ESP8266">ESP8266</a> </span>
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#esxi">esxi</a> <a href="/tags/#mac-mini">mac-mini</a> <a href="/tags/#aquantia">aquantia</a> </span>
       
     </div>
-    <h1 class="post-title">WiFi Temperature Monitor</h1>
+    <h1 class="post-title">WiFi ESXi on the 2018 Mac Mini - networking</h1>
   </header>
 
   <section class="post">
-    <p>After finishing my <a href="http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/">previous project</a>, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.</p>
+    <p>My <a href="https://www.uio.no">workplace</a> aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read <a href="https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html">here</a> that it appeared that ESXi 6.7 runs fine on those machines.</p>
 
-<p>My goal was to transmit the temperature of her room to our <a href="https://github.com/nfarina/homebridge">Homebridge</a>, so we could check it on our phone. I also wanted a solution that would allow me to switch the radio transmitter while not transferring data.</p>
-
-<p>I had a couple of DHT11 sensors around, and I decided to try the <a href="https://www.sparkfun.com/products/13678">ESP8266-01</a>. I got them at <a href="https://www.kjell.com">Kjell &amp; Co.</a>, and, as usual, when going there I end up buying more than I need, so I got this <a href="https://www.kjell.com/no/produkter/elektro-og-verktoy/elektronikk/optokomponenter/led-lcd-skjermer/luxorparts-grafisk-oled-skjerm-128-x-64-piksler-0-96--p87945">OLED screen</a>, which I then thought I could use to display the temperature (and humidity, since the DHT11 provides that as well) without my phone.</p>
-
-<p>The ESP8266 is used mainly to read the sensor and transmit the data to the computer running Homebridge. It transmits UDP packets, to make it simple. On the computer side, I use a small NodeJS app to receive the packets (and send and ACK back).</p>
-
-<p>I had a couple of Arduino Mini’s at home, which I never used because they didn’t have soldered pins to the GPIO’s. But I manned up and soldered some pins to it. Not the nicest job I ever did, but nothing got broken in the process.</p>
-
-<p>I added a button to the circuit, so that we could read the temperature with the touch of a button.</p>
-
-<p>It works like this:</p>
-
-<p>ESP8266: It keeps reading the sensor all the time, and transmitting the data via serial to the Arduino. In addition to that, the data is sent by WiFi to the Homebridge. The radio turns itself on, connects to the network, sends the packets and, upon after getting the confirmation that the packets were received, it turns itself off for 1 minute.</p>
-
-<p>Arduino: It receives the temperature and humidity info fromthe ESP8266, and then it shows it on a screen. The screen is off, and is turned on for 10 seconds when a button is pressed.</p>
-
-<p><img src="http://francisaugusto.com/assets/ESP8266.JPG" alt="It looks shabby, but it works" /></p>
-
-<p>It is not very elegant, because there was no space to put the Arduino on the small breadboard. I wanna improve it later by:</p>
+<p>Nevertheless it was disappointing to see that a lot of things don’t work:</p>
 
 <ul>
-  <li>changing the power supply to a small circuit to provide power (with voltage regulator and capacitors);</li>
-  <li>put an ATMega chip on the breadboard instead of an arduino.</li>
-  <li>order a pcb?</li>
-  <li>Get rid of the arduino and use a bigger ESP8266 instead.</li>
+  <li>The internal storage cannot be used</li>
+  <li>Thunderbolt controllers are not supported</li>
 </ul>
+
+<p>For us it was even worse: the model we bought has 10Gb NICs, which lacks ESXi drivers. This means that we could not even install ESXi on the Mac Mini, as the installer seems to require a driver.</p>
+
+<p>Well, now we managed it.</p>
+
+<p>Following some good tutorials <a href="https://www.v-front.de/2014/12/how-to-make-your-unsupported-nic-work.html">here</a> and <a href="http://www.vm-help.com/forum/viewtopic.php?f=34&amp;t=4340">here</a>, I started an attempt to port the <a href="https://www.aquantia.com/support/driver-download/">freely available Linux drivers</a> from <a href="https://www.aquantia.com">Aquantia</a>. This was not an easy task, as VMware does not document all that well how to setup the environment for building up things. After a while, with a proper configured CentOS environment, I started the process.</p>
+
+<p>But then I’ve hitten a wall, and couldn’t go further. On a desperate attempt, I contacted Aquantia to see if they were interesting into porting their Linux drivers to ESXi. Well, it turns out they were, and today I finally got a candidate version that worked amazingly well on our Mac Mini’s.</p>
+
+<p><img src="http://francisaugusto.com/assets/2019/mac-mini-esxi.png" alt="ESXi on 10Gb Mac Mini" /></p>
+
+<p>I haven’t tested it exhaustively so far, let alone on a 10Gb switch, but so far, so good.</p>
+
+<p><img src="http://francisaugusto.com/assets/2019/aquantia-mac-mini.png" alt="aquantia" /></p>
+
+<p>The Aquantia folks did all the job, so I’m really grateful. From what I understand they are going to release the driver in the near future when things are ready on their side.</p>
+
+<p>It’s great to know that the Mac Mini can be a viable option to run ESXi. Of course, because the Mac Mini is not a supported platform for ESXi, it is uncertain how things are going to be after VMWare drops support for Vmklinux-based drivers.</p>
+
+<p>On top of that, somethings to notice:</p>
+
+<ul>
+  <li>I couldn’t get any storage - USB or USB-C - to work. Booting with storage plugged on a legacy USB port would do nothing at best and prevent booting at worse (I got an error once saying something aobut multiboot not being supported). Hot-plugging to USB/USB-C doesn’t get the device to show up, and booting with anything, I mean, ANYTHING, connected to a USB-C port would lead me to the purple screen of death (PSOD). So it’s gonna be either SAN or installing the ESXi on one of <a href="https://www.samsung.com/semiconductor/minisite/ssd/product/portable/t5/">these</a> so that we can have some room for our VM’s. But maybe it needs to be <a href="https://www.virten.net/2016/11/usb-devices-as-vmfs-datastore-in-vsphere-esxi-6-5/">manually mounted</a>?</li>
+  <li>The Aquantia driver worked fine on the internal NIC, but I couldn’t make the Apple USB Ethernet adapters to work - these adapters apparently also use chipset from Aquantia, but I am not surprised, since USB doesn’t seem to work well on ESXi on the Mini. Booting with a Realtek-based USB-C Ethernet adapter would bring me a PSOD, and I don’t have a Realtek based USB adapter, so I couldn’t test the <a href="https://labs.vmware.com/flings/usb-network-native-driver-for-esxi">USB NIC driver</a>. I did inject it on my ISO, though.</li>
+</ul>
+
+<p>Long story short, things look promising. Due to Apple licensing terms, we can only run a virtualized instance of macOS on Apple hardware. Using macOS VM’s could help us on our job, and the nice work of Aquantia is going to make that possible.</p>
+
+<p>Leave a message in the comments if you too are contemplating running ESXi on a 10Gb Mac Mini!</p>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -223,8 +232,8 @@
 
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'http://francisaugusto.com/2017/WiFi-Temperature-Monitor/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '/2017/WiFi Temperature Monitor'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2019/ESXi on the 2018 Mac Mini - networking'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
 
       (function() { // DON'T EDIT BELOW THIS LINE
