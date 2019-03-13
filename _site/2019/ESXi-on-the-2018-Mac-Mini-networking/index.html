@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1552462582568034000">
+  <link rel="stylesheet" href="/css/main.css?1552462627231819000">
   <link rel="canonical" href="http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -231,7 +231,7 @@
 
 <ul>
   <li>I couldn’t get any storage - USB or USB-C - to work. Booting with storage plugged on a legacy USB port would do nothing at best and prevent booting at worse (I got an error once saying something aobut multiboot not being supported). Hot-plugging to USB/USB-C doesn’t get the device to show up, and booting with anything, I mean, ANYTHING, connected to a USB-C port would lead me to the purple screen of death (PSOD). So it’s gonna be either SAN or installing the ESXi on one of <a href="https://www.samsung.com/semiconductor/minisite/ssd/product/portable/t5/">these</a> so that we can have some room for our VM’s. But maybe it needs to be <a href="https://www.virten.net/2016/11/usb-devices-as-vmfs-datastore-in-vsphere-esxi-6-5/">manually mounted</a>?</li>
-  <li>The Aquantia driver worked fine on the internal NIC, but I couldn’t make the Apple USB Ethernet adapters to work - <del>these adapters apparently also use chipset from Aquantia</del> this adapters use ASIX chipset ax88772A, not supported by the usb nic driver mentioned below, but I am not surprised, since USB doesn’t seem to work well on ESXi on the Mini. Booting with a Realtek-based USB-C Ethernet adapter would bring me a PSOD, and I don’t have a Realtek based USB adapter, so I couldn’t test the <a href="https://labs.vmware.com/flings/usb-network-native-driver-for-esxi">USB NIC driver</a>. I did inject it on my ISO, though.</li>
+  <li>The Aquantia driver worked fine on the internal NIC, but I couldn’t make the Apple USB Ethernet adapters to work - <del>these adapters apparently also use chipset from Aquantia</del> these adapters use ASIX chipset ax88772A, not supported by the usb nic driver mentioned below, but I am not surprised, since USB doesn’t seem to work well on ESXi on the Mini. Booting with a Realtek-based USB-C Ethernet adapter would bring me a PSOD, and I don’t have a Realtek based USB adapter, so I couldn’t test the <a href="https://labs.vmware.com/flings/usb-network-native-driver-for-esxi">USB NIC driver</a>. I did inject it on my ISO, though.</li>
 </ul>
 
 <p>Long story short, things look promising. Due to Apple licensing terms, we can only run a virtualized instance of macOS on Apple hardware. Using macOS VM’s could help us on our job, and the nice work of Aquantia is going to make that possible.</p>
@@ -269,7 +269,7 @@
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1552462582568034000"></script>
+<script type="text/javascript" src="/js/main.js?1552462627231819000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
