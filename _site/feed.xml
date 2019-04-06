@@ -5,12 +5,12 @@
     <description>Developer, IT-Law expert, runner</description>
     <link>http://francisaugusto.com/</link>
     <atom:link href="http://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 06 Apr 2019 09:19:20 +0200</pubDate>
-    <lastBuildDate>Sat, 06 Apr 2019 09:19:20 +0200</lastBuildDate>
+    <pubDate>Sat, 06 Apr 2019 09:24:28 +0200</pubDate>
+    <lastBuildDate>Sat, 06 Apr 2019 09:24:28 +0200</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
-        <title>WiFi ESXi on the 2018 Mac Mini - networking</title>
+        <title>ESXi 6.7 on the 2018 Mac Mini - networking</title>
         <description>&lt;p&gt;&lt;em&gt;UPDATE&lt;/em&gt;: Aquantia went public. You can download the pre-release driver at this website &lt;a href=&quot;https://github.com/Aquantia/AQtion-esxi/releases&quot;&gt;https://github.com/Aquantia/AQtion-esxi/releases&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;My &lt;a href=&quot;https://www.uio.no&quot;&gt;workplace&lt;/a&gt; aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read &lt;a href=&quot;https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html&quot;&gt;here&lt;/a&gt; that it appeared that ESXi 6.7 runs fine on those machines.&lt;/p&gt;

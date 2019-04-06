@@ -1,5 +1,5 @@
 ---
-title:  "WiFi ESXi on the 2018 Mac Mini - networking"
+title:  "ESXi 6.7 on the 2018 Mac Mini - networking"
 date:   2019-03-12 19:34:23 +0100
 categories: personal
 layout: post
