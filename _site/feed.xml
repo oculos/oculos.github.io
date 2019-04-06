@@ -5,13 +5,15 @@
     <description>Developer, IT-Law expert, runner</description>
     <link>http://francisaugusto.com/</link>
     <atom:link href="http://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 13 Mar 2019 19:14:34 +0100</pubDate>
-    <lastBuildDate>Wed, 13 Mar 2019 19:14:34 +0100</lastBuildDate>
+    <pubDate>Sat, 06 Apr 2019 09:19:20 +0200</pubDate>
+    <lastBuildDate>Sat, 06 Apr 2019 09:19:20 +0200</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>WiFi ESXi on the 2018 Mac Mini - networking</title>
-        <description>&lt;p&gt;My &lt;a href=&quot;https://www.uio.no&quot;&gt;workplace&lt;/a&gt; aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read &lt;a href=&quot;https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html&quot;&gt;here&lt;/a&gt; that it appeared that ESXi 6.7 runs fine on those machines.&lt;/p&gt;
+        <description>&lt;p&gt;&lt;em&gt;UPDATE&lt;/em&gt;: Aquantia went public. You can download the pre-release driver at this website &lt;a href=&quot;https://github.com/Aquantia/AQtion-esxi/releases&quot;&gt;https://github.com/Aquantia/AQtion-esxi/releases&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;My &lt;a href=&quot;https://www.uio.no&quot;&gt;workplace&lt;/a&gt; aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read &lt;a href=&quot;https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html&quot;&gt;here&lt;/a&gt; that it appeared that ESXi 6.7 runs fine on those machines.&lt;/p&gt;
 
 &lt;p&gt;Nevertheless it was disappointing to see that a lot of things don’t work:&lt;/p&gt;
 
@@ -49,7 +51,8 @@
 
 &lt;p&gt;Leave a message in the comments if you too are contemplating running ESXi on a 10Gb Mac Mini!&lt;/p&gt;
 
-&lt;p&gt;(UPDATED on 13.3.2019 to correct info on Apple’s USB Ethernet adapter.)&lt;/p&gt;
+&lt;p&gt;(UPDATED on 13.3.2019 to correct info on Apple’s USB Ethernet adapter.)
+(UPDATEd on 6.4.2019 to include information about the public availability of the driver.)&lt;/p&gt;
 </description>
         <pubDate>Tue, 12 Mar 2019 19:34:23 +0100</pubDate>
         <link>http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</link>

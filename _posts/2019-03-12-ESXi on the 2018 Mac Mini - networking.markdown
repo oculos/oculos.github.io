@@ -7,6 +7,8 @@ comments: true
 tags: esxi mac-mini aquantia
 ---
 
+*UPDATE*: Aquantia went public. You can download the pre-release driver at this website [https://github.com/Aquantia/AQtion-esxi/releases](https://github.com/Aquantia/AQtion-esxi/releases).
+
 My [workplace](https://www.uio.no) aquired a few of the 2018 Mac Mini's so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read [here](https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html) that it appeared that ESXi 6.7 runs fine on those machines.
 
 Nevertheless it was disappointing to see that a lot of things don't work:
@@ -42,3 +44,4 @@ Long story short, things look promising. Due to Apple licensing terms, we can on
 Leave a message in the comments if you too are contemplating running ESXi on a 10Gb Mac Mini!
 
 (UPDATED on 13.3.2019 to correct info on Apple's USB Ethernet adapter.)
+(UPDATEd on 6.4.2019 to include information about the public availability of the driver.)
