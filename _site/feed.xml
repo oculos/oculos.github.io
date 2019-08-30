@@ -5,12 +5,12 @@
     <description>Developer, IT-Law expert, runner</description>
     <link>http://francisaugusto.com/</link>
     <atom:link href="http://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 30 Aug 2019 23:31:45 +0200</pubDate>
-    <lastBuildDate>Fri, 30 Aug 2019 23:31:45 +0200</lastBuildDate>
+    <pubDate>Fri, 30 Aug 2019 23:38:14 +0200</pubDate>
+    <lastBuildDate>Fri, 30 Aug 2019 23:38:14 +0200</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
-        <title>“Building a Supermicro-based PC for ESXi and FreeNAS”</title>
+        <title>Building a Supermicro-based PC for ESXi and FreeNAS</title>
         <description>&lt;h2 id=&quot;the-goal&quot;&gt;The goal&lt;/h2&gt;
 
 &lt;p&gt;I have been using &lt;a href=&quot;https://freenas.org&quot;&gt;FreeNAS&lt;/a&gt; for almost a year, and I really enjoy it. I use it for some backups, file storage and for some of my favorite features of FreeBSD: jails. I have some jails installed, such as &lt;a href=&quot;https://nextcloud.com&quot;&gt;Nextcloud&lt;/a&gt;. Things were working fine and smoothly, until…&lt;/p&gt;

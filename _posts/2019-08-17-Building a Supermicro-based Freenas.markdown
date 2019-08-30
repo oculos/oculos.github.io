@@ -1,5 +1,5 @@
 ---
-title:  “Building a Supermicro-based PC for ESXi and FreeNAS”
+title:  Building a Supermicro-based PC for ESXi and FreeNAS
 date:   2019-08-17 13:00:23 +0100
 categories: personal
 layout: post
