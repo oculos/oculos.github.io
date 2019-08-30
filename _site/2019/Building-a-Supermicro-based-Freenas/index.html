@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>“Building a Supermicro-based PC for ESXi and FreeNAS”</title>
+  <meta name="description" content="The goal
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="“Building a Supermicro-based PC for ESXi and FreeNAS”">
+  <meta name="twitter:description" content="The goal
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="“Building a Supermicro-based PC for ESXi and FreeNAS”">
+  <meta property="og:description" content="The goal
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1567200011288749000">
+  <link rel="canonical" href="http://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">Developer, IT-Law expert, runner</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="17 Aug 2019" class="post-meta__date date">17 Aug 2019</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#supermicro">supermicro</a> <a href="/tags/#freenas">freenas</a> <a href="/tags/#esxi">esxi</a> </span>
+      
+    </div>
+    <h1 class="post-title">“Building a Supermicro-based PC for ESXi and FreeNAS”</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="the-goal">The goal</h2>
+
+<p>I have been using <a href="https://freenas.org">FreeNAS</a> for almost a year, and I really enjoy it. I use it for some backups, file storage and for some of my favorite features of FreeBSD: jails. I have some jails installed, such as <a href="https://nextcloud.com">Nextcloud</a>. Things were working fine and smoothly, until…</p>
+
+<p>As much as I like FreeBSD, it’s not always things work well there coming from a Linux standpoint. I created a jail hoping to run <a href="https://elasticsearch.co">ELK</a>, but it was more complicate than it should be to run it on FreeBSD. It worked, but not the latest version. I could probably run a Linux jail, or just use FreeNAS virtualization features, but my current hardware was struggling.</p>
+
+<p>At the same time, due to some tasks at work, I was investigating ESXi so I could <a href="http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/">run it on a Mac</a>. I abandoned the whole thing, as apparently this isn’t well suported and life is too short. So I decided it was time to build a machine just for the task.</p>
+
+<p>I always wanted to build my own machine, ever since I was a student and got a 486DX processor and a motherboard. A few years ago, a friend moving back home left his PC case behind, I thought I could maybe start there. None of those projects went ahead.</p>
+
+<p>It is a very fun task to select what to buy, but it can easily get overwhelming. Which motherboard format? Which processor? Which case? Well, I wasn’t very sure of what I wanted, so I after reading a lot on the forums and other websites, I came down with these requirements:</p>
+
+<ul>
+  <li>small form factor</li>
+  <li>quiet</li>
+  <li>10GBe Network for some future-proofing</li>
+  <li>plenty of SATA ports</li>
+</ul>
+
+<p>The main use for this machine will be running ESXi and FreeNAS under a VM. I also want to run 3 or 4 VM’s, one as a redundant mail server, one to replace my jail-based ELK instanse, and the others to test stuff when needed.</p>
+
+<h2 id="what-to-buy">What to buy?</h2>
+
+<h3 id="motherboard">Motherboard</h3>
+
+<p>I saw lots of motherboards for gaming that could possibly be used, but the feature set they have was not ideal for my project, as I won’t need a GPU, will probably need to be able to expand the memory, etc. By accident I found out the <a href="https://supermicro.com">Supermicro</a> motherboards, and decided to go for them.</p>
+
+<p>Since I was hoping to build a PC aiming to run ESXi and FreeNAS as a VM, I saw how others did it, and realized quickly that it is necessary to passthrough the disks used by FreeNAS to the VM, as ZFS (the file system used by FreeNAS) needs tight control of the disks. It was very hard  to find a good documentation on how passthrough works on this scenario. For example, could I passthrough individual SATA ports? As Supermicro motherboards often come with one or two extra mini-SAS ports, could they be used for passthrough? No answers were clear cut, so I decided to order a HBA and connect it to a PCI, as it was pretty much clear that PCI passthrough would be supported.</p>
+
+<p>I didn’t want to passthrough all the SATA ports of the motherboard, as I want to be able to connect some storage to other VM’s. Using an HBA was not ideal as it’s a waste of abundant SATA ports that comes on those Supermicro boards, but I’d rather be safe than sorry and ordered one just in case I can’t passthrough those drives.</p>
+
+<p>The good thing about those gaming motherboards is that they offer lots of PCI expansion. Supermicro motherboards - at least those I wanted to use - had very few PCI slots. I fell for the <a href="https://www.supermicro.com/en/products/motherboard/X11SDV-8C-TLN2F">X11SDV-4C-TL</a>, as it is has Mini-ITX form factor, but since I was going to use a PCI slot for the HBA, I really didn’t want to be out of PCI slots if I ever need something else. Bye-bye Mini-ITX and the Fractal Design <a href="https://www.fractal-design.com/home/product/cases/node-series/node-304-white">Node 304 case</a> I was dreaming of. I decided to go for the Supermicro <a href="https://www.supermicro.com/en/products/motherboard/X11SDV-4C-TP8F">X11SDV-4C-TP8F</a>, a Flex-ATX motherboard that had a few other PCI and memory slots.</p>
+
+<p>This wasn’t an easy choice, as apparently it is not that easy to <a href="https://forums.servethehome.com/index.php?threads/cooling-the-cpu-x11sdv-4c-tln2f.22285/">cool the processor on this board</a>, as Supermicro doesn’t sell the cooler separately or preinstalled, or so I thought, as one can’t find it on the website. After some mails with Supermicro, they say the cooler can be ordered, but it needs to be installed by them, otherwise you can say bye bye to the warranty.</p>
+
+<p>Luckly for me, the Supermicro reseller in Norway, <a href="https://nextron.no">Nextron</a>, did order everything from me, and I would get the motherboard with a preinstalled cooler. Cool (pun intended). It took, however, a bit long to get it. The motherboards with a Xeon with more than 4 cores can be ordered with a cooler in a less bureaucratic way.</p>
+
+<h3 id="memory">Memory</h3>
+
+<p>That was an easy choice - got a <a href="https://www.amazon.com/gp/product/B07DFLTWN3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;psc=1">Supermicro certified 64gb RAM</a>. I was tempted to get two 32GB modules and get the interleave going, but, well, I can always get another 64GB in the future if I need it.</p>
+
+<h3 id="case">Case</h3>
+
+<p>I really liked those Fractal Design cases, so decided to go for the <a href="https://www.fractal-design.com/products/cases/node/node-804/black/">Node 804</a>.</p>
+
+<h3 id="other-stuff">Other stuff</h3>
+
+<p>The other equipment I ordered:</p>
+
+<ul>
+  <li>PSU: a <a href="https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/Power-Supply-Units-Advanced/RMx-Series/p/CP-9020179-NA">Corsair RM750X</a></li>
+  <li>Storage: <a href="https://www.intel.com/content/www/us/en/products/memory-storage/solid-state-drives/consumer-ssds/6-series/ssd-660p-series.html">Intel 660p SSD</a></li>
+  <li>HBA: <a href="https://www.ebay.com/itm/HP-H220-6Gbps-SAS-PCI-E-3-0-HBA-LSI-9207-8i-P20-IT-Mode-for-ZFS-FreeNAS-unRAID/162862201664?ssPageName=STRK%3AMEBIDX%3AIT&amp;_trksid=p2057872.m2749.l2649">This one</a>, as it is already flashed with the right FreeNAS-friendly firmware</li>
+  <li>a few cables to connect the HBA to the hard disks.</li>
+</ul>
+
+<h2 id="the-building">The building</h2>
+
+<p>The installation of the motherboard into the case was as smooth as it can be for a first timer. It went well. The only few things that didn’t go according to the plan was that I didn’t manage to plug some of the stuff (HDD led, Power LED) into the motherboard, as I didn’t find where to plug them. It seems there was lacking ground connections for some of the cables. I also couldn’t get a stable mount of the hard disk, as the models I have - two 8TB WD Red - only have four screw holes, while the cage expects a 6 screws HD. Fractal Design’s support was kind enough to send me the adapters for this new type of drive, so I’ll install them as soon as I get them.</p>
+
+<p><img src="../assets/2019/IMG_7533.jpg" alt="an over view of my installation - halfway through" title="Halfway through" /></p>
+
+<p>Everything mounted and all, so it was the time to press the power button. Scary. It didn’t work. I haven’t connected the cables to the power supply properly, so I did that and boom, things worked!</p>
+
+<p><img src="../assets/2019/itworks.JPG" alt="It works!" title="It works!" /></p>
+
+<p>I installed ESXi, and I noticed I could passthrough two SATA controllers, which made me thing that I had no need for the HBA I bought. Boom, I opened the case and removed the HBA. I connected the hard disks to one of the two miniSAS connectors, and to my surprise they were immediately recognized and imported by my FreeNAS VM.</p>
+
+<p>Overall, I am very happy with the machine, except for the noisy fan. I ordered a new fan to replace the one from Supermicro, but I don’t know if I will dare to remove the heatsink to install it. We’ll see. Now I’ve managed to follow some instructions on the net and reduced the fan speed to an acceptable noise level, while maintaining the CPU cool enough. Let’s see how that goes.</p>
+
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2019/Building a Supermicro-based Freenas'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2019 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1567200011288749000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>
