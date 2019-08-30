@@ -67,7 +67,7 @@ The installation of the motherboard into the case was as smooth as it can be for
 
 Everything mounted and all, so it was the time to press the power button. Scary. It didn't work. I haven't connected the cables to the power supply properly, so I did that and boom, things worked!
 
-![It works!](../assets/2019/itworks.JPG "It works!")
+![It works!](../../assets/2019/itworks.JPG "It works!")
 
 I installed ESXi, and I noticed I could passthrough two SATA controllers, which made me thing that I had no need for the HBA I bought. Boom, I opened the case and removed the HBA. I connected the hard disks to one of the two miniSAS connectors, and to my surprise they were immediately recognized and imported by my FreeNAS VM. 
 
