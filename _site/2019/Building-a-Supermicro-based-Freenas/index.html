@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1567201307641561000">
+  <link rel="stylesheet" href="/css/main.css?1567624329072256000">
   <link rel="canonical" href="http://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -270,6 +270,11 @@
 
 <p>Overall, I am very happy with the machine, except for the noisy fan. I ordered a new fan to replace the one from Supermicro, but I don’t know if I will dare to remove the heatsink to install it. We’ll see. Now I’ve managed to follow some instructions on the net and reduced the fan speed to an acceptable noise level, while maintaining the CPU cool enough. Let’s see how that goes.</p>
 
+<p>UPDATE 4.9.2019: I didn’t have to remove the heatsink to replace the fan. It is a bit annoying, but it is possible to remove the fan cage only, which was much better than reapplying the thermal paste, and possibly voiding my warranty.</p>
+
+<p>I installed a Noctua fan that works well. It’s very silent, but I want to go back to the Supermicro cooler as soon as noise is not an issue, as it was way more efficient to cool the machine.</p>
+
+<p>The hard disks, however, were the culprit when it comes to the noise. When the FreeNAS VM is shut down, the machine is almost silent. I rearranged the disks, not having them all on the same cage, and it got them better airflow and temps.</p>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -300,7 +305,7 @@
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1567201307641561000"></script>
+<script type="text/javascript" src="/js/main.js?1567624329072256000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

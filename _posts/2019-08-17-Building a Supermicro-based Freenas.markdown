@@ -73,3 +73,8 @@ I installed ESXi, and I noticed I could passthrough two SATA controllers, which 
 
 Overall, I am very happy with the machine, except for the noisy fan. I ordered a new fan to replace the one from Supermicro, but I don't know if I will dare to remove the heatsink to install it. We'll see. Now I've managed to follow some instructions on the net and reduced the fan speed to an acceptable noise level, while maintaining the CPU cool enough. Let's see how that goes.
 
+UPDATE 4.9.2019: I didn't have to remove the heatsink to replace the fan. It is a bit annoying, but it is possible to remove the fan cage only, which was much better than reapplying the thermal paste, and possibly voiding my warranty.
+
+I installed a Noctua fan that works well. It's very silent, but I want to go back to the Supermicro cooler as soon as noise is not an issue, as it was way more efficient to cool the machine. 
+
+The hard disks, however, were the culprit when it comes to the noise. When the FreeNAS VM is shut down, the machine is almost silent. I rearranged the disks, not having them all on the same cage, and it got them better airflow and temps.
