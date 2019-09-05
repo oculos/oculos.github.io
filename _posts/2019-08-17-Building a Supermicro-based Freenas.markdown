@@ -61,7 +61,7 @@ The other equipment I ordered:
 
 ## The building
 
-The installation of the motherboard into the case was as smooth as it can be for a first timer. It went well. The only few things that didn't go according to the plan was that I didn't manage to plug some of the stuff (HDD led, Power LED) into the motherboard, as I didn't find where to plug them. It seems there was lacking ground connections for some of the cables. I also couldn't get a stable mount of the hard disk, as the models I have - two 8TB WD Red - only have four screw holes, while the cage expects a 6 screws HD. Fractal Design's support was kind enough to send me the adapters for this new type of drive, so I'll install them as soon as I get them.
+The installation of the motherboard into the case was as smooth as it can be for a first timer. It went well. The only few things that didn't go according to the plan was that I didn't manage to plug some of the stuff (HDD led, Power LED) into the motherboard, as I didn't find where to plug them. It seems there was lacking ground connections for some of the cables. I also couldn't get a stable mount of the hard disk, as the models I have - two 8TB Seagate Ironwolf - only have four screw holes, while the cage expects a 6 screws HD. Fractal Design's support was kind enough to send me the adapters for this new type of drive, so I'll install them as soon as I get them.
 
 ![an over view of my installation - halfway through](../../assets/2019/IMG_7533.jpg "Halfway through")
 
