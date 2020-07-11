@@ -9,7 +9,7 @@ I have a mixed background: a law degree, a master (LL.M) in IT-Law, and a bachel
 
 #### Work:
 
-* Java, SQL, Privacy, GDPR.
+* Python, MDM, VMWare vSphere, SQL, Privacy, GDPR.
 
 #### Fun:
 
