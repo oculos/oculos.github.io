@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1567710999913210000">
+  <link rel="stylesheet" href="/css/main.css?1594496355307996000">
   <link rel="canonical" href="http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -241,10 +241,9 @@
 
 <p>Then I created a python script to send the commands via serial to the built-in Arduino of the Udoo Neo. Something like this:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; python lightcontrol.py 1 off # turn the light 1 off
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; python lightcontrol.py 1 off # turn the light 1 off
 Light 1 is off
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>After that was done, it was time to install Homebridge.</p>
 
@@ -252,10 +251,10 @@ Light 1 is off
 
 <p>I did it following <a href="https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi">this tutorial here</a>. One note: make sure you are installing the absolutely latest version of NodeJS.</p>
 
-<p>I wasn’t familiar with <code class="highlighter-rouge">npm</code>, so I found strange that on the docs of the project or on <a href="http://blog.theodo.fr/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/">this excellent guide on how to write a Homebridge plugin</a> it was always suggested to publish plugins to a plugin repository. I didn’t do it. I simply created a local plugin by creating a directory on <code class="highlighter-rouge">/usr/lib/node_modules</code>, and then I created the proper <code class="highlighter-rouge">index.js</code> and <code class="highlighter-rouge">package.json</code>. I don’t see a reason to make my plugin public, as I imagine that my solution is very tied to the system I am using. Of course, if anyone feels he might benefit from it, just drop me a note. Remember:</p>
+<p>I wasn’t familiar with <code class="language-plaintext highlighter-rouge">npm</code>, so I found strange that on the docs of the project or on <a href="http://blog.theodo.fr/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/">this excellent guide on how to write a Homebridge plugin</a> it was always suggested to publish plugins to a plugin repository. I didn’t do it. I simply created a local plugin by creating a directory on <code class="language-plaintext highlighter-rouge">/usr/lib/node_modules</code>, and then I created the proper <code class="language-plaintext highlighter-rouge">index.js</code> and <code class="language-plaintext highlighter-rouge">package.json</code>. I don’t see a reason to make my plugin public, as I imagine that my solution is very tied to the system I am using. Of course, if anyone feels he might benefit from it, just drop me a note. Remember:</p>
 
 <ul>
-  <li>Your plugin must start with <code class="highlighter-rouge">homebridge</code>, for example, <code class="highlighter-rouge">homebridge-myplugin</code></li>
+  <li>Your plugin must start with <code class="language-plaintext highlighter-rouge">homebridge</code>, for example, <code class="language-plaintext highlighter-rouge">homebridge-myplugin</code></li>
   <li>Do not follow the code he shows on the tutorial, but rather <a href="https://github.com/fredericbarthelet/homebridge-smappee/blob/master/index.js">the code he actually wrote for his project</a>. I found it more up to date.</li>
 </ul>
 
@@ -265,27 +264,27 @@ Light 1 is off
 
 <p><img src="http://francisaugusto.com/assets/homebridge.png" alt="This is how it looks" /></p>
 
-<p>My <code class="highlighter-rouge">index.js</code> file looks like this:</p>
+<p>My <code class="language-plaintext highlighter-rouge">index.js</code> file looks like this:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">Service</span><span class="p">,</span> <span class="nx">Characteristic</span><span class="p">;</span>
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">homebridge</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">Service</span> <span class="o">=</span> <span class="nx">homebridge</span><span class="p">.</span><span class="nx">hap</span><span class="p">.</span><span class="nx">Service</span><span class="p">;</span>
     <span class="nx">Characteristic</span> <span class="o">=</span> <span class="nx">homebridge</span><span class="p">.</span><span class="nx">hap</span><span class="p">.</span><span class="nx">Characteristic</span><span class="p">;</span>
-          <span class="nx">homebridge</span><span class="p">.</span><span class="nx">registerAccessory</span><span class="p">(</span><span class="s2">"homebridge-lightcontroller"</span><span class="p">,</span> <span class="s2">"LightController"</span><span class="p">,</span> <span class="nx">myLightController</span><span class="p">);</span>
-    <span class="nx">homebridge</span><span class="p">.</span><span class="nx">registerAccessory</span><span class="p">(</span><span class="s2">"homebridge-lightcontroller"</span><span class="p">,</span><span class="s2">"Temperature"</span><span class="p">,</span><span class="nx">myTemperature</span><span class="p">);</span>
+          <span class="nx">homebridge</span><span class="p">.</span><span class="nx">registerAccessory</span><span class="p">(</span><span class="dl">"</span><span class="s2">homebridge-lightcontroller</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">LightController</span><span class="dl">"</span><span class="p">,</span> <span class="nx">myLightController</span><span class="p">);</span>
+    <span class="nx">homebridge</span><span class="p">.</span><span class="nx">registerAccessory</span><span class="p">(</span><span class="dl">"</span><span class="s2">homebridge-lightcontroller</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">Temperature</span><span class="dl">"</span><span class="p">,</span><span class="nx">myTemperature</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="kd">function</span> <span class="nx">myTemperature</span><span class="p">(</span><span class="nx">log</span><span class="p">,</span><span class="nx">config</span><span class="p">){</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">log</span> <span class="o">=</span> <span class="nx">log</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">AccessoryInformation</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span>
-        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="s2">"Francis"</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">serviceTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">TemperatureSensor</span><span class="p">(</span><span class="s2">"Living room temperature"</span><span class="p">);</span>
+        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Francis</span><span class="dl">"</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">serviceTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">TemperatureSensor</span><span class="p">(</span><span class="dl">"</span><span class="s2">Living room temperature</span><span class="dl">"</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceTemp</span>
         <span class="p">.</span><span class="nx">getCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">CurrentTemperature</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'get'</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">getTemp</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">get</span><span class="dl">'</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">getTemp</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
 <span class="p">}</span>
 
 <span class="nx">myTemperature</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getServices</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -293,7 +292,7 @@ Light 1 is off
 <span class="p">}</span>
 
 <span class="nx">myTemperature</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getTemp</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
-    <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="s1">'/sys/class/i2c-dev/i2c-1/device/1-0048/temp1_input'</span><span class="p">,</span> <span class="s1">'utf8'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="dl">'</span><span class="s1">/sys/class/i2c-dev/i2c-1/device/1-0048/temp1_input</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">utf8</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
                     <span class="nx">callback</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
                     <span class="k">return</span>
@@ -304,15 +303,15 @@ Light 1 is off
 
 <span class="kd">function</span> <span class="nx">myLightController</span><span class="p">(</span><span class="nx">log</span><span class="p">,</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">log</span> <span class="o">=</span> <span class="nx">log</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">command</span> <span class="o">=</span> <span class="nx">config</span><span class="p">[</span><span class="s1">'command'</span><span class="p">];</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">acc</span> <span class="o">=</span> <span class="nx">config</span><span class="p">[</span><span class="s1">'acc'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">command</span> <span class="o">=</span> <span class="nx">config</span><span class="p">[</span><span class="dl">'</span><span class="s1">command</span><span class="dl">'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">acc</span> <span class="o">=</span> <span class="nx">config</span><span class="p">[</span><span class="dl">'</span><span class="s1">acc</span><span class="dl">'</span><span class="p">];</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">AccessoryInformation</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span>
-        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="s2">"Francis"</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">Switch</span><span class="p">(</span><span class="s2">"My Light Controller"</span><span class="p">);</span>
+        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Francis</span><span class="dl">"</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">Switch</span><span class="p">(</span><span class="dl">"</span><span class="s2">My Light Controller</span><span class="dl">"</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span>
         <span class="p">.</span><span class="nx">getCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">On</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'set'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">setPowerState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">set</span><span class="dl">'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">setPowerState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
 <span class="p">}</span>
 
 <span class="nx">myLightController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getServices</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
@@ -320,20 +319,20 @@ Light 1 is off
 <span class="p">}</span>
 
 <span class="nx">myLightController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setPowerState</span> <span class="o">=</span>  <span class="kd">function</span> <span class="p">(</span><span class="nx">on</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+    <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">on</span><span class="p">){</span>
-        <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">"on"</span><span class="p">;</span>
+        <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">on</span><span class="dl">"</span><span class="p">;</span>
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">"off"</span><span class="p">;</span>
+        <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">off</span><span class="dl">"</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="nx">comm</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">command</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">acc</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="nx">onOff</span><span class="p">;</span>
+    <span class="nx">comm</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">command</span><span class="o">+</span><span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">acc</span><span class="o">+</span><span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="o">+</span><span class="nx">onOff</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">AccessoryInformation</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceAccessory</span>
-        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="s2">"Francis"</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">Switch</span><span class="p">(</span><span class="s2">"My Light Controller"</span><span class="p">);</span>
+        <span class="p">.</span><span class="nx">setCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">Manufacturer</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Francis</span><span class="dl">"</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">.</span><span class="nx">Switch</span><span class="p">(</span><span class="dl">"</span><span class="s2">My Light Controller</span><span class="dl">"</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">serviceSwitch</span>
         <span class="p">.</span><span class="nx">getCharacteristic</span><span class="p">(</span><span class="nx">Characteristic</span><span class="p">.</span><span class="nx">On</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'set'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">setPowerState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">set</span><span class="dl">'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">setPowerState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
 <span class="p">}</span>
 
 <span class="nx">myLightController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getServices</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
@@ -341,14 +340,14 @@ Light 1 is off
 <span class="p">}</span>
 
 <span class="nx">myLightController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setPowerState</span> <span class="o">=</span>  <span class="kd">function</span> <span class="p">(</span><span class="nx">on</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
-   <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+   <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
    <span class="k">if</span> <span class="p">(</span><span class="nx">on</span><span class="p">){</span>
-       <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">"on"</span><span class="p">;</span>
+       <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">on</span><span class="dl">"</span><span class="p">;</span>
    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
-       <span class="nx">onOff</span> <span class="o">=</span> <span class="s2">"off"</span><span class="p">;</span>
+       <span class="nx">onOff</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">off</span><span class="dl">"</span><span class="p">;</span>
    <span class="p">}</span>
-   <span class="nx">comm</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">command</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">acc</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="nx">onOff</span><span class="p">;</span>
-   <span class="kr">const</span> <span class="p">{</span> <span class="nx">exec</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'child_process'</span><span class="p">);</span>
+   <span class="nx">comm</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">command</span><span class="o">+</span><span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">acc</span><span class="o">+</span><span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="o">+</span><span class="nx">onOff</span><span class="p">;</span>
+   <span class="kd">const</span> <span class="p">{</span> <span class="nx">exec</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">child_process</span><span class="dl">'</span><span class="p">);</span>
    <span class="nx">exec</span><span class="p">(</span><span class="nx">comm</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">,</span> <span class="nx">stderr</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
                  <span class="c1">// node couldn't execute the command</span>
@@ -384,11 +383,11 @@ Light 1 is off
       </div>
 
       <footer class="footer">
-  <span class="footer__copyright">&copy; 2019 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+  <span class="footer__copyright">&copy; 2020 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1567710999913210000"></script>
+<script type="text/javascript" src="/js/main.js?1594496355307996000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
