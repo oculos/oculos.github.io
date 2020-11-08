@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Using FreeIPA with FreeNAS</title>
+  <meta name="description" content="I have long wanted to play a bit with LDAP, and got it working once on a Raspberry PI. When it finally worked, my SD card got corrupted and I lost all my hard work.
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Using FreeIPA with FreeNAS">
+  <meta name="twitter:description" content="I have long wanted to play a bit with LDAP, and got it working once on a Raspberry PI. When it finally worked, my SD card got corrupted and I lost all my hard work.
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Using FreeIPA with FreeNAS">
+  <meta property="og:description" content="I have long wanted to play a bit with LDAP, and got it working once on a Raspberry PI. When it finally worked, my SD card got corrupted and I lost all my hard work.
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1604862004501497000">
+  <link rel="canonical" href="http://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="8 Nov 2020" class="post-meta__date date">8 Nov 2020</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#freeipa">freeipa</a> <a href="/tags/#ldap">ldap</a> <a href="/tags/#freenas">freenas</a> </span>
+      
+    </div>
+    <h1 class="post-title">Using FreeIPA with FreeNAS</h1>
+  </header>
+
+  <section class="post">
+    <p>I have long wanted to play a bit with LDAP, and got it working once on a Raspberry PI. When it finally worked, my SD card got corrupted and I lost all my hard work.</p>
+
+<p>I decided to play with <a href="https://freeipa.org">FreeIPA</a>, as it takes all the complexity of setting up LDAP and its security away from the user. I am really impressed by how easy was to setup FreeIPA and to use for authenticate users on other systems.</p>
+
+<p>I’ve now succesfully managed to use FreeIPA to provide user directory for both <a href="https://freenas.org">FreeNAS</a> and <a href="https://nextcloud.com">Nextcloud</a>, though I will wait a bit to use it as my main source for authentication as it will take a bit of time to migrate my local users on those services to my directory ones.</p>
+
+<p>I was surprised by the lack of guidance on how to use FreeIPA with FreeNAS, so I decided to write what I learned here after reading some forums and trying some stuff.</p>
+
+<p>Before starting, it might be helpful to set your nameserver on FreeNAS to the one provided by FreeIPA.</p>
+
+<h2 id="configuring-kerberos">Configuring Kerberos</h2>
+
+<p>Start here, so you get things working.</p>
+
+<h4 id="configure-the-kerberos-realm">Configure the Kerberos Realm</h4>
+
+<ul>
+  <li>Click on <code class="language-plaintext highlighter-rouge">Directory Services</code>, then then choose <code class="language-plaintext highlighter-rouge">Kerberos Realms</code></li>
+  <li>Click on <code class="language-plaintext highlighter-rouge">Add</code></li>
+  <li>Type your REALM.</li>
+  <li>I clicked on <code class="language-plaintext highlighter-rouge">Advanced Mode</code> and entered the kdc and Admin server, which basically are my FreeIPA server address.</li>
+  <li>Save it</li>
+</ul>
+
+<h4 id="configure-the-kerberos-keytabs">Configure the Kerberos keytabs:</h4>
+
+<ul>
+  <li>On your FreeIPA server (or on a client that has been enrolled and has the <code class="language-plaintext highlighter-rouge">ipa</code> set of commands), type:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ipa host-add &lt;yourfreenas&gt; # Enter your FreeNAS FQDN here
+</code></pre></div></div>
+
+<ul>
+  <li>Get the keytab file to install on your FreeNAS:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don't really need the -e and the encryption, but I used it as it worked better with some services
+</code></pre></div></div>
+
+<ul>
+  <li>Now, on your FreeNAS, go to <code class="language-plaintext highlighter-rouge">Directory Services</code>, <code class="language-plaintext highlighter-rouge">Kerberos keytabs</code> and click on <code class="language-plaintext highlighter-rouge">Add</code></li>
+  <li>Upload the file you just created</li>
+</ul>
+
+<h4 id="configure-the-kerberos-settings">Configure the Kerberos Settings</h4>
+
+<p>I am not sure if this is necessary, but I configured it anyway:</p>
+
+<ul>
+  <li>Go to <code class="language-plaintext highlighter-rouge">Directory services</code>, <code class="language-plaintext highlighter-rouge">Kerberos settings</code></li>
+  <li>Under <code class="language-plaintext highlighter-rouge">libdefaults Auxiliary parameters</code>, write this:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>default_realm = YOURREALM # ex. MYREALM.LOCAL
+dns_lookup_kdc = true
+allow_weak_crypto = true
+</code></pre></div></div>
+
+<p>Good? Good. Now the real stuff:</p>
+
+<h4 id="configuring-ldap">Configuring LDAP</h4>
+
+<ul>
+  <li>Click on <code class="language-plaintext highlighter-rouge">Directory Services</code> and choose (guess what) <code class="language-plaintext highlighter-rouge">LDAP</code></li>
+  <li>On <code class="language-plaintext highlighter-rouge">hostname</code>, type the address of your FreeIPA server</li>
+  <li>On <code class="language-plaintext highlighter-rouge">Base DN</code>, write what usually is your realm’s DN: <code class="language-plaintext highlighter-rouge">dc=myrealm,dc=local</code>, for example</li>
+  <li>Follow the documentation under “System Accounts” at <a href="https://www.freeipa.org/page/HowTo/LDAP">FreeIPA’s LDAP how-to</a></li>
+  <li>If you followed the previous step, you might have ended up with a biding user like this: <code class="language-plaintext highlighter-rouge">uid=bidinguser,cn=sysaccounts,cn=etc,dc=myrealm,dc=local</code>. Copy that under <code class="language-plaintext highlighter-rouge">Bind DN</code> on your FreeNAS</li>
+  <li>Enter the bind password as created following the steps above.</li>
+  <li>Click <code class="language-plaintext highlighter-rouge">Advanced mode</code></li>
+  <li>On <code class="language-plaintext highlighter-rouge">Kerberos realm</code>, choose the realm you created</li>
+  <li>On <code class="language-plaintext highlighter-rouge">Kerberos principal</code>, choose the host corresponding to the keytab you created</li>
+  <li>Choose <code class="language-plaintext highlighter-rouge">START_TLS</code></li>
+  <li>Check on <code class="language-plaintext highlighter-rouge">Enable</code></li>
+  <li>Click on <code class="language-plaintext highlighter-rouge">Edit idmap</code></li>
+  <li>Adjust the Range low and Range high values. This is important because the default values won’t reach the default range on FreeIPA. Be aware not to choose a range between 900000000 and 1000000000. The default values on FreeNAS are 20000 and 900000000, but these fall below the default values of FreeIPA. If you are using FreeIPA’s default range, choose 1000000001 and 2000000000.</li>
+  <li>You might want to repeat your User DN (same as the “Biding DN”), but it works for me without that.</li>
+  <li>You also might want to enter the URL, something like <code class="language-plaintext highlighter-rouge">https://myfreeipaserver.local</code></li>
+</ul>
+
+<p>That’s it. Things might be working for you now!</p>
+
+<p>A few notes:</p>
+
+<ul>
+  <li>Your directory users do not show up on your main list of users under <code class="language-plaintext highlighter-rouge">Accounts</code>, but they will show up whenever you have the option to choose a user.</li>
+  <li>Watch out for a little <code class="language-plaintext highlighter-rouge">i</code> icon on the top-right of your FreeNAS web interface - it shows the status of your connection to directory services.</li>
+  <li>Type <code class="language-plaintext highlighter-rouge">id &lt;someuserfromldap&gt;</code> on the shell to see if you are retrieving users.</li>
+</ul>
+
+<h4 id="things-i-didnt-succeed">Things I didn’t succeed</h4>
+
+<p>I still haven’t managed to make NFSv4 work with FreeNAS and this setup. I am basically finding the same problems described on this <a href="https://www.truenas.com/community/threads/setting-up-nfsv4-and-kerberos.86335/#post-613819">forum post</a>.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>Using FreeIPA is great, and I wish I had tried it before. Having setup Nextcloud, FreeNAS, a mail server based on Postfix+Dovecot, Bitwarden, etc, it would have helped me extremly when it comes to centralize user information.</p>
+
+<p>Also, as I experiment a lot with some VM’s, it would have helped me to mount my home directory on new servers, so that I could skip copying files.</p>
+
+<p>My next step is to create a replica of FreeIPA and start migrating the systems I use to it, so that user management might become easier.</p>
+
+<p>Let me know if this guide helped you!</p>
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2020/Using FreeIPA with FreeNAS'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2020 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1604862004501497000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>
