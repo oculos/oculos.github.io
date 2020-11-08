@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>http://francisaugusto.com/</link>
     <atom:link href="http://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 08 Nov 2020 20:16:10 +0100</pubDate>
-    <lastBuildDate>Sun, 08 Nov 2020 20:16:10 +0100</lastBuildDate>
+    <pubDate>Sun, 08 Nov 2020 20:18:33 +0100</pubDate>
+    <lastBuildDate>Sun, 08 Nov 2020 20:18:33 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -102,7 +102,7 @@ allow_weak_crypto = true
   &lt;li&gt;Type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id &amp;lt;someuserfromldap&amp;gt;&lt;/code&gt; on the shell to see if you are retrieving users.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;things-i-didnt-succeed&quot;&gt;Things I didn’t succeed&lt;/h4&gt;
+&lt;h4 id=&quot;things-i-didnt-manage-to-get-to-work&quot;&gt;Things I didn’t manage to get to work&lt;/h4&gt;
 
 &lt;p&gt;I still haven’t managed to make NFSv4 work with FreeNAS and this setup. I am basically finding the same problems described on this &lt;a href=&quot;https://www.truenas.com/community/threads/setting-up-nfsv4-and-kerberos.86335/#post-613819&quot;&gt;forum post&lt;/a&gt;.&lt;/p&gt;
 

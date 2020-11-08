@@ -87,7 +87,7 @@ A few notes:
 - Watch out for a little `i` icon on the top-right of your FreeNAS web interface - it shows the status of your connection to directory services.
 - Type `id <someuserfromldap>` on the shell to see if you are retrieving users.
 
-#### Things I didn't succeed
+#### Things I didn't manage to get to work
 
 I still haven't managed to make NFSv4 work with FreeNAS and this setup. I am basically finding the same problems described on this [forum post](https://www.truenas.com/community/threads/setting-up-nfsv4-and-kerberos.86335/#post-613819).
 
