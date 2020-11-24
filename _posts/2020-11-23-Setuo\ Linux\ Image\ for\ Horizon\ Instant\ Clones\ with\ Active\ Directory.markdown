@@ -1,5 +1,5 @@
 ---
-title:  Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4
+title:  Configuring a Linux image for Horizon instant clones, including Active Directory and NFSv4
 date:   2020-11-24 17:20:23 +0100
 categories: personal
 layout: post

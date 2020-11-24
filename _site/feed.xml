@@ -5,12 +5,12 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>http://francisaugusto.com/</link>
     <atom:link href="http://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 24 Nov 2020 20:32:03 +0100</pubDate>
-    <lastBuildDate>Tue, 24 Nov 2020 20:32:03 +0100</lastBuildDate>
+    <pubDate>Tue, 24 Nov 2020 20:33:01 +0100</pubDate>
+    <lastBuildDate>Tue, 24 Nov 2020 20:33:01 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title>Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4</title>
+        <title>Configuring a Linux image for Horizon instant clones, including Active Directory and NFSv4</title>
         <description>&lt;p&gt;A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.&lt;/p&gt;
 
 &lt;p&gt;VMWare has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked on one document called &lt;a href=&quot;https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93&quot;&gt;Integrating Linux with Active Directory&lt;/a&gt;. However, I’ve found that the documentation provided by VMWare can be a bit outdated or incomplete.&lt;/p&gt;
