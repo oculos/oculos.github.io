@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4</title>
+  <meta name="description" content="A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4">
+  <meta name="twitter:description" content="A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4">
+  <meta property="og:description" content="A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1606246323129537000">
+  <link rel="canonical" href="http://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="24 Nov 2020" class="post-meta__date date">24 Nov 2020</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#vmware">vmware</a> <a href="/tags/#horizon">horizon</a> </span>
+      
+    </div>
+    <h1 class="post-title">Configuring a Linux image for Horizon instant clones, including Active Directory andNFSv4</h1>
+  </header>
+
+  <section class="post">
+    <p>A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.</p>
+
+<p>VMWare has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked on one document called <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93">Integrating Linux with Active Directory</a>. However, I’ve found that the documentation provided by VMWare can be a bit outdated or incomplete.</p>
+
+<p>One example: On <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">this document</a>, VMWare doesn’t mention that the clones need to rejoin the domain when created, though on a <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.7/linux-desktops-setup/GUID-EA063015-63BB-44AE-BF66-D3ED2F1ABFF0.html">document describe the procedure for RHEL</a> this is mentioned.</p>
+
+<p>Another problem is that VMWware skips the simplest of the situations, which is that AD can simply be joined by configurind SSSD correctly using ad as id_provider, auth_provider and access_provider, and not necessarily having to use <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-524AE8EE-1084-4F1B-A6B0-553DABA06087.html">Winbind</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">Samba</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">OpenLDAP</a> or <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">LDAP authentication</a> to achieve this.</p>
+
+<p>This document attempts to supplement the information found elsewhere on how to properly configure a Linux OS image for deployment of an instant clones-pool. I used RHEL 8 here, but most of the things I mention can be used on other distros, though RHEL 8 is supported officially by Horizon 2006.</p>
+
+<h3 id="summary-of-the-steps-you-need-and-what-isnt-covered-here">Summary of the steps you need and what isn’t covered here</h3>
+
+<p>I’m going to explain the following steps, which is what you need to configure your Linux image in order to get instant clones:</p>
+
+<ul>
+  <li>Join the base (called golden image on VMWare documentation) to Active Directory</li>
+  <li>Optinally configure <code class="language-plaintext highlighter-rouge">pam_mount</code> so that your users get home directories mounted from an NFSv4 server</li>
+  <li>Make a decision on how you are going to save your credentials on the gold image so that the cloned images can (re)join the domain</li>
+  <li>Write a script to orchestrate the rejoining</li>
+  <li>Change the Horizon View agent configuration to run that script you created</li>
+  <li>Shutdown the image, create a snapshot if it doesn’t have one.</li>
+</ul>
+
+<p>With these steps, you can deploy your image.</p>
+
+<p>Things I don’t mention here but I assume you have done them already:</p>
+
+<ul>
+  <li>Create a user on AD for the purpose of joining other machines to AD</li>
+  <li>Create the configuration for kerberos on <code class="language-plaintext highlighter-rouge">/etc/krb5.conf</code></li>
+  <li>Installation of the Horizon View Agent for Linux</li>
+  <li>DNS is working fine, the hosts resolve to the domain you’re using, etc.</li>
+</ul>
+
+<p>Ready? Let’s do it!</p>
+
+<h3 id="setting-up-the-image">Setting up the image</h3>
+
+<h4 id="configuring-your-etcsssdsssdconf">Configuring your <code class="language-plaintext highlighter-rouge">/etc/sssd/sssd.conf</code></h4>
+
+<p>As I said, VMWare does not mention using AD as a source of authentication. Configure this by editing your <code class="language-plaintext highlighter-rouge">/etc/sssd/sssd.conf</code>. Here is an example of a working configuration:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[sssd]
+config_file_version = 2
+domains = mydomain.com
+services = nss, pam, pac, sudo
+
+[nss]
+allowed_shells = *
+default_shell = /bin/bash
+shell_fallback = /bin/bash
+homedir_substring = /home
+override_homedir = %H/%u
+
+filter_groups = root,apache,mysql,postgres,store,palantir,palconf,mailman
+filter_users = root,apache,mysql,postgres,store,palantir,mailman,ghost,priss
+
+[domain/EXAMPLE.COM]
+id_provider = ad
+auth_provider = ad
+access_provider = ad
+autofs_provider = ad
+chpass_provider = ad
+ldap_id_mapping = false # You might want to set this to true, but if you have uidNumber and gidNumber on your users' records, it works well with false.
+enumerate = false
+dns_discovery_domain = example.com
+
+krb5_realm = EXAMPLE.COM
+krb5_renewable_lifetime = 14d
+krb5_renew_interval = 3600
+krb5_ccname_template = FILE:%d/krb5cc_%U
+ad_gpo_map_interactive = +gdm-vmwcred
+</code></pre></div></div>
+
+<p>Not all settings above are mandatory, but those are the ones that worked for us.</p>
+
+<h4 id="join-the-domain">Join the domain</h4>
+
+<p>You can join the domain on RHEL 8 by using the <code class="language-plaintext highlighter-rouge">realm join</code>, but it configures a lot of the things which we already configured by hand on the sssd file. If you perform a <code class="language-plaintext highlighter-rouge">realm leave</code>, it ends up erasing your configuration, so I decided to use <code class="language-plaintext highlighter-rouge">adcli</code>.</p>
+
+<p>But before joining the domain, it’s important to decide if, when rejoining the domain on the clones, you are going to save the credentials or if you are going to use the password. Both have its advantages and disadvantages.</p>
+
+<p>Using the password can be interesting if you don’t plan to build your images too often. However, it is less secure, especially if the user you use to join AD has other capabilities.</p>
+
+<p>Using a password to join the domain is simple:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ adcli join -U username@EXAMPLE.COM -D EXAMPLE.COM --service-name=nfs
+</code></pre></div></div>
+
+<p><em>Note: the <code class="language-plaintext highlighter-rouge">--service-name=nfs</code> was used in case you are using an nfs service.</em></p>
+
+<p>Enter your password. Then if all goes well, you will have joined the domain. Test if you got the right tickets:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ klist -ke
+</code></pre></div></div>
+
+<p>If, however, you prefer to cache your credentials on the image so that it can be reused by the clones for joining the domain, follow the instructions below. Using cache means that you need to rebuild the image so that clones can be created before these cached credentials get expired.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kinit username@EXAMPLE.COM -f -A -r 30d -l 30d -c /root/mycachedcredentials
+$ adcli join --login-ccache=/root/mycachedcredentials -D EXAMPLE.COM --service-name=nfs
+</code></pre></div></div>
+
+<p>There, no need of typing a password, as your credentials were read from the <code class="language-plaintext highlighter-rouge">mycachedcredentials</code> file. You can save it whenever you want.</p>
+
+<p>If all goes well and you joined the domain, then let’s make the final configurations.</p>
+
+<h4 id="configuration-for-the-horizon-view-agent">Configuration for the Horizon View Agent</h4>
+
+<p>Ok, as I said before, the clones need to rejoin the domain, right? This is because they will have their own hostname, other ip addresses, etc., so it needs to join AD again. We need to orchestrate this. Luckly, VMWare helps us here with some settings.</p>
+
+<p>What you do want to do now is to create a script that will configure your clones with some settings and join the domain.</p>
+
+<p>Here’s a sample script that does the trick:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#! /bin/bash
+# (Re)joins machine to AD after hostname is changed when instant clones are created.
+# Must be called by /etc/vmware/viewagent-custom.conf
+
+LOG=/tmp/ad-join.log # Because logging never killed anyone...
+fqdn="$(hostname).example.com"
+hostname="$(hostname)"
+echo "This instant clone will joining ad..." &gt;&gt; $LOG
+echo "Host: $(hostname)" &gt;&gt; $LOG
+
+# Set new hostnames
+hostname "$fqdn"
+cat &lt;&lt;EOF &gt; /etc/hosts
+127.0.0.1 $hostname
+::1   $hostname
+EOF
+echo "$fqdn" &gt; /etc/host
+
+# Stop SSSD so that the previous keytab is released from the cache
+service sssd stop
+sss_cache -E
+rm -rf /var/lib/sss/mc/*
+rm -rf /var/lib/sss/db/*
+rm -rf /var/lib/sss/pubconf/*
+
+# (Re)join AD
+rm -rf /etc/krb5.keytab
+adcli join --login-ccache=/root/mycachedcredentials -D EXAMPLE.COM --service-name=nfs
+test $? -eq 0 || echo "Joining failed" &gt;&gt; $LOG
+sleep 5
+rm -rf /root/mycachedcredentials # Why leave your credentials on that clone? 
+
+# Restart SSSD so we can authenticate again
+service sssd start
+</code></pre></div></div>
+<p>Save this as, for example, <code class="language-plaintext highlighter-rouge">/usr/local/bin/ad-join.sh</code>.</p>
+
+<p>If you want to use a password instead of the cached credentials, change tthe adcli line above to:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "myfancypassword" | adcli join --stdin-password -join -U username@EXAMPLE.COM -D EXAMPLE.COM --service-name=nfs
+</code></pre></div></div>
+
+<p>There is one detail that you might have seen here: we’re stopping sssd and removing all its cache. This is important because the older keytab is still referred to by sssd. You get plenty of errors like this one if you don’t stop sssd and refresh the cache prior rejoining the domain:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failed to initialize credentials using keytab [MEMORY:/etc/krb5.keytab]: Preauthentication failed. Unable to create GSSAPI-encrypted LDAP connection.
+</code></pre></div></div>
+
+<p>This error was driving me crazy, and if you google it, most of the information will tell you that you need to remove the /etc/krb5.keytab, delete the account on AD, etc., but actually most of these things won’t be necessary (Note that I do remove the old keytab). Stopping sssd and removing its cache prior rejoining the domain did the trick to fix this. Credits to <a href="https://access.redhat.com/discussions/2880321">this forum post</a>.</p>
+
+<p>Now, one last step. Open <code class="language-plaintext highlighter-rouge">/etc/vmware/viewagent-custom.conf</code> and edit the following lines:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+RunOnceScript=/usr/local/bin/ad-join.sh # or whatever the path/name you chose for your script
+RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take more than 2 minutes.
+...
+</code></pre></div></div>
+
+<p>That’s it! Now your image is fully configured for joining the domain. Shut it down, and create a snapshot with your modifications on vCenter, and schedule it to boot from your Horizon connection server.</p>
+
+<p>But if you want to mount NFS shares as home directories, do the following step before shutting down your machine:</p>
+
+<h4 id="setting-up-pam_mount-for-mounting-home-directories">Setting up <code class="language-plaintext highlighter-rouge">pam_mount</code> for mounting home directories</h4>
+
+<p>There are a few ways to automount home directories, such as <code class="language-plaintext highlighter-rouge">autofs</code>. I used <code class="language-plaintext highlighter-rouge">pam_mount</code>, but might change it in the future for the flexibility of <code class="language-plaintext highlighter-rouge">autofs</code>.</p>
+
+<p>Using NFSv4 with kerberos is a very good solution to mount those directories. If you got a kerberized NFSv4 server, why not?</p>
+
+<p>With <code class="language-plaintext highlighter-rouge">pam_mount</code>, this was my configuration at <code class="language-plaintext highlighter-rouge">/etc/security/pam_mount.conf.xml</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;volume
+ fstype="nfs"
+ server="serveraddress"
+ uid="10000-100000" 
+ path="/homedir/%(USER)"
+ mountpoint="/home/%(USER)"
+ options="vers=4,sec=krb5"
+ noroot="0"
+ /&gt;
+</code></pre></div></div>
+
+<p>Note the <code class="language-plaintext highlighter-rouge">id="10000-10000"</code> - remove it or adjust it accordingly. It basically means that we restrict mounting attempt to those uid’s.</p>
+
+<p>Now a last configuration: . On the file <code class="language-plaintext highlighter-rouge">/etc/idmapd.conf</code>, enter your domain:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Domain = example.com
+</code></pre></div></div>
+
+<p>Lastly, add the following line to the end of your <code class="language-plaintext highlighter-rouge">/etc/pam.d/password-auth</code> file in order to use <code class="language-plaintext highlighter-rouge">pam_mmount</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>session     optional                                     pam_mount.so disable_pam_password disable_interactive
+</code></pre></div></div>
+
+<p>Things that might go wrong with <code class="language-plaintext highlighter-rouge">pam_mount</code>:</p>
+
+<ul>
+  <li>SELinux is a $@#!$. Check your logs. If you use the <code class="language-plaintext highlighter-rouge">logout</code> configuration of <code class="language-plaintext highlighter-rouge">pam_mount</code>, it might require some adjustments of SELinux - you will see on your logs.</li>
+  <li>Check your DNS. Do you get reverse domain lookups working, for example?</li>
+</ul>
+
+<h3 id="final-remarks">Final remarks</h3>
+
+<p>I hope this can help supplementing the information found on VMWare docs on how to integrate Linux to Active Directory with the purpose of offering pools of instant clones.</p>
+
+<p>Any remarks, comments or tips? Feel free to comment!</p>
+
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2020/Setuo\ Linux\ Image\ for\ Horizon\ Instant\ Clones\ with\ Active\ Directory'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2020 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1606246323129537000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>

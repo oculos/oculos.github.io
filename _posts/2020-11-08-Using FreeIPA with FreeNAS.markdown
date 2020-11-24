@@ -34,13 +34,13 @@ Start here, so you get things working.
 - On your FreeIPA server (or on a client that has been enrolled and has the `ipa` set of commands), type:
 
 ```
-ipa host-add <yourfreenas> # Enter your FreeNAS FQDN here
+$ ipa host-add <yourfreenas> # Enter your FreeNAS FQDN here
 ```
 
 - Get the keytab file to install on your FreeNAS:
 
 ```
-ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don't really need the -e and the encryption, but I used it as it worked better with some services
+$ ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don't really need the -e and the encryption, but I used it as it worked better with some services
 ```
 
 - Now, on your FreeNAS, go to `Directory Services`, `Kerberos keytabs` and click on `Add`

@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>http://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</loc>
+      
+        <lastmod>2020-11-24T17:20:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>http://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</loc>
       
         <lastmod>2020-11-08T19:00:23+01:00</lastmod>
@@ -96,7 +111,7 @@
     <url>
       <loc>http://francisaugusto.com/about</loc>
       
-        <lastmod>2020-11-08T20:18:33+01:00</lastmod>
+        <lastmod>2020-11-24T20:32:03+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -113,7 +128,7 @@
     <url>
       <loc>http://francisaugusto.com/contact-form/</loc>
       
-        <lastmod>2020-11-08T20:18:33+01:00</lastmod>
+        <lastmod>2020-11-24T20:32:03+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -128,7 +143,7 @@
     <url>
       <loc>http://francisaugusto.com/feed.xml</loc>
       
-        <lastmod>2020-11-08T20:18:33+01:00</lastmod>
+        <lastmod>2020-11-24T20:32:03+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -147,7 +162,7 @@
     <url>
       <loc>http://francisaugusto.com/css/main.css</loc>
       
-        <lastmod>2020-11-08T20:18:33+01:00</lastmod>
+        <lastmod>2020-11-24T20:32:03+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -166,7 +181,7 @@
     <url>
       <loc>http://francisaugusto.com/assets/css/style.css</loc>
       
-        <lastmod>2020-11-08T20:18:33+01:00</lastmod>
+        <lastmod>2020-11-24T20:32:03+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
