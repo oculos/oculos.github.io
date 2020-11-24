@@ -83,7 +83,7 @@ Not all settings above are mandatory, but those are the ones that worked for us.
 
 #### Join the domain
 
-You can join the domain on RHEL 8 by using the `realm join`, but it configures a lot of the things which we already configured by hand on the sssd file. If you perform a `realm leave`, it ends up erasing your configuration, so I decided to use `adcli`.
+You can join the domain on a RHEL 8 install by using the `realm join`, but it configures a lot of the things which we already configured by hand on the sssd file. If you perform a `realm leave`, it ends up erasing your configuration, so I decided to use `adcli`.
 
 But before joining the domain, it's important to decide if, when rejoining the domain on the clones, you are going to save the credentials or if you are going to use the password. Both have its advantages and disadvantages.
 
