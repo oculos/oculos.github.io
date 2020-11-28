@@ -9,11 +9,11 @@ tags: vmware horizon
 
 A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.
 
-VMWare has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked on one document called [Integrating Linux with Active Directory](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93). However, I've found that the documentation provided by VMWare can be a bit outdated or incomplete.
+VMware has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked from a document called [Integrating Linux with Active Directory](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93). However, I've found that the documentation provided by VMWare can be a bit outdated or incomplete.
 
-One example: On [this document](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html), VMware doesn't mention that the clones need to rejoin the domain when created, though on a [document describe the procedure for RHEL](https://docs.vmware.com/en/VMware-Horizon-7/7.7/linux-desktops-setup/GUID-EA063015-63BB-44AE-BF66-D3ED2F1ABFF0.html) this is mentioned.
+One example: On [this document](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html), VMware doesn't mention that the clones need to rejoin the domain when created, though on another [document describing the procedure for RHEL](https://docs.vmware.com/en/VMware-Horizon-7/7.7/linux-desktops-setup/GUID-EA063015-63BB-44AE-BF66-D3ED2F1ABFF0.html) this step is indeed mentioned.
 
-Another problem is that VMware skips the simplest of the situations, which is that AD can simply be joined by configurind SSSD correctly using ad as id_provider, auth_provider and access_provider, and not necessarily having to use [Winbind](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-524AE8EE-1084-4F1B-A6B0-553DABA06087.html), [Samba](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html), [OpenLDAP](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html) or [LDAP authentication](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html) to achieve this.
+Another problem is that VMware skips the simplest of the situations, which is that AD can simply be joined by configurind SSSD correctly using ad as id_provider, auth_provider and access_provider, and not necessarily having to use [Winbind](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-524AE8EE-1084-4F1B-A6B0-553DABA06087.html), [Samba](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html), [OpenLDAP](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html) or [LDAP authentication](https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html) to achieve this. In other words, you can still join AD without needing to use Samba, Winbind or LDAP, so there is a way to join AD in a more straightforward way.
 
 This document attempts to supplement the information found elsewhere on how to properly configure a Linux OS image for deployment of an instant clones-pool. I used RHEL 8 here, but most of the things I mention can be used on other distros, though RHEL 8 is supported officially by Horizon 2006.
 
@@ -22,10 +22,10 @@ This document attempts to supplement the information found elsewhere on how to p
 I'm going to explain the following steps, which is what you need to configure your Linux image in order to get instant clones:
 
 - Join the base (called golden image on VMWare documentation) to Active Directory
-- Optinally configure `pam_mount` so that your users get home directories mounted from an NFSv4 server
+- Optionally configure `pam_mount` so that your users get home directories mounted from an NFSv4 server
 - Make a decision on how you are going to save your credentials on the gold image so that the cloned images can (re)join the domain
 - Write a script to orchestrate the rejoining
-- Change the Horizon View agent configuration to run that script you created
+- Change the Horizon View agent configuration to run that script you created for rejoining
 - Shutdown the image, create a snapshot if it doesn't have one.
 
 With these steps, you can deploy your image.
@@ -34,7 +34,7 @@ Things I don't mention here but I assume you have done them already:
 
 - Create a user on AD for the purpose of joining other machines to AD
 - Create the configuration for kerberos on `/etc/krb5.conf`
-- Installation of the Horizon View Agent for Linux 
+- Install the Horizon View Agent for Linux 
 - DNS is working fine, the hosts resolve to the domain you're using, etc.
 
 Ready? Let's do it!
@@ -223,7 +223,7 @@ session     optional                                     pam_mount.so disable_pa
 
 Things that might go wrong with `pam_mount`:
 
-- SELinux is a $@#!$. Check your logs. If you use the `logout` configuration of `pam_mount`, it might require some adjustments of SELinux - you will see on your logs.
+- SELinux is a $@#!$. Check your logs. If you use the `logout` configuration of `pam_mount`, it might require some adjustments of SELinux - you will which ones on your logs. I had to add two exceptions for SELinux when using pam_mount, one of them related to `ofl`.
 - Check your DNS. Do you get reverse domain lookups working, for example? 
 
 ### Final remarks

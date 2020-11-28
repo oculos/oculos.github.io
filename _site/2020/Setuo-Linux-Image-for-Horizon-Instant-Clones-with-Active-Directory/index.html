@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1606297292287572000">
+  <link rel="stylesheet" href="/css/main.css?1606574637255230000">
   <link rel="canonical" href="http://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -202,11 +202,11 @@
   <section class="post">
     <p>A pool of instant clones of VDI (Virtual Desktop Interface) is the one where an image of an OS is cloned so that several users can login to a similar computer set-up. Normally, these clones are destroyed and recreated, so it is common to setup an strategy for persistent storage.</p>
 
-<p>VMWare has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked on one document called <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93">Integrating Linux with Active Directory</a>. However, I’ve found that the documentation provided by VMWare can be a bit outdated or incomplete.</p>
+<p>VMware has provided some documentation on how to configure Linux machines for those pools of instant clones, and arguably the most challenging part is the integration with Active Directory. Most of the documentation is linked from a document called <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93.html#GUID-D8E3A4AA-83E9-46A4-8BBA-824027146E93">Integrating Linux with Active Directory</a>. However, I’ve found that the documentation provided by VMWare can be a bit outdated or incomplete.</p>
 
-<p>One example: On <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">this document</a>, VMware doesn’t mention that the clones need to rejoin the domain when created, though on a <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.7/linux-desktops-setup/GUID-EA063015-63BB-44AE-BF66-D3ED2F1ABFF0.html">document describe the procedure for RHEL</a> this is mentioned.</p>
+<p>One example: On <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">this document</a>, VMware doesn’t mention that the clones need to rejoin the domain when created, though on another <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.7/linux-desktops-setup/GUID-EA063015-63BB-44AE-BF66-D3ED2F1ABFF0.html">document describing the procedure for RHEL</a> this step is indeed mentioned.</p>
 
-<p>Another problem is that VMware skips the simplest of the situations, which is that AD can simply be joined by configurind SSSD correctly using ad as id_provider, auth_provider and access_provider, and not necessarily having to use <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-524AE8EE-1084-4F1B-A6B0-553DABA06087.html">Winbind</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">Samba</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">OpenLDAP</a> or <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">LDAP authentication</a> to achieve this.</p>
+<p>Another problem is that VMware skips the simplest of the situations, which is that AD can simply be joined by configurind SSSD correctly using ad as id_provider, auth_provider and access_provider, and not necessarily having to use <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-524AE8EE-1084-4F1B-A6B0-553DABA06087.html">Winbind</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-986977D4-87CE-459C-BC2A-55C0B6EA09AC.html">Samba</a>, <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">OpenLDAP</a> or <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.8/linux-desktops-setup/GUID-1E715FE3-0C00-45FC-B395-05D12E5D9E1A.html">LDAP authentication</a> to achieve this. In other words, you can still join AD without needing to use Samba, Winbind or LDAP, so there is a way to join AD in a more straightforward way.</p>
 
 <p>This document attempts to supplement the information found elsewhere on how to properly configure a Linux OS image for deployment of an instant clones-pool. I used RHEL 8 here, but most of the things I mention can be used on other distros, though RHEL 8 is supported officially by Horizon 2006.</p>
 
@@ -216,10 +216,10 @@
 
 <ul>
   <li>Join the base (called golden image on VMWare documentation) to Active Directory</li>
-  <li>Optinally configure <code class="language-plaintext highlighter-rouge">pam_mount</code> so that your users get home directories mounted from an NFSv4 server</li>
+  <li>Optionally configure <code class="language-plaintext highlighter-rouge">pam_mount</code> so that your users get home directories mounted from an NFSv4 server</li>
   <li>Make a decision on how you are going to save your credentials on the gold image so that the cloned images can (re)join the domain</li>
   <li>Write a script to orchestrate the rejoining</li>
-  <li>Change the Horizon View agent configuration to run that script you created</li>
+  <li>Change the Horizon View agent configuration to run that script you created for rejoining</li>
   <li>Shutdown the image, create a snapshot if it doesn’t have one.</li>
 </ul>
 
@@ -230,7 +230,7 @@
 <ul>
   <li>Create a user on AD for the purpose of joining other machines to AD</li>
   <li>Create the configuration for kerberos on <code class="language-plaintext highlighter-rouge">/etc/krb5.conf</code></li>
-  <li>Installation of the Horizon View Agent for Linux</li>
+  <li>Install the Horizon View Agent for Linux</li>
   <li>DNS is working fine, the hosts resolve to the domain you’re using, etc.</li>
 </ul>
 
@@ -409,7 +409,7 @@ RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take mor
 <p>Things that might go wrong with <code class="language-plaintext highlighter-rouge">pam_mount</code>:</p>
 
 <ul>
-  <li>SELinux is a $@#!$. Check your logs. If you use the <code class="language-plaintext highlighter-rouge">logout</code> configuration of <code class="language-plaintext highlighter-rouge">pam_mount</code>, it might require some adjustments of SELinux - you will see on your logs.</li>
+  <li>SELinux is a $@#!$. Check your logs. If you use the <code class="language-plaintext highlighter-rouge">logout</code> configuration of <code class="language-plaintext highlighter-rouge">pam_mount</code>, it might require some adjustments of SELinux - you will which ones on your logs. I had to add two exceptions for SELinux when using pam_mount, one of them related to <code class="language-plaintext highlighter-rouge">ofl</code>.</li>
   <li>Check your DNS. Do you get reverse domain lookups working, for example?</li>
 </ul>
 
@@ -449,7 +449,7 @@ RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take mor
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1606297292287572000"></script>
+<script type="text/javascript" src="/js/main.js?1606574637255230000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
