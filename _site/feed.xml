@@ -3,10 +3,10 @@
   <channel>
     <title>Francis Augusto Medeiros-Logeay</title>
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
-    <link>https//francisaugusto.com/</link>
-    <atom:link href="https//francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 13 Dec 2020 12:38:13 +0100</pubDate>
-    <lastBuildDate>Sun, 13 Dec 2020 12:38:13 +0100</lastBuildDate>
+    <link>https//francisaugusto.com//</link>
+    <atom:link href="https//francisaugusto.com//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sun, 13 Dec 2020 12:40:35 +0100</pubDate>
+    <lastBuildDate>Sun, 13 Dec 2020 12:40:35 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -232,8 +232,8 @@ RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take mor
 
 </description>
         <pubDate>Tue, 24 Nov 2020 17:20:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</guid>
+        <link>https//francisaugusto.com//2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</guid>
         
         <category>vmware</category>
         
@@ -352,8 +352,8 @@ allow_weak_crypto = true
 &lt;p&gt;Let me know if this guide helped you!&lt;/p&gt;
 </description>
         <pubDate>Sun, 08 Nov 2020 19:00:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</guid>
+        <link>https//francisaugusto.com//2020/Using-FreeIPA-with-FreeNAS/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2020/Using-FreeIPA-with-FreeNAS/</guid>
         
         <category>freeipa</category>
         
@@ -445,8 +445,8 @@ allow_weak_crypto = true
 &lt;p&gt;The hard disks, however, were the culprit when it comes to the noise. When the FreeNAS VM is shut down, the machine is almost silent. I rearranged the disks, not having them all on the same cage, and it got them better airflow and temps.&lt;/p&gt;
 </description>
         <pubDate>Sat, 17 Aug 2019 14:00:23 +0200</pubDate>
-        <link>https//francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</guid>
+        <link>https//francisaugusto.com//2019/Building-a-Supermicro-based-Freenas/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2019/Building-a-Supermicro-based-Freenas/</guid>
         
         <category>supermicro</category>
         
@@ -505,8 +505,8 @@ allow_weak_crypto = true
 (UPDATEd on 6.4.2019 to include information about the public availability of the driver.)&lt;/p&gt;
 </description>
         <pubDate>Tue, 12 Mar 2019 19:34:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</guid>
+        <link>https//francisaugusto.com//2019/ESXi-on-the-2018-Mac-Mini-networking/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2019/ESXi-on-the-2018-Mac-Mini-networking/</guid>
         
         <category>esxi</category>
         
@@ -551,8 +551,8 @@ allow_weak_crypto = true
 &lt;/ul&gt;
 </description>
         <pubDate>Fri, 29 Dec 2017 20:13:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2017/WiFi-Temperature-Monitor/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2017/WiFi-Temperature-Monitor/</guid>
+        <link>https//francisaugusto.com//2017/WiFi-Temperature-Monitor/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2017/WiFi-Temperature-Monitor/</guid>
         
         <category>projects</category>
         
@@ -728,8 +728,8 @@ Light 1 is off
 &lt;p&gt;The only caveat with this system is that if I turn the light off using the remote control, the state of the lamp on the Home app will not reflect the actual state. This is the only limitation, and it can be a problem if you are considering some form for automation, as the system might skip turning something on as the state is already on.&lt;/p&gt;
 </description>
         <pubDate>Fri, 29 Dec 2017 20:13:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</guid>
+        <link>https//francisaugusto.com//2017/Homebrige-nexa-and-Udoo/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2017/Homebrige-nexa-and-Udoo/</guid>
         
         <category>projects</category>
         
@@ -747,8 +747,8 @@ Light 1 is off
 &lt;p&gt;I am still trying to understand how &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; works, as I am a long time WordPress user. I love &lt;a href=&quot;https://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt;, and I always wanted to get used to write texts without all the fuss of text editors, formatting and the likes. So let’s see how that works. :)&lt;/p&gt;
 </description>
         <pubDate>Tue, 21 Nov 2017 21:04:23 +0100</pubDate>
-        <link>https//francisaugusto.com/2017/A-new-blog-is-born/</link>
-        <guid isPermaLink="true">https//francisaugusto.com/2017/A-new-blog-is-born/</guid>
+        <link>https//francisaugusto.com//2017/A-new-blog-is-born/</link>
+        <guid isPermaLink="true">https//francisaugusto.com//2017/A-new-blog-is-born/</guid>
         
         
         <category>personal</category>
