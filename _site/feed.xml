@@ -5,12 +5,12 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 06 Mar 2021 16:45:04 +0100</pubDate>
-    <lastBuildDate>Sat, 06 Mar 2021 16:45:04 +0100</lastBuildDate>
+    <pubDate>Sat, 06 Mar 2021 16:45:56 +0100</pubDate>
+    <lastBuildDate>Sat, 06 Mar 2021 16:45:56 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title></title>
+        <title>Fiber at home - an adventure</title>
         <description>&lt;h4 id=&quot;a-little-background&quot;&gt;A little background&lt;/h4&gt;
 
 &lt;p&gt;I am lucky to be inspired by very smart people at work, all the time.&lt;/p&gt;
@@ -90,10 +90,22 @@ The guy, as the one previously, said he might have a key for it (it is an old bo
 
 &lt;p&gt;However, the bitter taste is still here: it shouldn’t have to be this hard. It is appalling to think how hard it is to get a bit of a slightly more specialized equipment when you are not a company. I could have ordered a lot from overseas - &lt;a href=&quot;https://fs.com&quot;&gt;fs.com&lt;/a&gt; has an amazing service and sold me some of the cables I needed. But it is shocking that if a user wants to install fiber for using on an internal LAN, it might be very hard to buy the components or the service. A part of me wish that I had bought that machine, so that I don’t have to rely on the good will of companies to provide me a service.&lt;/p&gt;
 </description>
-        <pubDate>Sat, 06 Mar 2021 16:45:04 +0100</pubDate>
-        <link>https://francisaugusto.com/2021/2021-03-06-Fiber-as-cat6-alternative-an-adventure/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2021/2021-03-06-Fiber-as-cat6-alternative-an-adventure/</guid>
+        <pubDate>Sat, 06 Mar 2021 15:20:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2021/Fiber-as-cat6-alternative-an-adventure/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2021/Fiber-as-cat6-alternative-an-adventure/</guid>
         
+        <category>fiber</category>
+        
+        <category>freenas</category>
+        
+        <category>truenas</category>
+        
+        <category>esxi</category>
+        
+        <category>supermicro</category>
+        
+        
+        <category>personal</category>
         
       </item>
     

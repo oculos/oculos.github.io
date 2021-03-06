@@ -1,5 +1,5 @@
 ---
-title:  Fiber at home: an adventure
+title:  Fiber at home - an adventure
 date:   2021-03-06 15:20:23 +0100
 categories: personal
 layout: post
