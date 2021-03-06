@@ -33,7 +33,7 @@ The electrician came to see the flat, and to check the loft to see how to get po
 
 While we took the stairs down, he immediatelly looked about my entry door and asked, "what is this?". That was a little box between the doors of the two flats. The man worked in telecom for decades, as I said, so he knows his stuff. He took some stairs, opened the little box, and bingo! He found a duct to the cellar, which was not in use and had just old telephone cables there. 
 
-![The old phone duct!](../../assets/2021/telephoneduct.jpg "The old phone duct!")
+![The old phone duct!](../../assets/2021/telephoneduct2.jpg "The old phone duct!")
 
 We agreed then we would do the job in January 2021, as it seemed to be possible to pass the fiber cable through that duct. 
 
