@@ -56,7 +56,7 @@ It was tough: very tight ducts, lots of old wires. Still, we were not sure we co
 
 Now I had to ask the board permission to ask a locksmith to open the box and change the key so we could open it. I was really relieved when I got the permission to do it. Called a locksmith, and after a few days he came and opened the thing.
 
-![It's open!](../../assets/2019/openbox.jpeg "It's open!")
+![It's open!](../../assets/2021/openbox.jpeg "It's open!")
 
 Now my friend came home to help me, and we tried to pull the cable through the duct, and for a few minutes we thought it wasn´t going to go through, but after a few attempts, we finally reached the cellar!
 
