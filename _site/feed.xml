@@ -5,9 +5,218 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 06 Mar 2021 19:24:45 +0100</pubDate>
-    <lastBuildDate>Sat, 06 Mar 2021 19:24:45 +0100</lastBuildDate>
+    <pubDate>Sat, 27 Mar 2021 13:06:38 +0100</pubDate>
+    <lastBuildDate>Sat, 27 Mar 2021 13:06:38 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Booting Raspberry Pi 400 from FreeNAS with Unifi</title>
+        <description>&lt;h4 id=&quot;introduction&quot;&gt;Introduction&lt;/h4&gt;
+
+&lt;p&gt;I am a hopeless collector of Raspberry Pi’s: they come out, I try to grab them. And when I saw the Raspberry Pi 400, being the nostalgic ex-Amiga user that I am, I knew I just had to buy one. My little daughter sometimes asks me to boot the Pi with RetroPie, so that she can play Road Warrior, an old Nintendo game that I used to play when I was a kid.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2021/R400.jpg&quot; alt=&quot;The cute Raspberry Pi 400!&quot; title=&quot;The cute Raspberry Pi 400!&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Swapping those SD cards is annoying, though. And having lost a lot of work on SD cards before has made me not trust the Pi as much when I need something to be a bit more permanent.&lt;/p&gt;
+
+&lt;p&gt;So I read that it is easy to get the Raspberry Pi booting off the network, and I decided it was time to try it.&lt;/p&gt;
+
+&lt;p&gt;I followed these two guides:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackaday.com/2019/11/11/network-booting-the-pi-4/&quot;&gt;Network booting the Pi 4&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.virtuallyghetto.com/2020/07/two-methods-to-network-boot-raspberry-pi-4.html&quot;&gt;Two methods to network boot Raspberry Pi 4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It worked fine, with two caveats:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;My Pi would not get the TFTP address from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dnsmasq&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;NSF 4 didn’t work for me (and it still doesn’t)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I use TrueNAS at home, and I have a Unifi Security Gateway, which allow me to configure some DHCP options. Doing that made my life a bit easier, actually, in that I only had to configure the NFS share and the TFTP service, and things worked.&lt;/p&gt;
+
+&lt;p&gt;So I’ll try to sum up how I got this working, without &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dnsmasq&lt;/code&gt; and using my TrueNAS.&lt;/p&gt;
+
+&lt;h4 id=&quot;goal&quot;&gt;Goal&lt;/h4&gt;
+
+&lt;p&gt;My goal is to boot by Raspberry Pi 400 off my network. I want to boot RetroPie, since the obvious advantage is that I’d have even more space to roms if I need to. And this way, if I connect another Raspberry Pi to my TV, I could boot off the same share (if you do that, notice that you shouldn’t use both systems simultaneously)&lt;/p&gt;
+
+&lt;h4 id=&quot;list-of-used-equipmentsoftware&quot;&gt;List of used equipment/software&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Raspberry Pi 400 (should work with a Raspberry Pi 4)&lt;/li&gt;
+  &lt;li&gt;An SD card with RetroPie installed on it&lt;/li&gt;
+  &lt;li&gt;FreeNAS/TrueNAS (for the NFS and TFTP services - you can use other servers, of course)&lt;/li&gt;
+  &lt;li&gt;Unifi Security Gateway (should work with other DHCP servers - YMMV).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;creating-the-shares-at-the-freenas&quot;&gt;Creating the shares at the FreeNAS&lt;/h4&gt;
+
+&lt;p&gt;First, we need to create the directories where we are going to put the files the Pi will boot off:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create a new dataset on your pool. Give it a name (let’s say, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pi&lt;/code&gt;). Accept the default options. So if your pool is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mypool&lt;/code&gt;, you will end up with a folder called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/mypool/pi&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;On the shell, do this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ mkdir -p /mnt/mypool/pi/boot
+$ chmod 777 /mnt/mypool/pi/boot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that this is assuming I will not boot other Pi’s with different OS’s. If you want to do that, it is probably best to create a directory with the serial number of the Pi you want to boot. See Step 6 &lt;a href=&quot;https://www.virtuallyghetto.com/2020/07/two-methods-to-network-boot-raspberry-pi-4.html&quot;&gt;here&lt;/a&gt;.
+The Pi first looks for its files on the remote computer on a folder with its serial number. If it doesn´t find one, it looks for the root folder. I am using this latter approach.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now, we are going to configure the TFTP service, which is used by the Pi to load the OS:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Services&lt;/code&gt; menu of your FreeNAS/TrueNAS, enable TFTP, and edit it.&lt;/li&gt;
+  &lt;li&gt;Choose the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/mypool/pi/boot&lt;/code&gt; as the folder to be shared by the TFTP service.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then we have to configure the NFS share.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sharing&lt;/code&gt; menu, choose  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Unix shares (NFS)&lt;/code&gt;, and click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;On Path, choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/mypool/pi&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Click &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;All dirs&lt;/code&gt;, and then &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Advanced options&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;On &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Maproot user&lt;/code&gt;, choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;, and on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Maproot group&lt;/code&gt;, choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wheel&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Choose the network and/or hosts that will be allowed to mount your share&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that security-wise these might not be the best permissions. Proceed with caution!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There! Now your FreeNAS is configured to serve your Pi! It needs the files, though…&lt;/p&gt;
+
+&lt;h4 id=&quot;transferring-the-files-from-the-pi&quot;&gt;Transferring the files from the Pi&lt;/h4&gt;
+
+&lt;p&gt;The tutorials I referred to at the beginning of this article are based on an installation of a fresh image of an OS (Raspbian). I would rather copy an existing OS that I have installed on an SD card.&lt;/p&gt;
+
+&lt;p&gt;To do that, I had to copy the contents of the two partitions of the SD card - the root and the boot partitions.&lt;/p&gt;
+
+&lt;p&gt;I use a Mac, so the root partition is not automatically readable on macOS. But if you are using an Intel-based mac, you can do this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ brew install cask osxfuse
+$ brew install ext4fuse
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This way, you can mount the root partition of the SD card after inserting it on your SD card reader:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;disklist list # check what's the name of the linux partition of the SD card - for example, disk2s2
+sudo ext4fuse /dev/disk2s2 /tmp/raspberry
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If all works fine, you now have the files you need. Let’s copy the boot folder to the FreeeNAS:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ scp -r /Volumes/boot/* myuser@myfreenasaddress:/mnt/mypool/pi/boot/.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, due to the incompatibility of some filenames between Mac and Linux, we have to do an extra step to copy the root partition:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install gnu-tar
+sudo gtar czf rasp.tgz /tmp/raspberry
+scp rasp.tgz myuser@myfreenasaddress:/mnt/mypool/.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, on your FreeNAS:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /mnt/mypool
+tar -xzf rasp.tgz
+mv raspberry/* pi/* 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;adjustments-on-the-configurations-for-booting&quot;&gt;Adjustments on the configurations for booting&lt;/h4&gt;
+
+&lt;p&gt;Good? Good. We just need to substitute two files on your FreeNAS:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /mnt/mypool/pi/boot
+rm start4.elf
+rm fixup4.dat
+wget https://github.com/Hexxeh/rpi-firmware/raw/stable/start4.elf 
+wget https://github.com/Hexxeh/rpi-firmware/raw/stable/fixup4.dat 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Somehow, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home/pi&lt;/code&gt; folder got the wrong permissions set when copying the files. So let’s fix this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ chmod -R 750 /mnt/mypool/pi/home/pi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, we going to configure the pi to mount your nfs share. Edit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cmdline.txt&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ nano /mnt/mypool/pi/boot/cmdline.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Erase the existing configuration andcopy this one:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;console=serial0,115200 console=tty root=/dev/nfs nfsroot=192.168.1.110:/mnt/mypool/pi,vers=3 rw ip=dhcp rootwait elevator=deadline
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There are few other configurations from the RetroPie install on this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cmdline.txt&lt;/code&gt; file, such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;consoleblank=0&lt;/code&gt;. This one, for example, is safe to keep, though I also removed it so I can see if there are errors while booting.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And finally, edit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/mypool/pi/etc/fstab&lt;/code&gt; and remove the two lines you see there with UUID mountings.&lt;/p&gt;
+
+&lt;p&gt;There! You got the FreeNAS all configured to serve your files. Now, let’s get your Pi to boot off the network.&lt;/p&gt;
+
+&lt;h4 id=&quot;configuring-the-pi-firmware&quot;&gt;Configuring the Pi firmware&lt;/h4&gt;
+
+&lt;p&gt;In the tutorials I mentioned, you need to download a newer firmware to your Raspberry Pi 4 to get things working, but most Pi’s now have a newer firmware and thus are able to boot off the network. You need to configure it, though. Boot your Pi with an existing Raspbian installed, and type&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rpi-eeprom-config --edit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Add this option:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;BOOT_ORDER=0x21
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will make the Pi to attempt booting off the SD card and, if it isn’t present, it will then try to boot off the ethernet. You have other boot options. For more information, check the &lt;a href=&quot;https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711_bootloader_config.md&quot;&gt;documentation of the bootloader&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now, we can configure something else: if you don’t want to install dnsmasq, or don’t want to configure your DHCP server to send the FreeNAS (TFTP) address to your pi on boot, you can add this configuration as well:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;TFTP_IP=192.168.1.110
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Change the above IP address to the one corresponding to your FreeNAS. If you choose to add this, you are all set, actually. Just save the configuration, reboot, then reboot again, this time without your SD card.&lt;/p&gt;
+
+&lt;p&gt;If you’d rather have your DHCP server to send the TFTP address to your Pi, read on.&lt;/p&gt;
+
+&lt;h4 id=&quot;configuring-your-unifi-dhcp-to-send-tftp-information&quot;&gt;Configuring your Unifi DHCP to send TFTP information&lt;/h4&gt;
+
+&lt;p&gt;Open your Unifi Controller on your browser, and go to the Networks session on the Settings menu.
+Choose the network where your Pi will be configured (for example LAN), and click on “Advanced DHCP options”. There, enter the address of your FreeNAS on the DHCP TFTP Server field:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2021/dhcp.jpg&quot; alt=&quot;DHCP configuration&quot; title=&quot;DHCP configuration&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Save it, and bang, you are done. Now you will be able to boot your Pi off your RetroPie! I have used a bit now, and it is working as it should. I didn’t manage to upgrade it, though, probably due some permission issues, so I boot off the SD card again, did a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo apt update&lt;/code&gt; and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo apt dist-upgrade&lt;/code&gt; and redid the copying of the files to the NAS. The best is if you install RetroPie from the scratch, using the instructions on the tutorials I mentioned (they also apply to the RetroPie, as it is Raspbian-based).&lt;/p&gt;
+
+&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;I really enjoyed this. I didn’t seem to get a much speedier boot, since the Raspberry 4 already reads the SD card at a higher speed. But the flexibility of dual booting, and also of being able have much more storage for my RetroPie, made this really worth it.&lt;/p&gt;
+
+&lt;p&gt;I really hope that someone comes up with a tutorial on how to get a PXE-menu working. Probably using the &lt;a href=&quot;https://rpi4-uefi.dev&quot;&gt;UEFI firmware&lt;/a&gt; would help here, but I am not sure my OS’es would boot when UEFI is loaded, and it seems it also needs to boot the UEFI from an SD card, which is something I really want to avoid.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 27 Mar 2021 12:20:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2021/Booting-Pi-From-FreeNAS/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2021/Booting-Pi-From-FreeNAS/</guid>
+        
+        <category>freenas</category>
+        
+        <category>truenas</category>
+        
+        <category>raspberrypi</category>
+        
+        
+        <category>personal</category>
+        
+      </item>
     
       <item>
         <title>Fiber at home - an adventure</title>
