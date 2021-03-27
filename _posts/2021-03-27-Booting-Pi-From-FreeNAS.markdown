@@ -1,5 +1,5 @@
 ---
-title:  Booting Raspberry Pi 400 from FreeNAS with Unifi
+title:  Booting a Raspberry Pi 400 from FreeNAS with Unifi
 date:   2021-03-27 12:20:23 +0100
 categories: personal
 layout: post
