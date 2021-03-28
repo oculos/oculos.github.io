@@ -130,7 +130,7 @@ wget https://github.com/Hexxeh/rpi-firmware/raw/stable/start4.elf
 wget https://github.com/Hexxeh/rpi-firmware/raw/stable/fixup4.dat 
 ```
 
-Somehow, the `/home/pi` folder got the wrong permissions set when copying the files. So let's fix this:
+Somehow, the `/home/pi` folder got the wrong permissions set when copying the files. I believe it is because, on a Mac, ext4 partitions are read-only (when mounting with ext4fuse), so that's probably why it happened. So let's fix this:
 
 ```
 $ chmod -R 750 /mnt/mypool/pi/home/pi
