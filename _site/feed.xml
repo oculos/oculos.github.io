@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 27 Mar 2021 14:22:09 +0100</pubDate>
-    <lastBuildDate>Sat, 27 Mar 2021 14:22:09 +0100</lastBuildDate>
+    <pubDate>Sun, 28 Mar 2021 09:42:39 +0200</pubDate>
+    <lastBuildDate>Sun, 28 Mar 2021 09:42:39 +0200</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -141,7 +141,7 @@ wget https://github.com/Hexxeh/rpi-firmware/raw/stable/start4.elf
 wget https://github.com/Hexxeh/rpi-firmware/raw/stable/fixup4.dat 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Somehow, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home/pi&lt;/code&gt; folder got the wrong permissions set when copying the files. So let’s fix this:&lt;/p&gt;
+&lt;p&gt;Somehow, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home/pi&lt;/code&gt; folder got the wrong permissions set when copying the files. I believe it is because, on a Mac, ext4 partitions are read-only (when mounting with ext4fuse), so that’s probably why it happened. So let’s fix this:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ chmod -R 750 /mnt/mypool/pi/home/pi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
