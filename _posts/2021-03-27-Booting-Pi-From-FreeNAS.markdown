@@ -94,6 +94,7 @@ This way, you can mount the root partition of the SD card after inserting it on 
 disklist list # check what's the name of the linux partition of the SD card - for example, disk2s2
 sudo ext4fuse /dev/disk2s2 /tmp/raspberry
 ```
+> Caveat: This method has the problem that the directories are mounted as read-only. I changed a few (such as `/home`) recursively so that they could be writeable again after copying. If you have access to a Linux machine, you're better off just copying the files from there instead.
 
 If all works fine, you now have the files you need. Let's copy the boot folder to the FreeeNAS:
 

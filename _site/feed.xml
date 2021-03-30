@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 28 Mar 2021 09:42:39 +0200</pubDate>
-    <lastBuildDate>Sun, 28 Mar 2021 09:42:39 +0200</lastBuildDate>
+    <pubDate>Tue, 30 Mar 2021 15:23:51 +0200</pubDate>
+    <lastBuildDate>Tue, 30 Mar 2021 15:23:51 +0200</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -110,6 +110,9 @@ $ brew install ext4fuse
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;disklist list # check what's the name of the linux partition of the SD card - for example, disk2s2
 sudo ext4fuse /dev/disk2s2 /tmp/raspberry
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Caveat: This method has the problem that the directories are mounted as read-only. I changed a few (such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home&lt;/code&gt;) recursively so that they could be writeable again after copying. If you have access to a Linux machine, you’re better off just copying the files from there instead.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;If all works fine, you now have the files you need. Let’s copy the boot folder to the FreeeNAS:&lt;/p&gt;
 

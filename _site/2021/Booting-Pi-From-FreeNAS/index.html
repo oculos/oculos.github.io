@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1616917359617069000">
+  <link rel="stylesheet" href="/css/main.css?1617110631640016000">
   <link rel="canonical" href="https://francisaugusto.com/2021/Booting-Pi-From-FreeNAS/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -299,6 +299,9 @@ $ brew install ext4fuse
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>disklist list # check what's the name of the linux partition of the SD card - for example, disk2s2
 sudo ext4fuse /dev/disk2s2 /tmp/raspberry
 </code></pre></div></div>
+<blockquote>
+  <p>Caveat: This method has the problem that the directories are mounted as read-only. I changed a few (such as <code class="language-plaintext highlighter-rouge">/home</code>) recursively so that they could be writeable again after copying. If you have access to a Linux machine, you’re better off just copying the files from there instead.</p>
+</blockquote>
 
 <p>If all works fine, you now have the files you need. Let’s copy the boot folder to the FreeeNAS:</p>
 
@@ -421,7 +424,7 @@ Choose the network where your Pi will be configured (for example LAN), and click
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1616917359617069000"></script>
+<script type="text/javascript" src="/js/main.js?1617110631640016000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
