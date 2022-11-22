@@ -1,58 +1,240 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>https://francisaugusto.com/2017/A-new-blog-is-born/</loc>
-<lastmod>2017-11-21T21:04:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</loc>
-<lastmod>2017-12-29T20:13:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2017/WiFi-Temperature-Monitor/</loc>
-<lastmod>2017-12-29T20:13:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</loc>
-<lastmod>2019-03-12T19:34:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</loc>
-<lastmod>2019-08-17T14:00:23+02:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</loc>
-<lastmod>2020-11-08T19:00:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</loc>
-<lastmod>2020-11-24T17:20:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2021/Fiber-as-cat6-alternative-an-adventure/</loc>
-<lastmod>2021-03-06T15:20:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/2021/Booting-Pi-From-FreeNAS/</loc>
-<lastmod>2021-03-27T12:20:23+01:00</lastmod>
-</url>
-<url>
-<loc>https://francisaugusto.com/about</loc>
-</url>
-<url>
-<loc>https://francisaugusto.com/categories/</loc>
-</url>
-<url>
-<loc>https://francisaugusto.com/contact-form/</loc>
-</url>
-<url>
-<loc>https://francisaugusto.com/</loc>
-</url>
-<url>
-<loc>https://francisaugusto.com/tags/</loc>
-</url>
-<url>
-<loc>https://francisaugusto.com/google6573f149772374f0.html</loc>
-<lastmod>2020-12-01T10:02:05+01:00</lastmod>
-</url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2021/Booting-Pi-From-FreeNAS/</loc>
+      
+        <lastmod>2021-03-27T12:20:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2021/Fiber-as-cat6-alternative-an-adventure/</loc>
+      
+        <lastmod>2021-03-06T15:20:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/</loc>
+      
+        <lastmod>2020-11-24T17:20:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</loc>
+      
+        <lastmod>2020-11-08T19:00:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</loc>
+      
+        <lastmod>2019-08-17T14:00:23+02:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</loc>
+      
+        <lastmod>2019-03-12T19:34:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2017/WiFi-Temperature-Monitor/</loc>
+      
+        <lastmod>2017-12-29T20:13:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</loc>
+      
+        <lastmod>2017-12-29T20:13:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/2017/A-new-blog-is-born/</loc>
+      
+        <lastmod>2017-11-21T21:04:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/about</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/contact-form/</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/feed.xml</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+  
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/css/main.css</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+  
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/assets/css/style.css</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://francisaugusto.com/robots.txt</loc>
+      
+        <lastmod>2022-11-22T21:16:54+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
 </urlset>
