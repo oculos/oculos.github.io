@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <meta name="robots" content="noindex">
-  
   
   <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
@@ -20,8 +18,10 @@
 
 
   
-  <title>Categories</title>
-  <meta name="description" content="IT Engineer with background in IT-Law, running enthusiast">
+  <title>Running a Mastodon instance on kubernetes</title>
+  <meta name="description" content="#### Introduction
+
+">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
@@ -30,16 +30,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Categories">
-  <meta name="twitter:description" content="IT Engineer with background in IT-Law, running enthusiast">
+  <meta name="twitter:title" content="Running a Mastodon instance on kubernetes">
+  <meta name="twitter:description" content="#### Introduction
+
+">
   
   <meta name="twitter:creator" content="francisaugusto">
   
   <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Categories">
-  <meta property="og:description" content="IT Engineer with background in IT-Law, running enthusiast">
+  <meta property="og:title" content="Running a Mastodon instance on kubernetes">
+  <meta property="og:description" content="#### Introduction
+
+">
   <meta property="og:image" content="/images/profile.jpg" />
 
   <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
@@ -63,7 +67,7 @@
   <meta name="theme-color" content="#ffffff">
   
   <link rel="stylesheet" href="/css/main.css?1670596066275121000">
-  <link rel="canonical" href="https://francisaugusto.com/categories/">
+  <link rel="canonical" href="https://francisaugusto.com/2022/Mastodon-on-a-k8s-kluster/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
 
@@ -184,94 +188,77 @@
 
     <div class="content-wrapper">
       <div class="content-wrapper__inner">
-        <h2>Categories:</h2>
-<div class="categories"> 
- 
-  <a href="#personal">personal</a>
-
-</div>
-
-<!-- iterate through all categories on the site --> 
- 
-  <!-- for each tag, create an anchor by using the tag name as an id --> 
-  <div id="personal">  
-    <h3> personal </h3>  <!-- for create a heading --> 
-
-    <ul> <!-- create the list of posts -->
-      <!-- iterate through all the posts on the site --> 
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2022/Mastodon-on-a-k8s-kluster/">Running a Mastodon instance on kubernetes</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2021/Booting-Pi-From-FreeNAS/">Booting a Raspberry Pi 400 from FreeNAS with Unifi</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2021/Fiber-as-cat6-alternative-an-adventure/">Fiber at home - an adventure</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2020/Setuo-Linux-Image-for-Horizon-Instant-Clones-with-Active-Directory/">Configuring a Linux image for Horizon instant clones, including Active Directory and NFSv4</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2020/Using-FreeIPA-with-FreeNAS/">Using FreeIPA with FreeNAS</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2019/Building-a-Supermicro-based-Freenas/">Building a Supermicro-based PC for ESXi and FreeNAS</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2019/ESXi-on-the-2018-Mac-Mini-networking/">ESXi 6.7 on the 2018 Mac Mini - networking</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2017/WiFi-Temperature-Monitor/">WiFi Temperature Monitor</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2017/Homebrige-nexa-and-Udoo/">Homebridge, Nexa switches and Udoo Neo</a>
-            </li>
-        
-       
-        <!-- list only those which contain the current tag --> 
-         
-            <li>
-              <a href="/2017/A-new-blog-is-born/">A new blog is born!</a>
-            </li>
-        
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="9 Dec 2022" class="post-meta__date date">9 Dec 2022</time>
       
-    </ul>
-  </div>
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#mastodon">mastodon</a> <a href="/tags/#kubernetes">kubernetes</a> <a href="/tags/#k8s">k8s</a> </span>
+      
+    </div>
+    <h1 class="post-title">Running a Mastodon instance on kubernetes</h1>
+  </header>
+
+  <section class="post">
+    #### Introduction
+
+I heard about [Mastodon](https://joinmastodon.org) when it got widely mentioned as a result of Elon Musk's Twitter acquisition. Its goal really got me interested, and I fell in love about it from day one.
+
+I decided to run my own instance, [Mastodon.babb.be](https://mastodon.babb.be), and it has been a joy to use it and to maintain it.
+
+I want users to come, but when I heard other stories of servers having to quickly scale up in order to accomodate the huge number of users coming from Twitter, I decided to get ready for such influx should it happen.
+
+My goal was to setup a kubernetes cluster for my static websites, as well as for my old WordPress-based blog. The cluster was installed, everything seems to be running smooth (despite Ubuntu 22.04 quirks with kubernetes), so it was time to get Mastodon moved to it.
+
+### The challenge
+
+There were few recipes on how to move Mastodon to kubernetes.
+
+Mastodon comes with a Helm chart, but I really didn't want to use it - some people out there say it is quite old. I also saw some other kubernetes deployments, but they were from more than four years ago, and a lot has changed.
+
+## How
+
+I had already a running, non containerized instance. So I had already a configured setup, which made things easier for me.
+
+Initially, I used [Kompose](https://kompose.io) to convert the docker-compose.yaml supplied by Mastodon's [repo](https://github.com/mastodon/mastodon) to kubernetes deployments, services, etc.
+
+After that, some cleaning up and adaptation, I did :
+
+- throw out some files, like network configuration, redis, database and postgresql deployments, etc, as I run most of the persistent stuff outside my cluster.
+- create several deployments for the sidekiq queues, as suggested by [Nora](https://nora.codes/post/scaling-mastodon-in-the-face-of-an-exodus/#fn:1).
+- move sensitive key/values out of the env.production configMap to a secrets file
+- created an ingress for web and another for streaming. I probably overdid it a bit, as I have a reverse proxy outside my cluster, so I moved some of nginx configuration from mastodon to my ingress, just to be on the safe side.
+- finally, just for the kicks, I added a `topologySpreadConstraints` to my deployments to make sure the pods would be allocated evenly on my cluster (I got this one [here](https://medium.com/geekculture/kubernetes-distributing-pods-evenly-across-cluster-c6bdc9b49699).
+
+I applied all the yaml and my cluster was then online.
+
+## Remained things to do:
+
+Remember the cronjobs? Well, we need those. I need to create a CronJob resource on my cluster, but, for now, what I did was that I stopped all my mastodon services on my original instance, but kept the cronjobs there. I'll remove those eventually and create CronJob instances on the cluster.
+
+Please give me any comments or feedback. All the files I ended up using can be found on my [GitHub repo](https://github.com/oculos/mastodon-k8s).
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2022/Mastodon-on-a-k8s-kluster/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2022/Mastodon-on-a-k8s-kluster'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
 
       </div>
 
