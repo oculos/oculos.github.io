@@ -19,7 +19,7 @@
 
   
   <title>Running a Mastodon instance on kubernetes</title>
-  <meta name="description" content="#### Introduction
+  <meta name="description" content="Introduction
 
 ">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
@@ -31,7 +31,7 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Running a Mastodon instance on kubernetes">
-  <meta name="twitter:description" content="#### Introduction
+  <meta name="twitter:description" content="Introduction
 
 ">
   
@@ -41,7 +41,7 @@
 
   <meta property="og:type" content="article">
   <meta property="og:title" content="Running a Mastodon instance on kubernetes">
-  <meta property="og:description" content="#### Introduction
+  <meta property="og:description" content="Introduction
 
 ">
   <meta property="og:image" content="/images/profile.jpg" />
@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1670596136205455000">
+  <link rel="stylesheet" href="/css/main.css?1670596845225995000">
   <link rel="canonical" href="https://francisaugusto.com/2022/Mastodon-on-a-k8s-kluster/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -200,43 +200,45 @@
   </header>
 
   <section class="post">
-    #### Introduction
+    <h4 id="introduction">Introduction</h4>
 
-I heard about [Mastodon](https://joinmastodon.org) when it got widely mentioned as a result of Elon Musk's Twitter acquisition. Its goal really got me interested, and I fell in love about it from day one.
+<p>I heard about <a href="https://joinmastodon.org">Mastodon</a> when it got widely mentioned as a result of Elon Musk’s Twitter acquisition. Its goal really got me interested, and I fell in love about it from day one.</p>
 
-I decided to run my own instance, [Mastodon.babb.be](https://mastodon.babb.be), and it has been a joy to use it and to maintain it.
+<p>I decided to run my own instance, <a href="https://mastodon.babb.be">Mastodon.babb.be</a>, and it has been a joy to use it and to maintain it.</p>
 
-I want users to come, but when I heard other stories of servers having to quickly scale up in order to accomodate the huge number of users coming from Twitter, I decided to get ready for such influx should it happen.
+<p>I want users to come, but when I heard other stories of servers having to quickly scale up in order to accomodate the huge number of users coming from Twitter, I decided to get ready for such influx should it happen.</p>
 
-My goal was to setup a kubernetes cluster for my static websites, as well as for my old WordPress-based blog. The cluster was installed, everything seems to be running smooth (despite Ubuntu 22.04 quirks with kubernetes), so it was time to get Mastodon moved to it.
+<p>My goal was to setup a kubernetes cluster for my static websites, as well as for my old WordPress-based blog. The cluster was installed, everything seems to be running smooth (despite Ubuntu 22.04 quirks with kubernetes), so it was time to get Mastodon moved to it.</p>
 
-### The challenge
+<h3 id="the-challenge">The challenge</h3>
 
-There were few recipes on how to move Mastodon to kubernetes.
+<p>There were few recipes on how to move Mastodon to kubernetes.</p>
 
-Mastodon comes with a Helm chart, but I really didn't want to use it - some people out there say it is quite old. I also saw some other kubernetes deployments, but they were from more than four years ago, and a lot has changed.
+<p>Mastodon comes with a Helm chart, but I really didn’t want to use it - some people out there say it is quite old. I also saw some other kubernetes deployments, but they were from more than four years ago, and a lot has changed.</p>
 
-## How
+<h2 id="how">How</h2>
 
-I had already a running, non containerized instance. So I had already a configured setup, which made things easier for me.
+<p>I had already a running, non containerized instance. So I had already a configured setup, which made things easier for me.</p>
 
-Initially, I used [Kompose](https://kompose.io) to convert the docker-compose.yaml supplied by Mastodon's [repo](https://github.com/mastodon/mastodon) to kubernetes deployments, services, etc.
+<p>Initially, I used <a href="https://kompose.io">Kompose</a> to convert the docker-compose.yaml supplied by Mastodon’s <a href="https://github.com/mastodon/mastodon">repo</a> to kubernetes deployments, services, etc.</p>
 
-After that, some cleaning up and adaptation, I did :
+<p>After that, some cleaning up and adaptation, I did :</p>
 
-- throw out some files, like network configuration, redis, database and postgresql deployments, etc, as I run most of the persistent stuff outside my cluster.
-- create several deployments for the sidekiq queues, as suggested by [Nora](https://nora.codes/post/scaling-mastodon-in-the-face-of-an-exodus/#fn:1).
-- move sensitive key/values out of the env.production configMap to a secrets file
-- created an ingress for web and another for streaming. I probably overdid it a bit, as I have a reverse proxy outside my cluster, so I moved some of nginx configuration from mastodon to my ingress, just to be on the safe side.
-- finally, just for the kicks, I added a `topologySpreadConstraints` to my deployments to make sure the pods would be allocated evenly on my cluster (I got this one [here](https://medium.com/geekculture/kubernetes-distributing-pods-evenly-across-cluster-c6bdc9b49699).
+<ul>
+  <li>throw out some files, like network configuration, redis, database and postgresql deployments, etc, as I run most of the persistent stuff outside my cluster.</li>
+  <li>create several deployments for the sidekiq queues, as suggested by <a href="https://nora.codes/post/scaling-mastodon-in-the-face-of-an-exodus/#fn:1">Nora</a>.</li>
+  <li>move sensitive key/values out of the env.production configMap to a secrets file</li>
+  <li>created an ingress for web and another for streaming. I probably overdid it a bit, as I have a reverse proxy outside my cluster, so I moved some of nginx configuration from mastodon to my ingress, just to be on the safe side.</li>
+  <li>finally, just for the kicks, I added a <code class="language-plaintext highlighter-rouge">topologySpreadConstraints</code> to my deployments to make sure the pods would be allocated evenly on my cluster (I got this one <a href="https://medium.com/geekculture/kubernetes-distributing-pods-evenly-across-cluster-c6bdc9b49699">here</a>.</li>
+</ul>
 
-I applied all the yaml and my cluster was then online.
+<p>I applied all the yaml and my cluster was then online.</p>
 
-## Remained things to do:
+<h2 id="remained-things-to-do">Remained things to do:</h2>
 
-Remember the cronjobs? Well, we need those. I need to create a CronJob resource on my cluster, but, for now, what I did was that I stopped all my mastodon services on my original instance, but kept the cronjobs there. I'll remove those eventually and create CronJob instances on the cluster.
+<p>Remember the cronjobs? Well, we need those. I need to create a CronJob resource on my cluster, but, for now, what I did was that I stopped all my mastodon services on my original instance, but kept the cronjobs there. I’ll remove those eventually and create CronJob instances on the cluster.</p>
 
-Please give me any comments or feedback. All the files I ended up using can be found on my [GitHub repo](https://github.com/oculos/mastodon-k8s).
+<p>Please give me any comments or feedback. All the files I ended up using can be found on my <a href="https://github.com/oculos/mastodon-k8s">GitHub repo</a>.</p>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -267,7 +269,7 @@ Please give me any comments or feedback. All the files I ended up using can be f
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1670596136205455000"></script>
+<script type="text/javascript" src="/js/main.js?1670596845225995000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
