@@ -17,4 +17,4 @@ I have a mixed background: a law degree, a master (LL.M) in IT-Law, and a bachel
 
 The theme used on this website was found [here](https://github.com/joshgerdes/jekyll-uno).
 
-Follow me on <a rel="me" href="https://mastodon.babb.be/@francis">Mastodon</a>.
+Follow me on <a rel="me" href="https://mastodon.babb.no/@francis">Mastodon</a>.
