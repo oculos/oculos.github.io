@@ -37,6 +37,13 @@ They are all fully functional services, though somethings are not there yet, the
 
 I decided to self host these websites. I could have joined other instances, but I believe it's good to give something back. 
 
+My instances are:
+
+Mastodon: [mastodon.babb.no](https://mastodon.babb.no)
+Pixelfed: [pixelfed.babb.no](https://pixelfed.babb.no)
+Friendica: [social.babb.no](https://social.babb.no)
+Boomwyrm: [books.babb.no](https://bookwyrm.babb.no)
+
 
 ### Nerdy talk
 
