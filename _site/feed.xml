@@ -5,9 +5,73 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 25 Apr 2023 20:30:23 +0200</pubDate>
-    <lastBuildDate>Tue, 25 Apr 2023 20:30:23 +0200</lastBuildDate>
+    <pubDate>Sun, 17 Dec 2023 12:42:58 +0100</pubDate>
+    <lastBuildDate>Sun, 17 Dec 2023 12:42:58 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>Babb.no - The Fediverse and open social networks</title>
+        <description>&lt;h4 id=&quot;introduction&quot;&gt;Introduction&lt;/h4&gt;
+
+&lt;p&gt;TL;DR: &lt;a href=&quot;https://about.babb.no&quot;&gt;About babb.no&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I really want to stop using social network in this age of algorithms, monetization of personal data and AI. I like when I am in control of my own data, where I can migrate my data wherever I want.&lt;/p&gt;
+
+&lt;p&gt;Last year, I got to know about &lt;a href=&quot;https://joinmastodon.org&quot;&gt;Mastodon&lt;/a&gt;, a microblogging platform that gained fame just after Elon Musk bought Twitter. I decided that Mastodon was something for me, so I started &lt;a href=&quot;https://mastodon.babb.no&quot;&gt;Mastodon.babb.no&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then I discovered &lt;a href=&quot;https://pixelfed.org&quot;&gt;Pixelfed&lt;/a&gt;. And then &lt;a href=&quot;https://friendi.ca&quot;&gt;Friendica&lt;/a&gt;. And finally &lt;a href=&quot;https://joinbookwyrm.com&quot;&gt;Bookwyrm&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The cool thing about these sites is that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There is no algorithm scraping my data and offering me ads to buy stuff;&lt;/li&gt;
+  &lt;li&gt;no hidden use of my data and pictures;&lt;/li&gt;
+  &lt;li&gt;I can focus on content rather than skipping through useless ads or content I don’t want to see,&lt;/li&gt;
+  &lt;li&gt;The API’s are open, so I can do a lot of things.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The sites above work sort of an alternative to known services:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Mastodon is an alternative for Twitter/X/Threads;&lt;/li&gt;
+  &lt;li&gt;Pixelfed is an alternative for Instagram;&lt;/li&gt;
+  &lt;li&gt;Friendica is an anternative for Facebook;&lt;/li&gt;
+  &lt;li&gt;Bookwyrm is an alternative for Goodreads.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The cool thing is that if you have a user on one of these sites, you can follow anyone on the other instances. So if I have a user on Mastodon, I can follow users on Pixelfed. And the otherway around. This is thanks to the ActivePub protocol.&lt;/p&gt;
+
+&lt;p&gt;They are all fully functional services, though somethings are not there yet, the most notable ones being Friendica and Bookwyrm not having an iOS app (or an app at all, like Bookwyrm).&lt;/p&gt;
+
+&lt;p&gt;I decided to self host these websites. I could have joined other instances, but I believe it’s good to give something back.&lt;/p&gt;
+
+&lt;h3 id=&quot;nerdy-talk&quot;&gt;Nerdy talk&lt;/h3&gt;
+
+&lt;p&gt;They were all relatively easy to install, but Bookwyrm was a bit harder as the installation was really based on Docker-compose. Since I run a kubernetes cluster, I had to adapt things a bit. I posted the whole thing on &lt;a href=&quot;https://github.com/oculos/bookwyrm-kubernetes&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I hope that someday we will all use social media that is community-driven, I really like social media, not less because I need a way to keep in touch with friends and family who live far. The challenge today is to get people to migrate to these opensources solutions. But now the stepping stones are in place.&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 17 Dec 2023 12:39:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2023/Babb-no/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2023/Babb-no/</guid>
+        
+        <category>fediverse</category>
+        
+        <category>mastodon</category>
+        
+        <category>bookwyrm</category>
+        
+        <category>pixelfed</category>
+        
+        <category>friendica</category>
+        
+        
+        <category>personal</category>
+        
+      </item>
     
       <item>
         <title>Booting a Raspberry Pi 400 from FreeNAS with Unifi</title>

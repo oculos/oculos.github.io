@@ -1,0 +1,50 @@
+---
+title:  Babb.no - The Fediverse and open social networks
+date:   2023-12-17 12:39:23 +0100
+categories: personal
+layout: post
+comments: true
+tags: fediverse mastodon bookwyrm pixelfed friendica
+---
+
+#### Introduction
+
+TL;DR: [About babb.no](https://about.babb.no).
+
+I really want to stop using social network in this age of algorithms, monetization of personal data and AI. I like when I am in control of my own data, where I can migrate my data wherever I want.
+
+Last year, I got to know about [Mastodon](https://joinmastodon.org), a microblogging platform that gained fame just after Elon Musk bought Twitter. I decided that Mastodon was something for me, so I started [Mastodon.babb.no](https://mastodon.babb.no).
+
+Then I discovered [Pixelfed](https://pixelfed.org). And then [Friendica](https://friendi.ca). And finally [Bookwyrm](https://joinbookwyrm.com).
+
+The cool thing about these sites is that:
+
+- There is no algorithm scraping my data and offering me ads to buy stuff;
+- no hidden use of my data and pictures;
+- I can focus on content rather than skipping through useless ads or content I don't want to see,
+- The API's are open, so I can do a lot of things.
+
+The sites above work sort of an alternative to known services:
+
+- Mastodon is an alternative for Twitter/X/Threads;
+- Pixelfed is an alternative for Instagram;
+- Friendica is an anternative for Facebook;
+- Bookwyrm is an alternative for Goodreads.
+
+The cool thing is that if you have a user on one of these sites, you can follow anyone on the other instances. So if I have a user on Mastodon, I can follow users on Pixelfed. And the otherway around. This is thanks to the ActivePub protocol.
+
+They are all fully functional services, though somethings are not there yet, the most notable ones being Friendica and Bookwyrm not having an iOS app (or an app at all, like Bookwyrm).
+
+I decided to self host these websites. I could have joined other instances, but I believe it's good to give something back. 
+
+
+### Nerdy talk
+
+They were all relatively easy to install, but Bookwyrm was a bit harder as the installation was really based on Docker-compose. Since I run a kubernetes cluster, I had to adapt things a bit. I posted the whole thing on [Github](https://github.com/oculos/bookwyrm-kubernetes).
+
+
+### Conclusion
+
+I hope that someday we will all use social media that is community-driven, I really like social media, not less because I need a way to keep in touch with friends and family who live far. The challenge today is to get people to migrate to these opensources solutions. But now the stepping stones are in place.
+
+
