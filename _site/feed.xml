@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 17 Dec 2023 12:48:03 +0100</pubDate>
-    <lastBuildDate>Sun, 17 Dec 2023 12:48:03 +0100</lastBuildDate>
+    <pubDate>Sun, 17 Dec 2023 12:49:32 +0100</pubDate>
+    <lastBuildDate>Sun, 17 Dec 2023 12:49:32 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -47,10 +47,12 @@
 
 &lt;p&gt;My instances are:&lt;/p&gt;
 
-&lt;p&gt;Mastodon: &lt;a href=&quot;https://mastodon.babb.no&quot;&gt;mastodon.babb.no&lt;/a&gt;
-Pixelfed: &lt;a href=&quot;https://pixelfed.babb.no&quot;&gt;pixelfed.babb.no&lt;/a&gt;
-Friendica: &lt;a href=&quot;https://social.babb.no&quot;&gt;social.babb.no&lt;/a&gt;
-Boomwyrm: &lt;a href=&quot;https://bookwyrm.babb.no&quot;&gt;books.babb.no&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Mastodon: &lt;a href=&quot;https://mastodon.babb.no&quot;&gt;mastodon.babb.no&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Pixelfed: &lt;a href=&quot;https://pixelfed.babb.no&quot;&gt;pixelfed.babb.no&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Friendica: &lt;a href=&quot;https://social.babb.no&quot;&gt;social.babb.no&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Boomwyrm: &lt;a href=&quot;https://bookwyrm.babb.no&quot;&gt;books.babb.no&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;nerdy-talk&quot;&gt;Nerdy talk&lt;/h3&gt;
 
