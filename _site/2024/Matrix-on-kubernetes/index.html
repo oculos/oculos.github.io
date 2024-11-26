@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Installing Matrix on Kubernetes - what they don't tell you</title>
+  <meta name="description" content="Disclaimer
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Installing Matrix on Kubernetes - what they don't tell you">
+  <meta name="twitter:description" content="Disclaimer
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Installing Matrix on Kubernetes - what they don't tell you">
+  <meta property="og:description" content="Disclaimer
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1732663306565154000">
+  <link rel="canonical" href="https://francisaugusto.com/2024/Matrix-on-kubernetes/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="26 Nov 2024" class="post-meta__date date">26 Nov 2024</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#kubernetes">kubernetes</a> <a href="/tags/#matrix">matrix</a> <a href="/tags/#synapse">synapse</a> <a href="/tags/#element">element</a> </span>
+      
+    </div>
+    <h1 class="post-title">Installing Matrix on Kubernetes - what they don't tell you</h1>
+  </header>
+
+  <section class="post">
+    <h4 id="disclaimer">Disclaimer</h4>
+
+<p>I am no expert on Matrix or on Kubernetes. I just happen to use Kubernetes a bit, and got recently hooked on Matrix.</p>
+
+<p>This is not a complete manual or guide on how to install Matrix on kubernetes. It is rather an introduction on the challenges you might experience and a heads up so you don’t make the same mistakes I made.</p>
+
+<h4 id="why-are-you-writing-this">Why are you writing this?</h4>
+
+<p>I wanted to install Matrix. I have install (and still maintain) a few opensource-based projects, specially Fediverse instances. I thought, what can’t wrong, right?</p>
+
+<p>In my mind, these services follow the same design pattern, which is basically:</p>
+
+<ul>
+  <li>a web-server/streaming service</li>
+  <li>a few workers</li>
+  <li>redis</li>
+  <li>database</li>
+</ul>
+
+<p>While Synapse (one of the implementations of the Matrix protocol) has these, its installation is challenge, mostly because:</p>
+
+<ul>
+  <li>the documentation is not exactly the most idiot-proof,</li>
+  <li>the workers do not behave like other works of, say, Mastodon,</li>
+  <li>load balancing is tricky.</li>
+</ul>
+
+<p>Of course, if you want to do something basic, <a href="https://matrix.org/docs/older/understanding-synapse-hosting/">the official documentation</a> will get you going. But one someone installs something on a cluster, the main advantage is quick scalability. And that’s the thing there are few guidelines about on the internet.</p>
+
+<p>I’ll comment a few things about the last two things on that list, but first, one little note: if you don’t use Helm because, like me, you’re too lazy to learn it, do yourself a favor and learn how to use it. I got away by not using it to all the stuff I deployed (mastodon, pixelfed, bookwyrm, etc). But Matrix is a beast. It’s the kind of project you’d expect some help. I’ve seen people using <a href="https://nix.dev/tutorials/nix-language.html">Nix</a> to maintain the deployment code, and if you speak Nix, lucky you. Someone I met on Matrix the other day send me <a href="https://cgit.rory.gay/Rory-Open-Architecture.git/tree/host/Rory-nginx/services/matrix">its setup</a>, which is a work of art.</p>
+
+<p>But if you’re lazy like me, you will have a lot of yaml writing to get this done.</p>
+
+<p>So, get the configuration done by following the first steps of the abovementioned official documentation, and read along.</p>
+
+<h4 id="the-workers">The workers</h4>
+
+<p>Workers are the main unit when you want to scale up things. On kubernetes, a worker usually is a deployment, so one just scale up the number of replicas.</p>
+
+<p>It is a bit the same with Matrix, but with one caveat:</p>
+
+<p>Workers <em>need</em> to have a unique name. Some of them, like the federation_sender’s, need to be explicitly referred to on the main configuration. So you cannot simply go ahead and increate the number of workers. Or, you can, provided that they can be configured with a unique name. There might be many good strategies to do so in Helm or even without it. Mine was this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> command: ["/bin/sh", "-c"]
+          args:
+           - |
+             sed  "s/client_worker/${POD_NAME}/g" /config/client.yaml &gt; /tmp/client.yaml &amp;&amp;
+             exec python -m synapse.app.generic_worker \
+             --config-path=/data/homeserver.yaml \
+             --config-path=/tmp/client.yaml
+          ports:
+            - containerPort: 8022
+              name: http
+            - containerPort: 9093
+          volumeMounts:
+            - name: client-config
+              mountPath: /config
+              readOnly: true
+            - name: matrix-volume-claim
+              mountPath: /data
+      volumes:
+        - name: client-config
+          configMap:
+            name: client-config
+        - name: matrix-volume-claim
+          persistentVolumeClaim:
+            claimName: matrix-volume-claim
+      restartPolicy: Always
+</code></pre></div></div>
+<p>This is how I use the image to deploy a generic worker of the type client. The config map looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>onfigmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-config
+  namespace: matrix
+data:
+  client.yaml: |
+    worker_name: client_worker
+    worker_app: synapse.app.generic_worker
+    worker_listeners:
+      - type: http
+        tls: false
+        port: 8022
+        resources:
+          - names: [client,federation,media]
+        bind_addresses: ["0.0.0.0"]
+    redis:
+      enabled: true
+      host: 10.20.20.202
+</code></pre></div></div>
+
+<p>So when scaling up, it will modify the ConfigMap when creating the pod. This is great for deployments of workers that don’t need to be on the <code class="language-plaintext highlighter-rouge">homeserver.yaml</code>. If you need those, I suggest using StatefulSets, since their names are predictable, and add them to the <code class="language-plaintext highlighter-rouge">homeserver.yaml</code>. Of course, unless you automate this, you need to adjust the amount of those workers on the main configuration manually if you increase or decrease them.</p>
+
+<p>Check the <a href="https://element-hq.github.io/synapse/latest/workers.html">documentation</a> on workers. Some must be only a single instance, others can scale up independently (as long as their name are unique), and some needs a restart of all workers and a configuration change to work.</p>
+
+<h4 id="load-balancing">Load balancing</h4>
+
+<p>On most services, load balancing is done by redirecting traffic to some sort of web workers.</p>
+
+<p>On Matrix, it is more complicate than that. Load balancing here is done mostly by isolating some endpoints closely related to each other, like synchronization or federation activities, and sending them to respective workers.</p>
+
+<p>But besides that, two workers need more attention: federation inbound and sync.</p>
+
+<p>Sync is done in such a way that load balancing is optimal if it’s done by <em>user</em>. The documentation has a few tricks on how to do that. On an nginx server, this is kinda trivial. But on the nginx ingress controller, this can be a bit more complicate.</p>
+
+<p>I went ahead and deployed a new ingress controller just for the matrix namespace on my cluster. That way, the rules I added won’t be applied to traffic to other services.</p>
+
+<p>I then added an http-snippet with the mappings mentioned on the documentation so I could get the variables to be used by nginx to do the load balancing:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+data:
+  allow-snippet-annotations: "true"
+  annotations-risk-level: Critical
+  http-snippet: |
+     map $arg_since $sync {
+     default "matrix-sync-8022";
+     '' "matrix-sync-initial-8022";
+     }
+     map $arg_access_token $accesstoken_from_urlparam {
+     default   $arg_access_token;
+     "~syt_(?&lt;username&gt;.*?)_.*"           $username;
+     }
+     map $http_authorization $mxid_localpart {
+     default                              $http_authorization;
+     "~Bearer syt_(?&lt;username&gt;.*?)_.*"    $username;
+     ""                                   $accesstoken_from_urlparam;
+     }
+  use-forwarded-headers: "true"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: matrix-ingress
+    app.kubernetes.io/name: matrix-ingress
+    app.kubernetes.io/part-of: matrix-ingress
+    app.kubernetes.io/version: 1.12.0-beta.0
+  name: ingress-nginx-controller
+  namespace: matrix
+</code></pre></div></div>
+
+<p>You see that this requires predicting how nginx is going to refer to the services you create. Here, <code class="language-plaintext highlighter-rouge">matrix-sync-2022</code> is a deduction that the controller made by <code class="language-plaintext highlighter-rouge">&lt;namespace&gt;-&lt;service name&gt;-&lt;portname&gt;</code>.</p>
+
+<p>That done, I used annotations on my ingress:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    nginx.ingress.kubernetes.io/upstream-hash-by: "$mxid_localpart"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+        if ($request_uri !~ "^/_matrix/client/(unstable/org.matrix.simplified_msc3575|v5|v4|v3|r0|v1)/sync" ) {
+        set $proxy_upstream_name $sync;
+        }
+</code></pre></div></div>
+
+<p>This allows:</p>
+<ul>
+  <li>sending initial synchronizations, which are heavier, to particular workers;</li>
+  <li>load balancing things by the user</li>
+</ul>
+
+<p>The federation inbound is nicer with load balancing by ip, so you update the <code class="language-plaintext highlighter-rouge">upstream-hash-by</code> with the <code class="language-plaintext highlighter-rouge">$remoteaddr</code> (I think and hope).</p>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>I really liked Matrix. It performs great if you don’t go to a room with 50.000 people. It’s installation, though, is very complex and granular. I heard that there are people that even create load balancing rules for a particular room, such as Matrix HQ, so that it won’t steal much processing.</p>
+
+<p>I hope this was useful for you.</p>
+
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2024/Matrix-on-kubernetes/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2024/Matrix-on-kubernetes'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2024 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1732663306565154000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>

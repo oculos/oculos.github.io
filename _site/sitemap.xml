@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>https://francisaugusto.com/2024/Matrix-on-kubernetes/</loc>
+      
+        <lastmod>2024-11-26T21:39:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>https://francisaugusto.com/2023/Babb-no/</loc>
       
         <lastmod>2023-12-17T12:39:23+01:00</lastmod>
@@ -156,7 +171,7 @@
     <url>
       <loc>https://francisaugusto.com/about</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -173,7 +188,7 @@
     <url>
       <loc>https://francisaugusto.com/contact-form/</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -188,7 +203,7 @@
     <url>
       <loc>https://francisaugusto.com/feed.xml</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -207,7 +222,7 @@
     <url>
       <loc>https://francisaugusto.com/css/main.css</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -226,7 +241,7 @@
     <url>
       <loc>https://francisaugusto.com/assets/css/style.css</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -241,7 +256,7 @@
     <url>
       <loc>https://francisaugusto.com/robots.txt</loc>
       
-        <lastmod>2023-12-17T12:49:32+01:00</lastmod>
+        <lastmod>2024-11-27T00:21:46+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -250,6 +265,8 @@
         <priority>0.3</priority>
       
     </url>
+    
+  
     
   
 </urlset>

@@ -5,9 +5,196 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 17 Dec 2023 12:49:32 +0100</pubDate>
-    <lastBuildDate>Sun, 17 Dec 2023 12:49:32 +0100</lastBuildDate>
+    <pubDate>Wed, 27 Nov 2024 00:21:46 +0100</pubDate>
+    <lastBuildDate>Wed, 27 Nov 2024 00:21:46 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>Installing Matrix on Kubernetes - what they don't tell you</title>
+        <description>&lt;h4 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;/h4&gt;
+
+&lt;p&gt;I am no expert on Matrix or on Kubernetes. I just happen to use Kubernetes a bit, and got recently hooked on Matrix.&lt;/p&gt;
+
+&lt;p&gt;This is not a complete manual or guide on how to install Matrix on kubernetes. It is rather an introduction on the challenges you might experience and a heads up so you don’t make the same mistakes I made.&lt;/p&gt;
+
+&lt;h4 id=&quot;why-are-you-writing-this&quot;&gt;Why are you writing this?&lt;/h4&gt;
+
+&lt;p&gt;I wanted to install Matrix. I have install (and still maintain) a few opensource-based projects, specially Fediverse instances. I thought, what can’t wrong, right?&lt;/p&gt;
+
+&lt;p&gt;In my mind, these services follow the same design pattern, which is basically:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;a web-server/streaming service&lt;/li&gt;
+  &lt;li&gt;a few workers&lt;/li&gt;
+  &lt;li&gt;redis&lt;/li&gt;
+  &lt;li&gt;database&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;While Synapse (one of the implementations of the Matrix protocol) has these, its installation is challenge, mostly because:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the documentation is not exactly the most idiot-proof,&lt;/li&gt;
+  &lt;li&gt;the workers do not behave like other works of, say, Mastodon,&lt;/li&gt;
+  &lt;li&gt;load balancing is tricky.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Of course, if you want to do something basic, &lt;a href=&quot;https://matrix.org/docs/older/understanding-synapse-hosting/&quot;&gt;the official documentation&lt;/a&gt; will get you going. But one someone installs something on a cluster, the main advantage is quick scalability. And that’s the thing there are few guidelines about on the internet.&lt;/p&gt;
+
+&lt;p&gt;I’ll comment a few things about the last two things on that list, but first, one little note: if you don’t use Helm because, like me, you’re too lazy to learn it, do yourself a favor and learn how to use it. I got away by not using it to all the stuff I deployed (mastodon, pixelfed, bookwyrm, etc). But Matrix is a beast. It’s the kind of project you’d expect some help. I’ve seen people using &lt;a href=&quot;https://nix.dev/tutorials/nix-language.html&quot;&gt;Nix&lt;/a&gt; to maintain the deployment code, and if you speak Nix, lucky you. Someone I met on Matrix the other day send me &lt;a href=&quot;https://cgit.rory.gay/Rory-Open-Architecture.git/tree/host/Rory-nginx/services/matrix&quot;&gt;its setup&lt;/a&gt;, which is a work of art.&lt;/p&gt;
+
+&lt;p&gt;But if you’re lazy like me, you will have a lot of yaml writing to get this done.&lt;/p&gt;
+
+&lt;p&gt;So, get the configuration done by following the first steps of the abovementioned official documentation, and read along.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-workers&quot;&gt;The workers&lt;/h4&gt;
+
+&lt;p&gt;Workers are the main unit when you want to scale up things. On kubernetes, a worker usually is a deployment, so one just scale up the number of replicas.&lt;/p&gt;
+
+&lt;p&gt;It is a bit the same with Matrix, but with one caveat:&lt;/p&gt;
+
+&lt;p&gt;Workers &lt;em&gt;need&lt;/em&gt; to have a unique name. Some of them, like the federation_sender’s, need to be explicitly referred to on the main configuration. So you cannot simply go ahead and increate the number of workers. Or, you can, provided that they can be configured with a unique name. There might be many good strategies to do so in Helm or even without it. Mine was this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
+          args:
+           - |
+             sed  &quot;s/client_worker/${POD_NAME}/g&quot; /config/client.yaml &amp;gt; /tmp/client.yaml &amp;amp;&amp;amp;
+             exec python -m synapse.app.generic_worker \
+             --config-path=/data/homeserver.yaml \
+             --config-path=/tmp/client.yaml
+          ports:
+            - containerPort: 8022
+              name: http
+            - containerPort: 9093
+          volumeMounts:
+            - name: client-config
+              mountPath: /config
+              readOnly: true
+            - name: matrix-volume-claim
+              mountPath: /data
+      volumes:
+        - name: client-config
+          configMap:
+            name: client-config
+        - name: matrix-volume-claim
+          persistentVolumeClaim:
+            claimName: matrix-volume-claim
+      restartPolicy: Always
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This is how I use the image to deploy a generic worker of the type client. The config map looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;onfigmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-config
+  namespace: matrix
+data:
+  client.yaml: |
+    worker_name: client_worker
+    worker_app: synapse.app.generic_worker
+    worker_listeners:
+      - type: http
+        tls: false
+        port: 8022
+        resources:
+          - names: [client,federation,media]
+        bind_addresses: [&quot;0.0.0.0&quot;]
+    redis:
+      enabled: true
+      host: 10.20.20.202
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So when scaling up, it will modify the ConfigMap when creating the pod. This is great for deployments of workers that don’t need to be on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;homeserver.yaml&lt;/code&gt;. If you need those, I suggest using StatefulSets, since their names are predictable, and add them to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;homeserver.yaml&lt;/code&gt;. Of course, unless you automate this, you need to adjust the amount of those workers on the main configuration manually if you increase or decrease them.&lt;/p&gt;
+
+&lt;p&gt;Check the &lt;a href=&quot;https://element-hq.github.io/synapse/latest/workers.html&quot;&gt;documentation&lt;/a&gt; on workers. Some must be only a single instance, others can scale up independently (as long as their name are unique), and some needs a restart of all workers and a configuration change to work.&lt;/p&gt;
+
+&lt;h4 id=&quot;load-balancing&quot;&gt;Load balancing&lt;/h4&gt;
+
+&lt;p&gt;On most services, load balancing is done by redirecting traffic to some sort of web workers.&lt;/p&gt;
+
+&lt;p&gt;On Matrix, it is more complicate than that. Load balancing here is done mostly by isolating some endpoints closely related to each other, like synchronization or federation activities, and sending them to respective workers.&lt;/p&gt;
+
+&lt;p&gt;But besides that, two workers need more attention: federation inbound and sync.&lt;/p&gt;
+
+&lt;p&gt;Sync is done in such a way that load balancing is optimal if it’s done by &lt;em&gt;user&lt;/em&gt;. The documentation has a few tricks on how to do that. On an nginx server, this is kinda trivial. But on the nginx ingress controller, this can be a bit more complicate.&lt;/p&gt;
+
+&lt;p&gt;I went ahead and deployed a new ingress controller just for the matrix namespace on my cluster. That way, the rules I added won’t be applied to traffic to other services.&lt;/p&gt;
+
+&lt;p&gt;I then added an http-snippet with the mappings mentioned on the documentation so I could get the variables to be used by nginx to do the load balancing:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+data:
+  allow-snippet-annotations: &quot;true&quot;
+  annotations-risk-level: Critical
+  http-snippet: |
+     map $arg_since $sync {
+     default &quot;matrix-sync-8022&quot;;
+     '' &quot;matrix-sync-initial-8022&quot;;
+     }
+     map $arg_access_token $accesstoken_from_urlparam {
+     default   $arg_access_token;
+     &quot;~syt_(?&amp;lt;username&amp;gt;.*?)_.*&quot;           $username;
+     }
+     map $http_authorization $mxid_localpart {
+     default                              $http_authorization;
+     &quot;~Bearer syt_(?&amp;lt;username&amp;gt;.*?)_.*&quot;    $username;
+     &quot;&quot;                                   $accesstoken_from_urlparam;
+     }
+  use-forwarded-headers: &quot;true&quot;
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: matrix-ingress
+    app.kubernetes.io/name: matrix-ingress
+    app.kubernetes.io/part-of: matrix-ingress
+    app.kubernetes.io/version: 1.12.0-beta.0
+  name: ingress-nginx-controller
+  namespace: matrix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You see that this requires predicting how nginx is going to refer to the services you create. Here, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;matrix-sync-2022&lt;/code&gt; is a deduction that the controller made by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;namespace&amp;gt;-&amp;lt;service name&amp;gt;-&amp;lt;portname&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;That done, I used annotations on my ingress:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    nginx.ingress.kubernetes.io/upstream-hash-by: &quot;$mxid_localpart&quot;
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+        if ($request_uri !~ &quot;^/_matrix/client/(unstable/org.matrix.simplified_msc3575|v5|v4|v3|r0|v1)/sync&quot; ) {
+        set $proxy_upstream_name $sync;
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This allows:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;sending initial synchronizations, which are heavier, to particular workers;&lt;/li&gt;
+  &lt;li&gt;load balancing things by the user&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The federation inbound is nicer with load balancing by ip, so you update the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream-hash-by&lt;/code&gt; with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$remoteaddr&lt;/code&gt; (I think and hope).&lt;/p&gt;
+
+&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;I really liked Matrix. It performs great if you don’t go to a room with 50.000 people. It’s installation, though, is very complex and granular. I heard that there are people that even create load balancing rules for a particular room, such as Matrix HQ, so that it won’t steal much processing.&lt;/p&gt;
+
+&lt;p&gt;I hope this was useful for you.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 26 Nov 2024 21:39:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2024/Matrix-on-kubernetes/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2024/Matrix-on-kubernetes/</guid>
+        
+        <category>kubernetes</category>
+        
+        <category>matrix</category>
+        
+        <category>synapse</category>
+        
+        <category>element</category>
+        
+        
+        <category>personal</category>
+        
+      </item>
     
       <item>
         <title>Babb.no - The Fediverse and open social networks</title>
@@ -1124,21 +1311,6 @@ Light 1 is off
         <category>projects</category>
         
         <category>homebridge</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>A new blog is born!</title>
-        <description>&lt;p&gt;I have blogged for many years, but in my native language (Portuguese). Now I feel it’s time to start blogging in English. I don’t think I will blog about anything that I want to discuss, but rather on technology, coding and privacy.&lt;/p&gt;
-
-&lt;p&gt;I am still trying to understand how &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; works, as I am a long time WordPress user. I love &lt;a href=&quot;https://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt;, and I always wanted to get used to write texts without all the fuss of text editors, formatting and the likes. So let’s see how that works. :)&lt;/p&gt;
-</description>
-        <pubDate>Tue, 21 Nov 2017 21:04:23 +0100</pubDate>
-        <link>https://francisaugusto.com/2017/A-new-blog-is-born/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2017/A-new-blog-is-born/</guid>
         
         
         <category>personal</category>
