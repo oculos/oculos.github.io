@@ -171,7 +171,5 @@ The federation inbound is nicer with load balancing by ip, so you update the `up
 
 I really liked Matrix. It performs great if you don't go to a room with 50.000 people. It's installation, though, is very complex and granular. I heard that there are people that even create load balancing rules for a particular room, such as Matrix HQ, so that it won't steal much processing. 
 
-I hope this was useful for you.
-
-
+I hope this was useful for you. And thanks to the guys on the "Matrix on kubernetes" room on the Matrix space who helped a lot to understand a few of those things.
 
