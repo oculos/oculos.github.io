@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1732663493044573000">
+  <link rel="stylesheet" href="/css/main.css?1732693779900998000">
   <link rel="canonical" href="https://francisaugusto.com/2024/Matrix-on-kubernetes/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -361,6 +361,16 @@ metadata:
 
 <p>The federation inbound is nicer with load balancing by ip, so you update the <code class="language-plaintext highlighter-rouge">upstream-hash-by</code> with the <code class="language-plaintext highlighter-rouge">$remoteaddr</code> (I think and hope).</p>
 
+<h4 id="other-things">Other things</h4>
+
+<p>There are things that, as of today, are pretty much basic on Matrix, but the documentation doesn’t mention that you’ll want to install them, probably because they are still considered “Experimental”, though they are widespread, and new clients such as “Element X” rely on those.</p>
+
+<p>The first is <a href="https://element-hq.github.io/matrix-authentication-service/setup/installation.html">Matrix Authentication Service</a>, the new authentication layer based on OIDC. You’ll want that, because that’s the future.</p>
+
+<p>The other is <a href="https://github.com/element-hq/element-call">Element Call</a>. If you don’t have it, audio/video calls won’t work.</p>
+
+<p>The last thing is a turn sever, like <a href="https://github.com/coturn/coturn">Coturn</a>, which is a TURN server to assist voip with other clients.</p>
+
 <h4 id="conclusion">Conclusion</h4>
 
 <p>I really liked Matrix. It performs great if you don’t go to a room with 50.000 people. It’s installation, though, is very complex and granular. I heard that there are people that even create load balancing rules for a particular room, such as Matrix HQ, so that it won’t steal much processing.</p>
@@ -397,7 +407,7 @@ metadata:
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1732663493044573000"></script>
+<script type="text/javascript" src="/js/main.js?1732693779900998000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

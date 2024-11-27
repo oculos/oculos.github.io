@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 27 Nov 2024 00:24:53 +0100</pubDate>
-    <lastBuildDate>Wed, 27 Nov 2024 00:24:53 +0100</lastBuildDate>
+    <pubDate>Wed, 27 Nov 2024 08:49:39 +0100</pubDate>
+    <lastBuildDate>Wed, 27 Nov 2024 08:49:39 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -171,6 +171,16 @@ metadata:
 &lt;/ul&gt;
 
 &lt;p&gt;The federation inbound is nicer with load balancing by ip, so you update the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream-hash-by&lt;/code&gt; with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$remoteaddr&lt;/code&gt; (I think and hope).&lt;/p&gt;
+
+&lt;h4 id=&quot;other-things&quot;&gt;Other things&lt;/h4&gt;
+
+&lt;p&gt;There are things that, as of today, are pretty much basic on Matrix, but the documentation doesn’t mention that you’ll want to install them, probably because they are still considered “Experimental”, though they are widespread, and new clients such as “Element X” rely on those.&lt;/p&gt;
+
+&lt;p&gt;The first is &lt;a href=&quot;https://element-hq.github.io/matrix-authentication-service/setup/installation.html&quot;&gt;Matrix Authentication Service&lt;/a&gt;, the new authentication layer based on OIDC. You’ll want that, because that’s the future.&lt;/p&gt;
+
+&lt;p&gt;The other is &lt;a href=&quot;https://github.com/element-hq/element-call&quot;&gt;Element Call&lt;/a&gt;. If you don’t have it, audio/video calls won’t work.&lt;/p&gt;
+
+&lt;p&gt;The last thing is a turn sever, like &lt;a href=&quot;https://github.com/coturn/coturn&quot;&gt;Coturn&lt;/a&gt;, which is a TURN server to assist voip with other clients.&lt;/p&gt;
 
 &lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
 

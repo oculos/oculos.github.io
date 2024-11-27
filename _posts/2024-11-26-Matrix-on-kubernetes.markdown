@@ -166,6 +166,17 @@ This allows:
 
 The federation inbound is nicer with load balancing by ip, so you update the `upstream-hash-by` with the `$remoteaddr` (I think and hope).
 
+#### Other things
+
+There are things that, as of today, are pretty much basic on Matrix, but the documentation doesn't mention that you'll want to install them, probably because they are still considered "Experimental", though they are widespread, and new clients such as "Element X" rely on those.
+
+The first is [Matrix Authentication Service](https://element-hq.github.io/matrix-authentication-service/setup/installation.html), the new authentication layer based on OIDC. You'll want that, because that's the future.
+
+The other is [Element Call](https://github.com/element-hq/element-call). If you don't have it, audio/video calls won't work.
+
+The last thing is a turn sever, like [Coturn](https://github.com/coturn/coturn), which is a TURN server to assist voip with other clients.
+
+
 #### Conclusion
 
 
