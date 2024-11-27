@@ -6,3 +6,4 @@ git push
 docker buildx build --platform=linux/amd64 -t ghcr.io/oculos/francisaugusto .
 echo $CR_PAT | docker login ghcr.io -u oculos --password-stdin
 docker push ghcr.io/oculos/francisaugusto
+kubectl rollout restart -n sites deployment francisaugusto
