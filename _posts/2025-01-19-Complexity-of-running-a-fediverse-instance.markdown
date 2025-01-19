@@ -1,6 +1,6 @@
 ---
 title:  The complexities of running a Fediverse instance on clusters
-date:   2025-19-01 17:01:23 +0100
+date:   2025-01-19 17:01:23 +0100
 categories: personal
 layout: post
 comments: true

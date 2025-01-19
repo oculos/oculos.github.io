@@ -3,7 +3,21 @@
   
     
     <url>
-<<<<<<< HEAD
+      <loc>https://francisaugusto.com/2025/Complexity-of-running-a-fediverse-instance/</loc>
+      
+        <lastmod>2025-01-19T17:01:23+01:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>https://francisaugusto.com/2024/Matrix-on-kubernetes/</loc>
       
         <lastmod>2024-11-26T21:39:23+01:00</lastmod>
@@ -22,11 +36,21 @@
       <loc>https://francisaugusto.com/2023/Babb-no/</loc>
       
         <lastmod>2023-12-17T12:39:23+01:00</lastmod>
-=======
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>https://francisaugusto.com/2022/Mastodon-on-a-k8s-kluster/</loc>
       
         <lastmod>2022-12-09T15:20:23+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
       
       
         <changefreq>monthly</changefreq>
@@ -177,11 +201,7 @@
     <url>
       <loc>https://francisaugusto.com/about</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -198,11 +218,7 @@
     <url>
       <loc>https://francisaugusto.com/contact-form/</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -217,11 +233,7 @@
     <url>
       <loc>https://francisaugusto.com/feed.xml</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -240,11 +252,7 @@
     <url>
       <loc>https://francisaugusto.com/css/main.css</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -263,11 +271,7 @@
     <url>
       <loc>https://francisaugusto.com/assets/css/style.css</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -282,11 +286,7 @@
     <url>
       <loc>https://francisaugusto.com/robots.txt</loc>
       
-<<<<<<< HEAD
-        <lastmod>2024-11-27T08:49:39+01:00</lastmod>
-=======
-        <lastmod>2022-12-09T15:40:45+01:00</lastmod>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
+        <lastmod>2025-01-19T19:13:41+01:00</lastmod>
       
       
         <changefreq>monthly</changefreq>

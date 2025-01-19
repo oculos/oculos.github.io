@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>The complexities of running a Fediverse instance on clusters</title>
+  <meta name="description" content="Disclaimer
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The complexities of running a Fediverse instance on clusters">
+  <meta name="twitter:description" content="Disclaimer
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The complexities of running a Fediverse instance on clusters">
+  <meta property="og:description" content="Disclaimer
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1737310421968984000">
+  <link rel="canonical" href="https://francisaugusto.com/2025/Complexity-of-running-a-fediverse-instance/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="19 Jan 2025" class="post-meta__date date">19 Jan 2025</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#kubernetes">kubernetes</a> <a href="/tags/#fediverse">fediverse</a> <a href="/tags/#mastodon">mastodon</a> <a href="/tags/#pixelfed">pixelfed</a> <a href="/tags/#bookwyrm">bookwyrm</a> <a href="/tags/#friendica">friendica</a> </span>
+      
+    </div>
+    <h1 class="post-title">The complexities of running a Fediverse instance on clusters</h1>
+  </header>
+
+  <section class="post">
+    <h4 id="disclaimer">Disclaimer</h4>
+
+<p>I am no expert on Kubernetes and neither have I a deeper understand of all the components of the different Fediverse servers. What I am writing here is a result of my own impressions, which may be incorrect or misleading.</p>
+
+<h4 id="introduction">Introduction</h4>
+
+<p>I started to run Fediverse instances in november 2022. Our Mastodon instance, <a href="https://babb.no">Babb.no</a> has been running since. Since then, I also started to run a <a href="https://pixelfed.babb.no">Pixelfed instance</a>, a <a href="https://books.babb.no">Bookwyrm instance</a> and finally a <a href="https://social.babb.no">Friendica instance</a>.</p>
+
+<p>My goal was to offer colleagues and friends a gateway to healthier social networks. Well, those didn’t come, so I opened these networks to everyone.</p>
+
+<p>Since I don’t have exaactly so much free time to understand these services and fix or scale them when the need that, it is important for me that I can run those services on a kubernetes cluster, to have a nice forum to exchange information on how to fix things, and to have good documentation.</p>
+
+<p>Sadly, these services are not always easy to understand. They have sometimes a lot of components and it is not trivial to understand what they do nor how they relate to each other.</p>
+
+<p>I want to compare how these instances in three areas:</p>
+
+<ul>
+  <li>cluster deployability</li>
+  <li>documentation</li>
+  <li>support community for sysadmins</li>
+</ul>
+
+<h4 id="cluster-deployability">Cluster deployability</h4>
+
+<p>These days, enterprise environments for web services are hosted on cluster like Kubernetes.</p>
+
+<p>However, because Fediverse instances are primarily run by individuals with limited access to resources, I suspect that there are few tutorials, if at all, on how to run Fediverse instances on a cluster.</p>
+
+<p>Among all the servers, things vary considerably. From having a helm chart, to not even mentioning clusters at all.</p>
+
+<p>The main problem here is that there is very little documentation on which  components can or need to be deployed separately so that one can use cluster for redundancy and high availability.</p>
+
+<p>Mastodon is clearly the winner here. It provides Helm charts, so one can have things deployed quite easily. However, I didn’t go that route. I used their Docker compose file, read a lot of posts about mastodon sidekiq workers, and created my yaml files using <a href="https://kompose.io">Kompose</a>. It gave lots of flexibility back in the days, though today I’d probably force myself to understand Helm.</p>
+
+<p>Pixelfed didn’t have an official Docker image back in the days, so I got a Dockerfile somewhere, and deployed it myself. Luckly, its design is simple - one needs a web container and a worker container. Both can scale, and it works fine.</p>
+
+<p>Bookwyrm wasn’t so easy either, to the point I created my <a href="https://github.com/oculos/bookwyrm-kubernetes">own repo</a> with configuration files.</p>
+
+<p>The problem with Bookwyrm, and as well as with Friendica, is that while they do provide ready-made docker images, they are based on the premise of a single node deployment. So we end up having a redundant Nginx container, and on neither of those we have a clear idea on a good deployment architecture.</p>
+
+<p>A little digression here: people deploy clusters differently when it comes to web access: some have an ingress (Nginx) exposed to the world, some have a reverse proxy pointing to services, some (like me) have a reverse proxy that proxy requests to an ingress.</p>
+
+<p>So a clear documentation on what is the best way to implement routes, block paths, etc, would be great for cluster maintainers.</p>
+
+<p>Bookwyrm is probably scalable - I never tried to increase the number of its workers, but I see no reason why it wouldn’t work.</p>
+
+<p>Friendica was the hardest due its confusing docker documentation, no good php-fpm tweaks (like for example fixing <code class="language-plaintext highlighter-rouge">pm.max_children</code> needs to be done manually) and no scalability whatsoever. I guess that at some point I’ll have to limit the number of new users. One may most likely increase the Nginx pods, but there is no worker scalability.</p>
+
+<h4 id="documentation">Documentation</h4>
+
+<p>While none of those servers have cluster-specific documentation, they have some documentation of configuration items.</p>
+
+<p>Mastodon is again the winner. With a mature structure and development, it has an up-to-date documentation on all configuration options, though some are not explained on the list of configuration parameters. For example, <code class="language-plaintext highlighter-rouge">PAPERCLIP_ROOT_URI</code> is listed as valid configuration, but you’d have no idea of what it is used for unless you read its Object storage configuration (even though this applies to local, filesystem storage).</p>
+
+<p>Bookwyrm has a good installation, but not good index of configuration options, which is useful when converting installation patterns to a cluster.</p>
+
+<p>Pixelfed was very good before, but the documentation is so outdated these days that some configuration is only found on the source code. Fortunately, the main developer is accessible and usually helps right away.</p>
+
+<p>Friendica has documentation on different sites, which is confusing, as you don’t know what’s current and what’s old. It’s a wiki and documentation site. This makes find things difficult</p>
+
+<h4 id="community-and-help-for-sysadmins">Community and help for sysadmins</h4>
+
+<p>If you’re a Patreon to Mastodon, you get access to their Discord. There, there’s a channel for sysadmins (I miss the term “sysops”), and one gets a lot of help. It has saved me many times, so I feel a bit safer knowing I’m not on my own.</p>
+
+<p>Pixelfed also has a Discord and a channel there for sysadmins. However, help, true help, comes only from it’s main (only?) writer. So one’s milleage may vary: if you need help when it’s night in Canada, you’ll have to wait. Unfortunately, Pixelfed is highly dependant on one developer, and it’s impressive that, in spite of this dependancy, things go well and one does get help. It just might take a bit of time.</p>
+
+<p>Bookwyrm has a Matrix room for admins, but seldom one gets help there. Sometimes posting on their github issues will get attention, but it might take weeks. I feel that development there is quite stalled, but I hope I’m wrong.</p>
+
+<p>Friendica was very difficult for me one year ago when I tried for the first time. Nobody was running it on Kubernetes. Replies were vague, and it was hard to get help. I gave it a try again recently, and, while I haven’t anyone running it on a cluster, I did get better help this time on their group on, well, on Friendica. They do have a Matrix room, but I didn’t get too much help there.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>I want to make clear all this is based on my own experience, and it might be based on misunderstanding on where to get help or configuration information.</p>
+
+<p>That said, if you’re planning on deploying and maintaining a Fediverse instance on a cluster or any other deployment that’s different than the instance’s default install instructions, you might be on your own.</p>
+
+<p>Mastodon, being much more mature than the others, have a robust community of developers and seasoned admins who almost certainly will help you.</p>
+
+<p>Unfortunately, that can’t be said about the other fediverse services. I do hope that these services gain critical mass so that they’ll get more resources and make them easier to administer.</p>
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2025/Complexity-of-running-a-fediverse-instance/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2025/Complexity-of-running-a-fediverse-instance'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2025 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1737310421968984000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>

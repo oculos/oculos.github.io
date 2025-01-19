@@ -5,10 +5,112 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-<<<<<<< HEAD
-    <pubDate>Wed, 27 Nov 2024 08:49:39 +0100</pubDate>
-    <lastBuildDate>Wed, 27 Nov 2024 08:49:39 +0100</lastBuildDate>
+    <pubDate>Sun, 19 Jan 2025 19:13:41 +0100</pubDate>
+    <lastBuildDate>Sun, 19 Jan 2025 19:13:41 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>The complexities of running a Fediverse instance on clusters</title>
+        <description>&lt;h4 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;/h4&gt;
+
+&lt;p&gt;I am no expert on Kubernetes and neither have I a deeper understand of all the components of the different Fediverse servers. What I am writing here is a result of my own impressions, which may be incorrect or misleading.&lt;/p&gt;
+
+&lt;h4 id=&quot;introduction&quot;&gt;Introduction&lt;/h4&gt;
+
+&lt;p&gt;I started to run Fediverse instances in november 2022. Our Mastodon instance, &lt;a href=&quot;https://babb.no&quot;&gt;Babb.no&lt;/a&gt; has been running since. Since then, I also started to run a &lt;a href=&quot;https://pixelfed.babb.no&quot;&gt;Pixelfed instance&lt;/a&gt;, a &lt;a href=&quot;https://books.babb.no&quot;&gt;Bookwyrm instance&lt;/a&gt; and finally a &lt;a href=&quot;https://social.babb.no&quot;&gt;Friendica instance&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;My goal was to offer colleagues and friends a gateway to healthier social networks. Well, those didn’t come, so I opened these networks to everyone.&lt;/p&gt;
+
+&lt;p&gt;Since I don’t have exaactly so much free time to understand these services and fix or scale them when the need that, it is important for me that I can run those services on a kubernetes cluster, to have a nice forum to exchange information on how to fix things, and to have good documentation.&lt;/p&gt;
+
+&lt;p&gt;Sadly, these services are not always easy to understand. They have sometimes a lot of components and it is not trivial to understand what they do nor how they relate to each other.&lt;/p&gt;
+
+&lt;p&gt;I want to compare how these instances in three areas:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;cluster deployability&lt;/li&gt;
+  &lt;li&gt;documentation&lt;/li&gt;
+  &lt;li&gt;support community for sysadmins&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cluster-deployability&quot;&gt;Cluster deployability&lt;/h4&gt;
+
+&lt;p&gt;These days, enterprise environments for web services are hosted on cluster like Kubernetes.&lt;/p&gt;
+
+&lt;p&gt;However, because Fediverse instances are primarily run by individuals with limited access to resources, I suspect that there are few tutorials, if at all, on how to run Fediverse instances on a cluster.&lt;/p&gt;
+
+&lt;p&gt;Among all the servers, things vary considerably. From having a helm chart, to not even mentioning clusters at all.&lt;/p&gt;
+
+&lt;p&gt;The main problem here is that there is very little documentation on which  components can or need to be deployed separately so that one can use cluster for redundancy and high availability.&lt;/p&gt;
+
+&lt;p&gt;Mastodon is clearly the winner here. It provides Helm charts, so one can have things deployed quite easily. However, I didn’t go that route. I used their Docker compose file, read a lot of posts about mastodon sidekiq workers, and created my yaml files using &lt;a href=&quot;https://kompose.io&quot;&gt;Kompose&lt;/a&gt;. It gave lots of flexibility back in the days, though today I’d probably force myself to understand Helm.&lt;/p&gt;
+
+&lt;p&gt;Pixelfed didn’t have an official Docker image back in the days, so I got a Dockerfile somewhere, and deployed it myself. Luckly, its design is simple - one needs a web container and a worker container. Both can scale, and it works fine.&lt;/p&gt;
+
+&lt;p&gt;Bookwyrm wasn’t so easy either, to the point I created my &lt;a href=&quot;https://github.com/oculos/bookwyrm-kubernetes&quot;&gt;own repo&lt;/a&gt; with configuration files.&lt;/p&gt;
+
+&lt;p&gt;The problem with Bookwyrm, and as well as with Friendica, is that while they do provide ready-made docker images, they are based on the premise of a single node deployment. So we end up having a redundant Nginx container, and on neither of those we have a clear idea on a good deployment architecture.&lt;/p&gt;
+
+&lt;p&gt;A little digression here: people deploy clusters differently when it comes to web access: some have an ingress (Nginx) exposed to the world, some have a reverse proxy pointing to services, some (like me) have a reverse proxy that proxy requests to an ingress.&lt;/p&gt;
+
+&lt;p&gt;So a clear documentation on what is the best way to implement routes, block paths, etc, would be great for cluster maintainers.&lt;/p&gt;
+
+&lt;p&gt;Bookwyrm is probably scalable - I never tried to increase the number of its workers, but I see no reason why it wouldn’t work.&lt;/p&gt;
+
+&lt;p&gt;Friendica was the hardest due its confusing docker documentation, no good php-fpm tweaks (like for example fixing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pm.max_children&lt;/code&gt; needs to be done manually) and no scalability whatsoever. I guess that at some point I’ll have to limit the number of new users. One may most likely increase the Nginx pods, but there is no worker scalability.&lt;/p&gt;
+
+&lt;h4 id=&quot;documentation&quot;&gt;Documentation&lt;/h4&gt;
+
+&lt;p&gt;While none of those servers have cluster-specific documentation, they have some documentation of configuration items.&lt;/p&gt;
+
+&lt;p&gt;Mastodon is again the winner. With a mature structure and development, it has an up-to-date documentation on all configuration options, though some are not explained on the list of configuration parameters. For example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PAPERCLIP_ROOT_URI&lt;/code&gt; is listed as valid configuration, but you’d have no idea of what it is used for unless you read its Object storage configuration (even though this applies to local, filesystem storage).&lt;/p&gt;
+
+&lt;p&gt;Bookwyrm has a good installation, but not good index of configuration options, which is useful when converting installation patterns to a cluster.&lt;/p&gt;
+
+&lt;p&gt;Pixelfed was very good before, but the documentation is so outdated these days that some configuration is only found on the source code. Fortunately, the main developer is accessible and usually helps right away.&lt;/p&gt;
+
+&lt;p&gt;Friendica has documentation on different sites, which is confusing, as you don’t know what’s current and what’s old. It’s a wiki and documentation site. This makes find things difficult&lt;/p&gt;
+
+&lt;h4 id=&quot;community-and-help-for-sysadmins&quot;&gt;Community and help for sysadmins&lt;/h4&gt;
+
+&lt;p&gt;If you’re a Patreon to Mastodon, you get access to their Discord. There, there’s a channel for sysadmins (I miss the term “sysops”), and one gets a lot of help. It has saved me many times, so I feel a bit safer knowing I’m not on my own.&lt;/p&gt;
+
+&lt;p&gt;Pixelfed also has a Discord and a channel there for sysadmins. However, help, true help, comes only from it’s main (only?) writer. So one’s milleage may vary: if you need help when it’s night in Canada, you’ll have to wait. Unfortunately, Pixelfed is highly dependant on one developer, and it’s impressive that, in spite of this dependancy, things go well and one does get help. It just might take a bit of time.&lt;/p&gt;
+
+&lt;p&gt;Bookwyrm has a Matrix room for admins, but seldom one gets help there. Sometimes posting on their github issues will get attention, but it might take weeks. I feel that development there is quite stalled, but I hope I’m wrong.&lt;/p&gt;
+
+&lt;p&gt;Friendica was very difficult for me one year ago when I tried for the first time. Nobody was running it on Kubernetes. Replies were vague, and it was hard to get help. I gave it a try again recently, and, while I haven’t anyone running it on a cluster, I did get better help this time on their group on, well, on Friendica. They do have a Matrix room, but I didn’t get too much help there.&lt;/p&gt;
+
+&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;I want to make clear all this is based on my own experience, and it might be based on misunderstanding on where to get help or configuration information.&lt;/p&gt;
+
+&lt;p&gt;That said, if you’re planning on deploying and maintaining a Fediverse instance on a cluster or any other deployment that’s different than the instance’s default install instructions, you might be on your own.&lt;/p&gt;
+
+&lt;p&gt;Mastodon, being much more mature than the others, have a robust community of developers and seasoned admins who almost certainly will help you.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, that can’t be said about the other fediverse services. I do hope that these services gain critical mass so that they’ll get more resources and make them easier to administer.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 19 Jan 2025 17:01:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2025/Complexity-of-running-a-fediverse-instance/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2025/Complexity-of-running-a-fediverse-instance/</guid>
+        
+        <category>kubernetes</category>
+        
+        <category>fediverse</category>
+        
+        <category>mastodon</category>
+        
+        <category>pixelfed</category>
+        
+        <category>bookwyrm</category>
+        
+        <category>friendica</category>
+        
+        
+        <category>personal</category>
+        
+      </item>
     
       <item>
         <title>Installing Matrix on Kubernetes - what they don't tell you</title>
@@ -274,10 +376,11 @@ metadata:
         <category>pixelfed</category>
         
         <category>friendica</category>
-=======
-    <pubDate>Fri, 09 Dec 2022 15:40:45 +0100</pubDate>
-    <lastBuildDate>Fri, 09 Dec 2022 15:40:45 +0100</lastBuildDate>
-    <generator>Jekyll v3.9.2</generator>
+        
+        
+        <category>personal</category>
+        
+      </item>
     
       <item>
         <title>Running a Mastodon instance on kubernetes</title>
@@ -330,7 +433,6 @@ metadata:
         <category>kubernetes</category>
         
         <category>k8s</category>
->>>>>>> 549022c94da1b7a85bf0eee9bff9a1a36fcfcc7a
         
         
         <category>personal</category>
@@ -435,7 +537,7 @@ $ brew install ext4fuse
 
 &lt;p&gt;This way, you can mount the root partition of the SD card after inserting it on your SD card reader:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;disklist list # check what&apos;s the name of the linux partition of the SD card - for example, disk2s2
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;disklist list # check what's the name of the linux partition of the SD card - for example, disk2s2
 sudo ext4fuse /dev/disk2s2 /tmp/raspberry
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;blockquote&gt;
@@ -603,7 +705,7 @@ Choose the network where your Pi will be configured (for example LAN), and click
 
 &lt;p&gt;Now I had to ask the board permission to ask a locksmith to open the box and change the key so we could open it. I was really relieved when I got the permission to do it. I called a locksmith, and after a few days he came and opened the thing.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;../../assets/2021/openbox.jpeg&quot; alt=&quot;It&apos;s open!&quot; title=&quot;It&apos;s open!&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../../assets/2021/openbox.jpeg&quot; alt=&quot;It's open!&quot; title=&quot;It's open!&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now my friend came home to help me, and we tried to pull the cable through the duct, and for a few minutes we thought it wasn´t going to go through, but after a few attempts, we finally reached the cellar!&lt;/p&gt;
 
@@ -719,7 +821,7 @@ auth_provider = ad
 access_provider = ad
 autofs_provider = ad
 chpass_provider = ad
-ldap_id_mapping = false # You might want to set this to true, but if you have uidNumber and gidNumber on your users&apos; records, it works well with false.
+ldap_id_mapping = false # You might want to set this to true, but if you have uidNumber and gidNumber on your users' records, it works well with false.
 enumerate = false
 dns_discovery_domain = example.com
 
@@ -928,7 +1030,7 @@ RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take mor
   &lt;li&gt;Get the keytab file to install on your FreeNAS:&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don&apos;t really need the -e and the encryption, but I used it as it worked better with some services
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don't really need the -e and the encryption, but I used it as it worked better with some services
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
@@ -1158,227 +1260,6 @@ allow_weak_crypto = true
         <category>mac-mini</category>
         
         <category>aquantia</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>WiFi Temperature Monitor</title>
-        <description>&lt;p&gt;After finishing my &lt;a href=&quot;http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/&quot;&gt;previous project&lt;/a&gt;, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.&lt;/p&gt;
-
-&lt;p&gt;My goal was to transmit the temperature of her room to our &lt;a href=&quot;https://github.com/nfarina/homebridge&quot;&gt;Homebridge&lt;/a&gt;, so we could check it on our phone. I also wanted a solution that would allow me to switch the radio transmitter while not transferring data.&lt;/p&gt;
-
-&lt;p&gt;I had a couple of DHT11 sensors around, and I decided to try the &lt;a href=&quot;https://www.sparkfun.com/products/13678&quot;&gt;ESP8266-01&lt;/a&gt;. I got them at &lt;a href=&quot;https://www.kjell.com&quot;&gt;Kjell &amp;amp; Co.&lt;/a&gt;, and, as usual, when going there I end up buying more than I need, so I got this &lt;a href=&quot;https://www.kjell.com/no/produkter/elektro-og-verktoy/elektronikk/optokomponenter/led-lcd-skjermer/luxorparts-grafisk-oled-skjerm-128-x-64-piksler-0-96--p87945&quot;&gt;OLED screen&lt;/a&gt;, which I then thought I could use to display the temperature (and humidity, since the DHT11 provides that as well) without my phone.&lt;/p&gt;
-
-&lt;p&gt;The ESP8266 is used mainly to read the sensor and transmit the data to the computer running Homebridge. It transmits UDP packets, to make it simple. On the computer side, I use a small NodeJS app to receive the packets (and send and ACK back).&lt;/p&gt;
-
-&lt;p&gt;I had a couple of Arduino Mini’s at home, which I never used because they didn’t have soldered pins to the GPIO’s. But I manned up and soldered some pins to it. Not the nicest job I ever did, but nothing got broken in the process.&lt;/p&gt;
-
-&lt;p&gt;I added a button to the circuit, so that we could read the temperature with the touch of a button.&lt;/p&gt;
-
-&lt;p&gt;It works like this:&lt;/p&gt;
-
-&lt;p&gt;ESP8266: It keeps reading the sensor all the time, and transmitting the data via serial to the Arduino. In addition to that, the data is sent by WiFi to the Homebridge. The radio turns itself on, connects to the network, sends the packets and, upon after getting the confirmation that the packets were received, it turns itself off for 1 minute.&lt;/p&gt;
-
-&lt;p&gt;Arduino: It receives the temperature and humidity info fromthe ESP8266, and then it shows it on a screen. The screen is off, and is turned on for 10 seconds when a button is pressed.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://francisaugusto.com/assets/ESP8266.JPG&quot; alt=&quot;It looks shabby, but it works&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It is not very elegant, because there was no space to put the Arduino on the small breadboard. I wanna improve it later by:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;changing the power supply to a small circuit to provide power (with voltage regulator and capacitors);&lt;/li&gt;
-  &lt;li&gt;put an ATMega chip on the breadboard instead of an arduino.&lt;/li&gt;
-  &lt;li&gt;order a pcb?&lt;/li&gt;
-  &lt;li&gt;Get rid of the arduino and use a bigger ESP8266 instead.&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Fri, 29 Dec 2017 20:13:23 +0100</pubDate>
-        <link>https://francisaugusto.com/2017/WiFi-Temperature-Monitor/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2017/WiFi-Temperature-Monitor/</guid>
-        
-        <category>projects</category>
-        
-        <category>homebridge</category>
-        
-        <category>arduino</category>
-        
-        <category>ESP8266</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Homebridge, Nexa switches and Udoo Neo</title>
-        <description>&lt;p&gt;The year is ending and I would like to finish it with a cool project.&lt;/p&gt;
-
-&lt;p&gt;I am a sucker for gadgets, especially small cheap computers like the &lt;a href=&quot;https://www.raspberrypi.org&quot;&gt;Raspberry Pi&lt;/a&gt;. Some years ago, I contributed to a &lt;a href=&quot;https://Kickstarter.com&quot;&gt;Kickstarter&lt;/a&gt; project called &lt;a href=&quot;https://www.udoo.org/get-started-neo/&quot;&gt;Udoo Neo&lt;/a&gt;, which is a credit-sized computer + Arduino. It also came with some sensors for measuring the temperature and barometric pressure. I used it as a tool to monitor the temperature on our living room and to run some experiments.&lt;/p&gt;
-
-&lt;p&gt;I have lots of &lt;a href=&quot;https://arduino.cc&quot;&gt;Arduino boards&lt;/a&gt; that I used on other projects, such as an automatic system to water my plants. I wanted to experiment with 433mhz transmitters, mostly because they are cheap and I wanted to use them to study basic network concepts.&lt;/p&gt;
-
-&lt;p&gt;On my flat we have some lights on our living room that are plugged to outlets and controlled via remote control. I use a cheap &lt;a href=&quot;https://nexa.se&quot;&gt;Nexa&lt;/a&gt; PE-3 kit. &lt;a href=&quot;https://www.clasohlson.com/no/Nexa-PE-3-3-pack-fjernstrømbrytere/36-4602&quot;&gt;This&lt;/a&gt; is the exact model.&lt;/p&gt;
-
-&lt;p&gt;I realized that those Nexa outlets use the 433mhz frequency, so I kept thinking about controlling the lights plugged into them with an Arduino at some point, but didn’t have a reason for that (other than the gimmick aspect of it). That changed when I came across &lt;a href=&quot;https://medium.com/arvin-singla/apple-homekit-hacking-3d2902e7a1df&quot;&gt;this post&lt;/a&gt;, where the author describes how he used &lt;a href=&quot;https://github.com/nfarina/homebridge&quot;&gt;Homebridge&lt;/a&gt; to control his remote lights. But what is Homebridge?&lt;/p&gt;
-
-&lt;p&gt;Well, if you are an Apple-fanboy like me, you know that Apple has a technology called HomeKit that allows you to control devices on your home from your iPhone, iPad or Apple TV. But there are not so many devices available for HomeKit yet, and those that are available  are expensive. Enter Homebridge, an open source project that allows you to create your own accessories for HomeKit. You see where I am going: if I can control my outlets with Arduino, maybe I could connect that with Homebridge and ta-daaa, I would be able to switch my lights on and off (as well as I could see my room’s temperature on my phone using a temperature sensor connected to the Udoo).&lt;/p&gt;
-
-&lt;p&gt;As I said, I had an Udoo laying around, and lots of cheap 433 receivers and transmitters. So my goal was:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;to control my light switches with my Udoo Neo;&lt;/li&gt;
-  &lt;li&gt;to install Homebridge on the Udoo Neo;&lt;/li&gt;
-  &lt;li&gt;to be able to control my lights switches via my iPhone.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;controlling-my-light-switches-with-udoo-neo&quot;&gt;Controlling my light switches with Udoo Neo&lt;/h3&gt;
-
-&lt;p&gt;There are many cool projects for the Arduino that allow you to record the commands you send from a 433mhz remote control and to send those command backs. Before trying with my Udoo Neo, I tried first with my Arduino, and these sketches/products worked fine:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://fritzing.org/media/fritzing-repo/projects/n/nexardu-illumination-smart-control/code/&quot;&gt;Sketches to learn and send back commands&lt;/a&gt;, which is a modification of &lt;a href=&quot;http://playground.arduino.cc/Code/HomeEasy&quot;&gt;this&lt;/a&gt;. I used &lt;a href=&quot;http://fritzing.org/media/fritzing-repo/projects/n/nexardu-illumination-smart-control/code/Nexa_Ok_3_RX.ino&quot;&gt;this sketch&lt;/a&gt; to learn the codes of my remote control, and then I used &lt;a href=&quot;https://github.com/calle-gunnarsson/NexaCtrl&quot;&gt;NexaCtrl&lt;/a&gt; to actually send the commands.&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://433mhz.codeplex.com/SourceControl/latest#rc-switch-fork/RCTransmitter.cpp&quot;&gt;rc-switch-fork&lt;/a&gt; worked great as well. The original &lt;a href=&quot;https://github.com/sui77/rc-switch/wiki&quot;&gt;rc-switch&lt;/a&gt; didn’t work.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The problem is that &lt;em&gt;none of those worked on my Udoo Neo&lt;/em&gt;. You see, the Arduino on the Udoo Neo is not based on the AVR architecture of the “common” arduinos. Therefore, the solutions above didn’t work with my Udoo Neo. I suspect the libraries used by those packages rely on stuff available only to Arduinos based on AVR. I could simply connect an Arduino to the Udoo Neo and get this done, but I thought it would be a waste of resources.&lt;/p&gt;
-
-&lt;p&gt;I then decided to give &lt;a href=&quot;http://arduinobasics.blogspot.no/2014/06/433-mhz-rf-module-with-arduino-tutorial.html&quot;&gt;this great tutorial&lt;/a&gt; a try. I have bookmarked it a while ago because it is not a tutorial for a ready-made solution - well, it offers that as well - but remember when I said I wanted to study some basic network concepts? This tutorial teaches how to recognize basic signals typically used for this kind of communication between devices and I always thought I could try to replicate what he did one day. Well, this day has come.&lt;/p&gt;
-
-&lt;p&gt;What I did was that I used the &lt;a href=&quot;http://arduinobasics.blogspot.no/2014/07/433-mhz-rf-module-with-arduino-tutorial_30.html&quot;&gt;code he made to learn commands from a remote control&lt;/a&gt;, then I printed the array of each command for my remote control on Arduino’s serial monitor, and created another sketch where I hard coded the commands by pasting the array so that I could send these codes. Not super elegant, but it works.&lt;/p&gt;
-
-&lt;p&gt;Since using the Arduino interface on the Udoo Neo is irritating (I access it via VNC), I decided to read the commands on an Arduino connected to my Mac, and transfer a sketch with the codes to the Udoo Neo. That sketch would read the serial interface, and when it receives a certain instruction from the Linux side of the Udoo Neo, it would then send the right code to turn a specific light on or off. The same scenario as if one were using a Raspberry Pi connected to an Arduino. It is also possible to send those signals using a Raspberry Pi, without an Arduino. I might try that at some point.&lt;/p&gt;
-
-&lt;p&gt;It worked! It wasn’t as reliable as on the Arduino connected to my Mac - I have to power off the transmitter every time I am not using it, but it worked.&lt;/p&gt;
-
-&lt;p&gt;Then I created a python script to send the commands via serial to the built-in Arduino of the Udoo Neo. Something like this:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; python lightcontrol.py 1 off # turn the light 1 off
-Light 1 is off
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;After that was done, it was time to install Homebridge.&lt;/p&gt;
-
-&lt;h3 id=&quot;installing-homebridge-on-the-udoo-neo&quot;&gt;Installing Homebridge on the Udoo Neo&lt;/h3&gt;
-
-&lt;p&gt;I did it following &lt;a href=&quot;https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi&quot;&gt;this tutorial here&lt;/a&gt;. One note: make sure you are installing the absolutely latest version of NodeJS.&lt;/p&gt;
-
-&lt;p&gt;I wasn’t familiar with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;npm&lt;/code&gt;, so I found strange that on the docs of the project or on &lt;a href=&quot;http://blog.theodo.fr/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/&quot;&gt;this excellent guide on how to write a Homebridge plugin&lt;/a&gt; it was always suggested to publish plugins to a plugin repository. I didn’t do it. I simply created a local plugin by creating a directory on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/lib/node_modules&lt;/code&gt;, and then I created the proper &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index.js&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;package.json&lt;/code&gt;. I don’t see a reason to make my plugin public, as I imagine that my solution is very tied to the system I am using. Of course, if anyone feels he might benefit from it, just drop me a note. Remember:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Your plugin must start with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;homebridge&lt;/code&gt;, for example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;homebridge-myplugin&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Do not follow the code he shows on the tutorial, but rather &lt;a href=&quot;https://github.com/fredericbarthelet/homebridge-smappee/blob/master/index.js&quot;&gt;the code he actually wrote for his project&lt;/a&gt;. I found it more up to date.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The result is that now I can control all the lights on my room with my iPhone/Apple watch, even with Siri, with very cheap equipment I already had!&lt;/p&gt;
-
-&lt;p&gt;This is how it looks:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://francisaugusto.com/assets/homebridge.png&quot; alt=&quot;This is how it looks&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;My &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index.js&lt;/code&gt; file looks like this:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;homebridge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;homebridge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;homebridge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-          &lt;span class=&quot;nx&quot;&gt;homebridge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;registerAccessory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;homebridge-lightcontroller&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;LightController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;homebridge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;registerAccessory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;homebridge-lightcontroller&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Temperature&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;myTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AccessoryInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Manufacturer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Francis&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceTemp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TemperatureSensor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Living room temperature&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceTemp&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CurrentTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getServices&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getTemp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;/sys/class/i2c-dev/i2c-1/device/1-0048/temp1_input&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;utf8&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
-                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;parseFloat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;acc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;acc&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AccessoryInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Manufacturer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Francis&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Switch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;My Light Controller&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;On&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setPowerState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getServices&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setPowerState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;comm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;acc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AccessoryInformation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Manufacturer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Francis&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Switch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;My Light Controller&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCharacteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Characteristic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;On&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setPowerState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getServices&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceAccessory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;serviceSwitch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;myLightController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setPowerState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-   &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-       &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-       &lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-   &lt;span class=&quot;nx&quot;&gt;comm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;acc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onOff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-   &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;child_process&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-   &lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;comm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                 &lt;span class=&quot;c1&quot;&gt;// node couldn&apos;t execute the command&lt;/span&gt;
-                 &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-   &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The only caveat with this system is that if I turn the light off using the remote control, the state of the lamp on the Home app will not reflect the actual state. This is the only limitation, and it can be a problem if you are considering some form for automation, as the system might skip turning something on as the state is already on.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 29 Dec 2017 20:13:23 +0100</pubDate>
-        <link>https://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/</guid>
-        
-        <category>projects</category>
-        
-        <category>homebridge</category>
         
         
         <category>personal</category>
