@@ -5,9 +5,60 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 19 Jan 2025 19:14:48 +0100</pubDate>
-    <lastBuildDate>Sun, 19 Jan 2025 19:14:48 +0100</lastBuildDate>
+    <pubDate>Sun, 02 Feb 2025 11:05:05 +0100</pubDate>
+    <lastBuildDate>Sun, 02 Feb 2025 11:05:05 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)</title>
+        <description>&lt;p&gt;There’s something rotten in the world of e-mail.&lt;/p&gt;
+
+&lt;p&gt;You see, if we come back twenty-five years ago, e-mail was handled in-house by companies or by your local ISP. People did have their hotmail or yahoo accounts, but you’d always get one from your ISP.&lt;/p&gt;
+
+&lt;p&gt;Then companies like Google started to host e-mail for companies, but it was still possible to run your own e-mail server. Heck, it is still is.&lt;/p&gt;
+
+&lt;p&gt;But a certain challenge came in: multi-factor authentication. Today, MFA or 2FA are absolute requirements for any authentication, and e-mail is not an exception.&lt;/p&gt;
+
+&lt;p&gt;Suddenly, it got hard to use plain username/password login for IMAP and SMTP, the most widely used e-mail protocols if the goal was to have 2FA. The alternatives would be adding 2FA to a password, but that would prompt the user every now and then to reenter the password with the OTP.&lt;/p&gt;
+
+&lt;p&gt;That’s why over the last few years the big providers moved for OAuth2 authentication: the user credentials in form of username/password aren’t sent to the e-mail server anymore: the user is redirect to a browser, then he authenticates on his IdP (Identity Provider), get a token which is then sent to the e-mail server.&lt;/p&gt;
+
+&lt;p&gt;Luckily, some of the most popular e-mail servers do support OAuth2. But unluckly, nome of them allow you to add the e-mail server you want. What happened here is that e-mails usually come with a pre-configured list of OAuth2 providers (Google, Microsoft, Yahoo, etc). This is strenghtening e-mail as provided by the Big One’s and preventing anyone to have an e-mail server with modern authentication.&lt;/p&gt;
+
+&lt;p&gt;This is partially a problem due how Oauth2 works: it requires an IdP to configure a client, and e-mail clients need information about that client to talk with them - often with a client secret.&lt;/p&gt;
+
+&lt;p&gt;So far, no e-mail client that I know of allow you to simple enter the OAuth2 configuration of your IdP of choice. The Big One’s have their credentials baked in the different e-mail clients. See, for example, this source code from &lt;a href=&quot;https://github.com/mozilla/releases-comm-central/blob/462d143ffcdc2028d918454d01c8b8c638eda9a5/mailnews/base/src/OAuth2Providers.sys.mjs&quot;&gt;Thunderbird&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Just for fun, I tried to bake my own IdP on the source code of Thunderbird. And it worked very well! And it begs the question: why can’t people add their arbitrary IdP on e-mail configurations? If you can choose the authentication method between username-and-password, kerberos, certificates, etc, why can’t you choose OAuth2 and configure the clients accordingly?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/oauth-on-thunderbird.png&quot; alt=&quot;Thunderbird using another OAuth2 IdP&quot; title=&quot;Thunderbid using another IdP with OAuth2...&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To be clear, this is not so much of a problem for webmail. Many webmail solutions like Roundcube support OAuth2. I configured it to use OAuth2 against my Dovecot server, and boom, I get single sign-on between all my applications. But saddly, no e-mail client seems to allow adding OAuth2 as an authentication type. Either it comes pre-configured by default for the Big Ones, or you can’t add it.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, it doesn’t seem to be getting any better, by judging from this &lt;a href=&quot;https://bugzilla.mozilla.org/show_bug.cgi?id=1602166&quot;&gt;five year long thread&lt;/a&gt; about implementing OAuth2 on Thunderbird. If an open-source client, which should attempt to serve the open-source cause, isn’t supporting it, why should those default clients tied to the Big Ones?&lt;/p&gt;
+
+&lt;p&gt;What happens? The Enterprise world is led to believe that they &lt;em&gt;need&lt;/em&gt; to get e-mail from the Big Ones, as nobody seems to be able to give them 2FA for e-mail. E-mail providers’ diversity shrinks.&lt;/p&gt;
+
+&lt;p&gt;I loved the work of Michael W Lucas, especially his &lt;a href=&quot;https://mwl.io/nonfiction/tools#ryoms&quot;&gt;Run Your Own Mail Server&lt;/a&gt; book. We need to get e-mail diversity back. But the world is moving on. New protocols such as &lt;a href=&quot;https://jmap.io/software.html&quot;&gt;Jmap&lt;/a&gt; start to get attention. Still, modern authentication isn’t available for everyone on the e-mail world, unless your e-mail is hosted by the big ones.&lt;/p&gt;
+
+&lt;p&gt;This has to change.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 02 Feb 2025 10:15:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/</guid>
+        
+        <category>e-mail</category>
+        
+        <category>oidc</category>
+        
+        <category>oauth2</category>
+        
+        <category>thunderbird</category>
+        
+        
+        <category>technology</category>
+        
+      </item>
     
       <item>
         <title>The complexities of running a Fediverse instance on clusters</title>
@@ -1200,66 +1251,6 @@ allow_weak_crypto = true
         <category>freenas</category>
         
         <category>esxi</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>ESXi 6.7 on the 2018 Mac Mini - networking</title>
-        <description>&lt;p&gt;&lt;em&gt;UPDATE&lt;/em&gt;: Aquantia went public. You can download the pre-release driver at this website &lt;a href=&quot;https://github.com/Aquantia/AQtion-esxi/releases&quot;&gt;https://github.com/Aquantia/AQtion-esxi/releases&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;My &lt;a href=&quot;https://www.uio.no&quot;&gt;workplace&lt;/a&gt; aquired a few of the 2018 Mac Mini’s so that we could upgrade our support for macOS users. Our plan was to use this machine as a cluster, ideally running ESXi on them. It was great when we read &lt;a href=&quot;https://www.virtuallyghetto.com/2018/11/esxi-on-the-new-2018-apple-mac-mini.html&quot;&gt;here&lt;/a&gt; that it appeared that ESXi 6.7 runs fine on those machines.&lt;/p&gt;
-
-&lt;p&gt;Nevertheless it was disappointing to see that a lot of things don’t work:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The internal storage cannot be used&lt;/li&gt;
-  &lt;li&gt;Thunderbolt controllers are not supported&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;For us it was even worse: the model we bought has 10Gb NICs, which lacks ESXi drivers. This means that we could not even install ESXi on the Mac Mini, as the installer seems to require a driver.&lt;/p&gt;
-
-&lt;p&gt;Well, now we managed it.&lt;/p&gt;
-
-&lt;p&gt;Following some good tutorials &lt;a href=&quot;https://www.v-front.de/2014/12/how-to-make-your-unsupported-nic-work.html&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;http://www.vm-help.com/forum/viewtopic.php?f=34&amp;amp;t=4340&quot;&gt;here&lt;/a&gt;, I started an attempt to port the &lt;a href=&quot;https://www.aquantia.com/support/driver-download/&quot;&gt;freely available Linux drivers&lt;/a&gt; from &lt;a href=&quot;https://www.aquantia.com&quot;&gt;Aquantia&lt;/a&gt;. This was not an easy task, as VMware does not document all that well how to setup the environment for building up things. After a while, with a proper configured CentOS environment, I started the process.&lt;/p&gt;
-
-&lt;p&gt;But then I’ve hitten a wall, and couldn’t go further. On a desperate attempt, I contacted Aquantia to see if they were interesting into porting their Linux drivers to ESXi. Well, it turns out they were, and today I finally got a candidate version that worked amazingly well on our Mac Mini’s.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://francisaugusto.com/assets/2019/mac-mini-esxi.png&quot; alt=&quot;ESXi on 10Gb Mac Mini&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I haven’t tested it exhaustively so far, let alone on a 10Gb switch, but so far, so good.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://francisaugusto.com/assets/2019/aquantia-mac-mini.png&quot; alt=&quot;aquantia&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The Aquantia folks did all the job, so I’m really grateful. From what I understand they are going to release the driver in the near future when things are ready on their side.&lt;/p&gt;
-
-&lt;p&gt;It’s great to know that the Mac Mini can be a viable option to run ESXi. Of course, because the Mac Mini is not a supported platform for ESXi, it is uncertain how things are going to be after VMWare drops support for Vmklinux-based drivers.&lt;/p&gt;
-
-&lt;p&gt;On top of that, somethings to notice:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;I couldn’t get any storage - USB or USB-C - to work. Booting with storage plugged on a legacy USB port would do nothing at best and prevent booting at worse (I got an error once saying something aobut multiboot not being supported). Hot-plugging to USB/USB-C doesn’t get the device to show up, and booting with anything, I mean, ANYTHING, connected to a USB-C port would lead me to the purple screen of death (PSOD). So it’s gonna be either SAN or installing the ESXi on one of &lt;a href=&quot;https://www.samsung.com/semiconductor/minisite/ssd/product/portable/t5/&quot;&gt;these&lt;/a&gt; so that we can have some room for our VM’s. But maybe it needs to be &lt;a href=&quot;https://www.virten.net/2016/11/usb-devices-as-vmfs-datastore-in-vsphere-esxi-6-5/&quot;&gt;manually mounted&lt;/a&gt;?&lt;/li&gt;
-  &lt;li&gt;The Aquantia driver worked fine on the internal NIC, but I couldn’t make the Apple USB Ethernet adapters to work - &lt;del&gt;these adapters apparently also use chipset from Aquantia&lt;/del&gt; these adapters use ASIX chipset ax88772A, not supported by the usb nic driver mentioned below, though it would be nice to test a legacy USB (not USB-C) adapter. Booting with a Realtek-based USB-C Ethernet adapter just gets me a PSOD, and I don’t have a Realtek based USB adapter, so I couldn’t test the &lt;a href=&quot;https://labs.vmware.com/flings/usb-network-native-driver-for-esxi&quot;&gt;USB NIC driver&lt;/a&gt;. I did inject it on my ISO, though.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Long story short, things look promising. Due to Apple licensing terms, we can only run a virtualized instance of macOS on Apple hardware. Using macOS VM’s could help us on our job, and the nice work of Aquantia is going to make that possible.&lt;/p&gt;
-
-&lt;p&gt;Leave a message in the comments if you too are contemplating running ESXi on a 10Gb Mac Mini!&lt;/p&gt;
-
-&lt;p&gt;(UPDATED on 13.3.2019 to correct info on Apple’s USB Ethernet adapter.)
-(UPDATEd on 6.4.2019 to include information about the public availability of the driver.)&lt;/p&gt;
-</description>
-        <pubDate>Tue, 12 Mar 2019 19:34:23 +0100</pubDate>
-        <link>https://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/</guid>
-        
-        <category>esxi</category>
-        
-        <category>mac-mini</category>
-        
-        <category>aquantia</category>
         
         
         <category>personal</category>

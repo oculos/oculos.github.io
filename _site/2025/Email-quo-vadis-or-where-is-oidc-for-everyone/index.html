@@ -18,8 +18,8 @@
 
 
   
-  <title>WiFi Temperature Monitor</title>
-  <meta name="description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <title>E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)</title>
+  <meta name="description" content="There’s something rotten in the world of e-mail.
 
 ">
   <meta name="author" content="Francis Augusto Medeiros-Logeay">
@@ -30,8 +30,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="WiFi Temperature Monitor">
-  <meta name="twitter:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <meta name="twitter:title" content="E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)">
+  <meta name="twitter:description" content="There’s something rotten in the world of e-mail.
 
 ">
   
@@ -40,8 +40,8 @@
   <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WiFi Temperature Monitor">
-  <meta property="og:description" content="After finishing my previous project, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.
+  <meta property="og:title" content="E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)">
+  <meta property="og:description" content="There’s something rotten in the world of e-mail.
 
 ">
   <meta property="og:image" content="/images/profile.jpg" />
@@ -67,7 +67,7 @@
   <meta name="theme-color" content="#ffffff">
   
   <link rel="stylesheet" href="/css/main.css?1738490705623350000">
-  <link rel="canonical" href="https://francisaugusto.com/2017/WiFi-Temperature-Monitor/">
+  <link rel="canonical" href="https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
 
@@ -191,43 +191,46 @@
         <article class="post-container post-container--single">
   <header class="post-header">
     <div class="post-meta">
-      <time datetime="29 Dec 2017" class="post-meta__date date">29 Dec 2017</time>
+      <time datetime="2 Feb 2025" class="post-meta__date date">2 Feb 2025</time>
       
-      &#8226; <span class="post-meta__tags">on <a href="/tags/#projects">projects</a> <a href="/tags/#homebridge">homebridge</a> <a href="/tags/#arduino">arduino</a> <a href="/tags/#ESP8266">ESP8266</a> </span>
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#e-mail">e-mail</a> <a href="/tags/#oidc">oidc</a> <a href="/tags/#oauth2">oauth2</a> <a href="/tags/#thunderbird">thunderbird</a> </span>
       
     </div>
-    <h1 class="post-title">WiFi Temperature Monitor</h1>
+    <h1 class="post-title">E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)</h1>
   </header>
 
   <section class="post">
-    <p>After finishing my <a href="http://francisaugusto.com/2017/Homebrige-nexa-and-Udoo/">previous project</a>, I decided it was time to put a temperature sensor at my daughter’s room. Despite living in Norway for a while, I still suspect it is just colder than it should be.</p>
+    <p>There’s something rotten in the world of e-mail.</p>
 
-<p>My goal was to transmit the temperature of her room to our <a href="https://github.com/nfarina/homebridge">Homebridge</a>, so we could check it on our phone. I also wanted a solution that would allow me to switch the radio transmitter while not transferring data.</p>
+<p>You see, if we come back twenty-five years ago, e-mail was handled in-house by companies or by your local ISP. People did have their hotmail or yahoo accounts, but you’d always get one from your ISP.</p>
 
-<p>I had a couple of DHT11 sensors around, and I decided to try the <a href="https://www.sparkfun.com/products/13678">ESP8266-01</a>. I got them at <a href="https://www.kjell.com">Kjell &amp; Co.</a>, and, as usual, when going there I end up buying more than I need, so I got this <a href="https://www.kjell.com/no/produkter/elektro-og-verktoy/elektronikk/optokomponenter/led-lcd-skjermer/luxorparts-grafisk-oled-skjerm-128-x-64-piksler-0-96--p87945">OLED screen</a>, which I then thought I could use to display the temperature (and humidity, since the DHT11 provides that as well) without my phone.</p>
+<p>Then companies like Google started to host e-mail for companies, but it was still possible to run your own e-mail server. Heck, it is still is.</p>
 
-<p>The ESP8266 is used mainly to read the sensor and transmit the data to the computer running Homebridge. It transmits UDP packets, to make it simple. On the computer side, I use a small NodeJS app to receive the packets (and send and ACK back).</p>
+<p>But a certain challenge came in: multi-factor authentication. Today, MFA or 2FA are absolute requirements for any authentication, and e-mail is not an exception.</p>
 
-<p>I had a couple of Arduino Mini’s at home, which I never used because they didn’t have soldered pins to the GPIO’s. But I manned up and soldered some pins to it. Not the nicest job I ever did, but nothing got broken in the process.</p>
+<p>Suddenly, it got hard to use plain username/password login for IMAP and SMTP, the most widely used e-mail protocols if the goal was to have 2FA. The alternatives would be adding 2FA to a password, but that would prompt the user every now and then to reenter the password with the OTP.</p>
 
-<p>I added a button to the circuit, so that we could read the temperature with the touch of a button.</p>
+<p>That’s why over the last few years the big providers moved for OAuth2 authentication: the user credentials in form of username/password aren’t sent to the e-mail server anymore: the user is redirect to a browser, then he authenticates on his IdP (Identity Provider), get a token which is then sent to the e-mail server.</p>
 
-<p>It works like this:</p>
+<p>Luckily, some of the most popular e-mail servers do support OAuth2. But unluckly, nome of them allow you to add the e-mail server you want. What happened here is that e-mails usually come with a pre-configured list of OAuth2 providers (Google, Microsoft, Yahoo, etc). This is strenghtening e-mail as provided by the Big One’s and preventing anyone to have an e-mail server with modern authentication.</p>
 
-<p>ESP8266: It keeps reading the sensor all the time, and transmitting the data via serial to the Arduino. In addition to that, the data is sent by WiFi to the Homebridge. The radio turns itself on, connects to the network, sends the packets and, upon after getting the confirmation that the packets were received, it turns itself off for 1 minute.</p>
+<p>This is partially a problem due how Oauth2 works: it requires an IdP to configure a client, and e-mail clients need information about that client to talk with them - often with a client secret.</p>
 
-<p>Arduino: It receives the temperature and humidity info fromthe ESP8266, and then it shows it on a screen. The screen is off, and is turned on for 10 seconds when a button is pressed.</p>
+<p>So far, no e-mail client that I know of allow you to simple enter the OAuth2 configuration of your IdP of choice. The Big One’s have their credentials baked in the different e-mail clients. See, for example, this source code from <a href="https://github.com/mozilla/releases-comm-central/blob/462d143ffcdc2028d918454d01c8b8c638eda9a5/mailnews/base/src/OAuth2Providers.sys.mjs">Thunderbird</a>.</p>
 
-<p><img src="https://francisaugusto.com/assets/ESP8266.JPG" alt="It looks shabby, but it works" /></p>
+<p>Just for fun, I tried to bake my own IdP on the source code of Thunderbird. And it worked very well! And it begs the question: why can’t people add their arbitrary IdP on e-mail configurations? If you can choose the authentication method between username-and-password, kerberos, certificates, etc, why can’t you choose OAuth2 and configure the clients accordingly?</p>
 
-<p>It is not very elegant, because there was no space to put the Arduino on the small breadboard. I wanna improve it later by:</p>
+<p><img src="../../assets/2025/oauth-on-thunderbird.png" alt="Thunderbird using another OAuth2 IdP" title="Thunderbid using another IdP with OAuth2..." /></p>
 
-<ul>
-  <li>changing the power supply to a small circuit to provide power (with voltage regulator and capacitors);</li>
-  <li>put an ATMega chip on the breadboard instead of an arduino.</li>
-  <li>order a pcb?</li>
-  <li>Get rid of the arduino and use a bigger ESP8266 instead.</li>
-</ul>
+<p>To be clear, this is not so much of a problem for webmail. Many webmail solutions like Roundcube support OAuth2. I configured it to use OAuth2 against my Dovecot server, and boom, I get single sign-on between all my applications. But saddly, no e-mail client seems to allow adding OAuth2 as an authentication type. Either it comes pre-configured by default for the Big Ones, or you can’t add it.</p>
+
+<p>Unfortunately, it doesn’t seem to be getting any better, by judging from this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1602166">five year long thread</a> about implementing OAuth2 on Thunderbird. If an open-source client, which should attempt to serve the open-source cause, isn’t supporting it, why should those default clients tied to the Big Ones?</p>
+
+<p>What happens? The Enterprise world is led to believe that they <em>need</em> to get e-mail from the Big Ones, as nobody seems to be able to give them 2FA for e-mail. E-mail providers’ diversity shrinks.</p>
+
+<p>I loved the work of Michael W Lucas, especially his <a href="https://mwl.io/nonfiction/tools#ryoms">Run Your Own Mail Server</a> book. We need to get e-mail diversity back. But the world is moving on. New protocols such as <a href="https://jmap.io/software.html">Jmap</a> start to get attention. Still, modern authentication isn’t available for everyone on the e-mail world, unless your e-mail is hosted by the big ones.</p>
+
+<p>This has to change.</p>
 
   </section>
   <section id="disqus_thread"></section><!-- /#disqus_thread -->
@@ -235,8 +238,8 @@
 
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'https://francisaugusto.com/2017/WiFi-Temperature-Monitor/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '/2017/WiFi Temperature Monitor'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2025/Email-quo-vadis-or-where-is-oidc-for-everyone'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
 
       (function() { // DON'T EDIT BELOW THIS LINE
