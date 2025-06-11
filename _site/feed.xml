@@ -5,9 +5,326 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 02 Feb 2025 11:05:05 +0100</pubDate>
-    <lastBuildDate>Sun, 02 Feb 2025 11:05:05 +0100</lastBuildDate>
+    <pubDate>Thu, 12 Jun 2025 00:17:28 +0200</pubDate>
+    <lastBuildDate>Thu, 12 Jun 2025 00:17:28 +0200</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>How to use Keycloak as an IdP for Entra ID via ADFS</title>
+        <description>&lt;h3 id=&quot;what&quot;&gt;What?&lt;/h3&gt;
+&lt;p&gt;This is a post about how to use Keycloak (or another SAML-supporting IdP) as an IdP for Entra ID via ADFS. Or, putting it in more technically correct terms, how to use Keycloak as an IdP for an ADFS instance that is federated with Entra ID.&lt;/p&gt;
+
+&lt;p&gt;I decided to write this after suffering a lot to find good documentation and/or reports on how this should be done.&lt;/p&gt;
+
+&lt;h3 id=&quot;disclaimers&quot;&gt;Disclaimers&lt;/h3&gt;
+&lt;p&gt;I think it is fair to say a few things before we get started:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;I don’t like Microsoft. You’ll see a bit why when you keep reading this document.&lt;/li&gt;
+  &lt;li&gt;I am not, and never have been, a Windows user. So my experience on Windows is quite limited&lt;/li&gt;
+  &lt;li&gt;This document represents my own opinions and ideology, and not those of my employer.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thanks to my awesome Windows colleagues who helped me testing a few of these things that I describe here.&lt;/p&gt;
+
+&lt;h3 id=&quot;why&quot;&gt;Why?&lt;/h3&gt;
+&lt;p&gt;I am glad you ask.&lt;/p&gt;
+
+&lt;p&gt;You see, there are many reasons why you’d want to federate your authentication when using Microsoft:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;You might have your on-premise Keycloak or another IdP, but you also have Microsoft services, and users end up having two different authentication portals;&lt;/li&gt;
+  &lt;li&gt;You don’t like ADFS’ own authentication portal;&lt;/li&gt;
+  &lt;li&gt;You certainly don’t want to export your password hashes to Microsoft, especially in these Trump-times.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The good thing is that by going this route, your users will have single-sign on between your Microsoft and their apps (including those you register on Entra ID) and your Keycloak-based authentication provider and apps that use its instance for authentication.&lt;/p&gt;
+
+&lt;p&gt;The bad thing is that you need to choose what to do with 2FA. Will you keep it on Microsoft? Will you use Keycloak’s 2FA options? Either way, there are options we will discuss.&lt;/p&gt;
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;Suppose your organization uses Entra ID, and it isn’t ready to sync your users’ passwords to your Entra/Azure tenant. You still want to provide on-prem authentication.&lt;/p&gt;
+
+&lt;p&gt;Entra ID allows this in what is called “federated” authentication. But this is Microsoft: they simply are unable to use their definitions in a consistent way. If you google “federated authentication microsoft”, you will see that what they call “federated authentication” can be two things:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Having authentication delegated to an external IdP, as described &lt;a href=&quot;https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-fed&quot;&gt;here&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Having an external IdP configured for &lt;em&gt;external&lt;/em&gt; users, ie, not your own users, as described &lt;a href=&quot;https://learn.microsoft.com/en-us/entra/external-id/direct-federation&quot;&gt;here&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We are interested in authenticate our own users on our premises. This is something Microsoft does not document well and they don’t really go out of their way to help with this, since they really want you to export your password hashes to the cloud. But it is &lt;a href=&quot;https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp&quot;&gt;supported&lt;/a&gt; nevertheless.&lt;/p&gt;
+
+&lt;p&gt;So you have two (actually three) options here if you want to use on-premise authentication:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;use the good’ol ADFS;&lt;/li&gt;
+  &lt;li&gt;use Keycloak directly, by configuring Keycloak as a SAML federated IdP for Entra ID;&lt;/li&gt;
+  &lt;li&gt;use the good’ol ADFS, but configuring it to use Keycloak as its IdP.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Why don’t you just federate with Keycloak directly? Well, because Microsoft. They list some limitations on the &lt;a href=&quot;https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp&quot;&gt;document about how to configure a SAML IdP&lt;/a&gt;, but the real deal is if you use Intune with Entra ID, device registration won’t work if the IdP you use does not support the protocol who is dying but Microsoft keeps it breathing: WS-Fed. You can read about this limitation &lt;a href=&quot;https://learn.microsoft.com/en-us/education/windows/federated-sign-in?tabs=intune&quot;&gt;here&lt;/a&gt;, but the problem is that nobody, including Keycloak, supports WS-Fed.&lt;/p&gt;
+
+&lt;p&gt;But not everything is lost: you can still use ADFS (which also refuses to die), and configure it to redirect your users to your on-premises IdP - in our case, Keycloak. So while you won’t get rid of ADFS, it will give you the compatibility you need.&lt;/p&gt;
+
+&lt;h3 id=&quot;configuring-adfs-to-use-keycloak-as-an-idp&quot;&gt;Configuring ADFS to use Keycloak as an IdP&lt;/h3&gt;
+
+&lt;p&gt;Here we need to clarify a few definitions, because Microsoft refuses to call things like everyone else.&lt;/p&gt;
+
+&lt;p&gt;Look at this table:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Microsoft&lt;/td&gt;
+      &lt;td&gt;SAML&lt;/td&gt;
+      &lt;td&gt;OAuth2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Claims Provider Trust&lt;/td&gt;
+      &lt;td&gt;SSO IdP&lt;/td&gt;
+      &lt;td&gt;IdP/Resource server/&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Relying Party Trust&lt;/td&gt;
+      &lt;td&gt;SSO SP (Service Provider)&lt;/td&gt;
+      &lt;td&gt;client&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;So here what you need is to configure Keycloak as a Claims Provider Trust (CPT) on your ADFS. A Claims Provider Trust is basically an IdP. The default CPT in ADFS is Active Directory, but you can configure a SAML (or a WS-Fed) IdP there as well.&lt;/p&gt;
+
+&lt;p&gt;A Relying Party Trust (RPT) is an application that authenticates via your ADFS. In other words, they authenticate on one (or more) of your CPT’s. In SAML lingo, they are SP (Service Providers). In the scenario we are talking about here, where Entra ID will send users to its federated authentication IdP, the RPT is… Entra ID! But you probably know that by now: when you use Entra Connect to configure User sign in so that users will authenticate on ADFS, it creates an RPT that points to Entra ID on your ADFS.&lt;/p&gt;
+
+&lt;p&gt;So, without further ado, how do you add Keycloak as an IDP?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;open ADFS, click on Claims Provider Trust on your left, and then Add Claims Provider Trust on your right&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/configure-cpt.png&quot; alt=&quot;Create a new CPT&quot; title=&quot;Choose to add a new CPT&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On the window that shows up, choose “Start”&lt;/li&gt;
+  &lt;li&gt;Enter the SAML metadata for your keycloak instance and realm, something like https://&lt;mykeycloak&gt;/realms/&lt;myrealm&gt;/protocol/saml/descriptor:&lt;/myrealm&gt;&lt;/mykeycloak&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/add-keycloak.png&quot; alt=&quot;Enter Keycloak’s metadata url&quot; title=&quot;Add Keycloak as a CPT&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;follow the additional steps which are self explanatory.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There, now Keycloak is an IdP. But you are far from done, my friend. This is Microsoft, and you need to get into the Microsoft way of doing things…&lt;/p&gt;
+
+&lt;h3 id=&quot;claims-claims-and-more-claims&quot;&gt;Claims, claims and more claims&lt;/h3&gt;
+
+&lt;p&gt;Coming from Keycloak world, you are used to something called account matching: you can configure Keycloak in a way that, when you use an external IdP, if the username or e-mail of the external user already exists on your user base, it will then establish a link between the external and internal users, so that the internal user’s attributes are the ones that Keycloak sends to the applications. This is a way to simplify it, things can be configured differently, but the point is that a pretty default way of using keycloak is establishing links between internal and external users.&lt;/p&gt;
+
+&lt;p&gt;ADFS works very differently. When you configure a CPT, the user claims received from Keycloak are not used to fetch a user and all their attributes. If you want to match a Keycloak user to an Active Directory user (and you know you want that), you need to match &lt;em&gt;claim by claim&lt;/em&gt;. You cannot simply say “Oh, fetch me the user myuser@mydomain.com and their attributes”. You need, in a way, reconstruct the claims your RPT needs.&lt;/p&gt;
+
+&lt;p&gt;When configuring Keycloak to be used as an IdP for ADFS on an Entra ID scenario, you will see that Entra ID expects a lot of claims in a very special format, something like that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&lt;/code&gt;. So you need to provide a claim like that.&lt;/p&gt;
+
+&lt;p&gt;Let’s see how you do that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add Claim rules to your newly created CPT&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/add-claim-rules.png&quot; alt=&quot;Add claim rules&quot; title=&quot;Add Claim rules&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Click on “Add rule” on the window that shows up.&lt;/li&gt;
+  &lt;li&gt;Choose “Send claims Using a Custom Rule”:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/send-claims.png&quot; alt=&quot;Send claims as a custom rule&quot; title=&quot;Custom rules&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I am using custom rules here because I need to translate the claims from Keycloak to those used by Entra ID. I could use other types of rules (like for example “passthrough” if the claims already come with the right claim name from Keycloak. This is really up to you.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;You’ll get a window like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/custom-rule.png&quot; alt=&quot;Custom rule&quot; title=&quot;Custom rule&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here you need to enter something in a Microsoft ADFS Claim language. Basically what you want is to say:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Which claim received from Keycloak you want to do something about;&lt;/li&gt;
+  &lt;li&gt;How that claim will be called (and made available to) the RPT’s.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let’s start with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userPrincipalName&lt;/code&gt;claim. Entra ID requires the so-called UPN in a few formats. So if you have a claim in keycloak that gets your user in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user@domain&lt;/code&gt;format, you fetch it, and give it a name Entra ID will like. For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;, types = (&quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&quot;, &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname&quot;, &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname&quot;, &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn&quot;,
+&quot;http://schemas.xmlsoap.org/claims/UPN&quot;), 
+query = &quot;(userPrincipalName={0});mail,givenName,sn,userPrincipalName,userPrincipalName;MYDOMAIN\adfs&quot;, param = c.Value);
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ok, this is confusing. What happens here?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;I get a claim from Keycloak called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userPrincipalName&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;I query that claim in Active Directory to find a user that matches it&lt;/li&gt;
+  &lt;li&gt;I assign this user’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;givenName&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sn&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userPrincipalName&lt;/code&gt; to the clames on the “types” array.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Of course, you can simply send the claims with values you fetch from Keycloak, this is fine. But I’d rather use Active Directory as an authoritative source for the user’s identity.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MYDOMAIN\adfs&lt;/code&gt; is something not clear to me. It seems that you put any user here, and it will work - as a sort of placeholder. But in some documents I read this needs to be an existing user, specifically one that binds to AD. I admit I am not sure, so I just used one I created when configuring ADFS. Again, Microsoft’s documentation is not very nice here.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;You still need to add two more rules. After saving the first one, add another rule, like the first one, but with the following content:  &lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;, types = (&quot;http://schemas.microsoft.com/LiveID/Federation/2008/05/ImmutableID&quot;), query = &quot;(userPrincipalName={0});ms-DS-ConsistencyGuid;MYDOMAIN\adfs&quot;, param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Again you use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userPrincipalName&lt;/code&gt;to fetch an attribute that will be used as the ImmutableID.&lt;/p&gt;
+
+&lt;p&gt;The last mandatory rule is this one:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(Type = &quot;http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname&quot;, Value = &quot;MYDOMAIN\&quot; + regexreplace(c.Value, &quot;^(.*?)@.*$&quot;, &quot;$1&quot;));
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You are good to go! Now you’re ready to test it. Go to https://login.microsoftonline.com, enter your username, and you will be redirect to your Keycloak instance. Or maybe you will see a list with your Keycloak instance name and Active Directory. This is fine for testing, but I guess you want the user to be sent right away to Keycloak.&lt;/p&gt;
+
+&lt;p&gt;If so, use the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Set-AdfsProperties -EnableLocalAuthenticationTypes $false
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I configured way more claims on my test instance. That’s because I see that Entra ID, on its RPT’s Claims Issuance Policy, uses a few other claims that Active Directory has, but Keycloak doesn’t, such as primary group, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;objectguid&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;msdsconsitencyguid&lt;/code&gt;, etc. But to be honest Ii am not sure you need all those. At the end of this articlel I give you a list of all the rules I configured, and you can decide if you want to configure them or not.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;2fa-or-not-2fa-thats-the-question&quot;&gt;2FA or not 2FA? That’s the question&lt;/h3&gt;
+
+&lt;p&gt;Now, suppose you have 2FA configured in Keycloak, or in Entra, or in both. You need an strategy here: are you going to use Keycloak’s, Microsoft Entra’s, or both? Both is not ideal, of course.&lt;/p&gt;
+
+&lt;p&gt;The issue here is that you might want to give up Microsoft’s 2FA. For security reasons, you might not want to turn off Keycloak’s 2FA for the ADFS client. You want to make sure that a Keycloak user who authenticated via Keycloak has used 2FA.&lt;/p&gt;
+
+&lt;p&gt;The problem is this: suppose you turn off 2FA in Keycloak for the ADFS authentication, relying on Entra ID’s 2FA. The user will authenticate in Keycloak, but just with username and password. The same user don’t go ahead with Entra ID authentication. But he is already fully authenticated in Keycloak! So if he goes ahead to another application, he’ll be already logged in, thus skipping 2FA.&lt;/p&gt;
+
+&lt;p&gt;So that’s why you want to keep 2FA in Keycloak, but, in such integration you might want to send a message to Entra saying “Never mind, this user has already used 2FA with me, let him without further ado”.&lt;/p&gt;
+
+&lt;p&gt;This is something where the documentation fails blatantly. So what you have to do is to add a Claim Issuance Policy to your RPT (in this case, Entra’s RPT, usually called “Microsoft Office 365 Identity Platform Worldwide”, and add a rule there:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/adfs/add-rpt-rule.png&quot; alt=&quot;Add RPT rule&quot; title=&quot;Add RPT rule&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then choose “Add rule”, “Sending claims using a custom rule”, and enter the following rule:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;=&amp;gt; issue(Type = &quot;http://schemas.microsoft.com/claims/authnmethodsreferences&quot;, Value = &quot;http://schemas.microsoft.com/claims/multipleauthn&quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Please notice that this will also make Entra ID stop asking for 2FA even if you actually authenticate from Active Directory. To avoid that, don’t configure the rule above. Instesd, configure it on the CPT, and add it again to the RPT, like this:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;CPT:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;=&amp;gt; issue(Type = &quot;http://schemas.microsoft.com/claims/authnmethodsreferences&quot;, Value = &quot;http://schemas.microsoft.com/claims/multipleauthn&quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;RPT:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;http://schemas.microsoft.com/claims/authnmethodsreferences&quot;, Issuer = &quot;mykeycloakcpt&quot;]
+ =&amp;gt; issue(claim = c);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Remember to replace “mykeycloakcpt” for the name of your CPT that has your Keycloak configuration.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This was just another example how Microsoft’s documentation can be misleading. The documenttaion found &lt;a href=&quot;https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-expected-inbound-assertions&quot;&gt;here&lt;/a&gt; never worked. It seems the claims were all wrong. It was only after seing how Ping does it that we got it right:
+&lt;a href=&quot;https://support.pingidentity.com/s/article/PingID-as-on-premises-MFA-for-federated-Office-365-users&quot;&gt;See here.&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Oh, and run these Powershell commands:&lt;/p&gt;
+
+&lt;p&gt;Run these two commands on Powershell:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Update-MgDomainFederationConfiguration -DomainId &amp;lt;yourdomain&amp;gt; -InternalDomainFederationId  &amp;lt;yourdomainfederationid&amp;gt; -PromptLoginBehavior nativeSupport
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;and&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Update-MgDomainFederationConfiguration -DomainId &amp;lt;yourdomain&amp;gt; -InternalDomainFederationId  &amp;lt;yourdomainfederationid&amp;gt; -federatedIdpMfaBehavior acceptIfMfaDoneByFederatedIdp 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I hope this helps you to configure Keycloak as an IdP for Entra ID. It’s recommended to test this with a lot of authentication scenarioes, like e-mail, device enrollment, etc, to see if everything works.&lt;/p&gt;
+
+&lt;h3 id=&quot;appendix&quot;&gt;Appendix&lt;/h3&gt;
+
+&lt;p&gt;Here is a list of other CPT rules I configured, though I’m almost sure we din’t need them:&lt;/p&gt;
+
+&lt;p&gt;[](msdsconsitencyguid:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;,
+          types = (&quot;http://schemas.microsoft.com/ws/2016/02/identity/claims/msdsconsistencyguid&quot;),
+          query = &quot;(userPrincipalName={0});ms-DS-ConsistencyGuid;MYDOMAIN\adfs&quot;,
+          param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;objectguid:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;,
+          types = (&quot;http://schemas.microsoft.com/ws/2008/06/identity/claims/objectguid&quot;),
+          query = &quot;(userPrincipalName={0});objectGUID;MYDOMAIN\adfs&quot;,
+          param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;groupsid:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;,
+          types = (&quot;http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid&quot;),
+          query = &quot;(userPrincipalName={0});tokenGroupsSid;MYDOMAIN\adfs&quot;,
+          param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Account type:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;,
+          types = (&quot;http://schemas.microsoft.com/ws/2012/01/accounttype&quot;),
+          query = &quot;(userPrincipalName={0});objectClass;MYDOMAIN\adfs&quot;,
+          param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;onpremobjectguid:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;, types = (&quot;http://schemas.microsoft.com/identity/claims/onpremobjectguid&quot;), query = &quot;(userPrincipalName={0});objectGUID;MYDOMAIN\adfs&quot;, param = c.Value);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;primarysid:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
+c:[Type == &quot;userPrincipalName&quot;]
+ =&amp;gt; issue(store = &quot;Active Directory&quot;, types = (&quot;http://schemas.microsoft.com/ws/2008/06/identity/claims/primarysid&quot;), query = &quot;(userPrincipalName={0});objectSid;MYDOMAIN\adfs&quot;, param = c.Value);
+&lt;/code&gt;)&lt;/p&gt;
+</description>
+        <pubDate>Wed, 11 Jun 2025 22:30:23 +0200</pubDate>
+        <link>https://francisaugusto.com/2025/How-to-use-Keycloak-as-idp-for-ADFS-Entra/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2025/How-to-use-Keycloak-as-idp-for-ADFS-Entra/</guid>
+        
+        <category>entra</category>
+        
+        <category>microsoft</category>
+        
+        <category>keycloak</category>
+        
+        <category>idp</category>
+        
+        <category>saml</category>
+        
+        
+        <category>technology</category>
+        
+      </item>
     
       <item>
         <title>E-mail authentication, quo vadis? (Or where is OIDC/Oauth2 for everyone?)</title>
@@ -1158,99 +1475,6 @@ allow_weak_crypto = true
         <category>ldap</category>
         
         <category>freenas</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Building a Supermicro-based PC for ESXi and FreeNAS</title>
-        <description>&lt;h2 id=&quot;the-goal&quot;&gt;The goal&lt;/h2&gt;
-
-&lt;p&gt;I have been using &lt;a href=&quot;https://freenas.org&quot;&gt;FreeNAS&lt;/a&gt; for almost a year, and I really enjoy it. I use it for some backups, file storage and for some of my favorite features of FreeBSD: jails. I have some jails installed, such as &lt;a href=&quot;https://nextcloud.com&quot;&gt;Nextcloud&lt;/a&gt;. Things were working fine and smoothly, until…&lt;/p&gt;
-
-&lt;p&gt;As much as I like FreeBSD, it’s not always things work well there coming from a Linux standpoint. I created a jail hoping to run &lt;a href=&quot;https://elasticsearch.co&quot;&gt;ELK&lt;/a&gt;, but it was more complicate than it should be to run it on FreeBSD. It worked, but not the latest version. I could probably run a Linux jail, or just use FreeNAS virtualization features, but my current hardware was struggling.&lt;/p&gt;
-
-&lt;p&gt;At the same time, due to some tasks at work, I was investigating ESXi so I could &lt;a href=&quot;http://francisaugusto.com/2019/ESXi-on-the-2018-Mac-Mini-networking/&quot;&gt;run it on a Mac&lt;/a&gt;. I abandoned the whole thing, as apparently this isn’t well suported and life is too short. So I decided it was time to build a machine just for the task.&lt;/p&gt;
-
-&lt;p&gt;I always wanted to build my own machine, ever since I was a student and got a 486DX processor and a motherboard. A few years ago, a friend moving back home left his PC case behind, I thought I could maybe start there. None of those projects went ahead.&lt;/p&gt;
-
-&lt;p&gt;It is a very fun task to select what to buy, but it can easily get overwhelming. Which motherboard format? Which processor? Which case? Well, I wasn’t very sure of what I wanted, so I after reading a lot on the forums and other websites, I came down with these requirements:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;small form factor&lt;/li&gt;
-  &lt;li&gt;quiet&lt;/li&gt;
-  &lt;li&gt;10GBe Network for some future-proofing&lt;/li&gt;
-  &lt;li&gt;plenty of SATA ports&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The main use for this machine will be running ESXi and FreeNAS under a VM. I also want to run 3 or 4 VM’s, one as a redundant mail server, one to replace my jail-based ELK instanse, and the others to test stuff when needed.&lt;/p&gt;
-
-&lt;h2 id=&quot;what-to-buy&quot;&gt;What to buy?&lt;/h2&gt;
-
-&lt;h3 id=&quot;motherboard&quot;&gt;Motherboard&lt;/h3&gt;
-
-&lt;p&gt;I saw lots of motherboards for gaming that could possibly be used, but the feature set they have was not ideal for my project, as I won’t need a GPU, will probably need to be able to expand the memory, etc. By accident I found out the &lt;a href=&quot;https://supermicro.com&quot;&gt;Supermicro&lt;/a&gt; motherboards, and decided to go for them.&lt;/p&gt;
-
-&lt;p&gt;Since I was hoping to build a PC aiming to run ESXi and FreeNAS as a VM, I saw how others did it, and realized quickly that it is necessary to passthrough the disks used by FreeNAS to the VM, as ZFS (the file system used by FreeNAS) needs tight control of the disks. It was very hard  to find a good documentation on how passthrough works on this scenario. For example, could I passthrough individual SATA ports? As Supermicro motherboards often come with one or two extra mini-SAS ports, could they be used for passthrough? No answers were clear cut, so I decided to order a HBA and connect it to a PCI, as it was pretty much clear that PCI passthrough would be supported.&lt;/p&gt;
-
-&lt;p&gt;I didn’t want to passthrough all the SATA ports of the motherboard, as I want to be able to connect some storage to other VM’s. Using an HBA was not ideal as it’s a waste of abundant SATA ports that comes on those Supermicro boards, but I’d rather be safe than sorry and ordered one just in case I can’t passthrough those drives.&lt;/p&gt;
-
-&lt;p&gt;The good thing about those gaming motherboards is that they offer lots of PCI expansion. Supermicro motherboards - at least those I wanted to use - had very few PCI slots. I fell for the &lt;a href=&quot;https://www.supermicro.com/en/products/motherboard/X11SDV-8C-TLN2F&quot;&gt;X11SDV-4C-TL&lt;/a&gt;, as it is has Mini-ITX form factor, but since I was going to use a PCI slot for the HBA, I really didn’t want to be out of PCI slots if I ever need something else. Bye-bye Mini-ITX and the Fractal Design &lt;a href=&quot;https://www.fractal-design.com/home/product/cases/node-series/node-304-white&quot;&gt;Node 304 case&lt;/a&gt; I was dreaming of. I decided to go for the Supermicro &lt;a href=&quot;https://www.supermicro.com/en/products/motherboard/X11SDV-4C-TP8F&quot;&gt;X11SDV-4C-TP8F&lt;/a&gt;, a Flex-ATX motherboard that had a few other PCI and memory slots.&lt;/p&gt;
-
-&lt;p&gt;This wasn’t an easy choice, as apparently it is not that easy to &lt;a href=&quot;https://forums.servethehome.com/index.php?threads/cooling-the-cpu-x11sdv-4c-tln2f.22285/&quot;&gt;cool the processor on this board&lt;/a&gt;, as Supermicro doesn’t sell the cooler separately or preinstalled, or so I thought, as one can’t find it on the website. After some mails with Supermicro, they say the cooler can be ordered, but it needs to be installed by them, otherwise you can say bye bye to the warranty.&lt;/p&gt;
-
-&lt;p&gt;Luckly for me, the Supermicro reseller in Norway, &lt;a href=&quot;https://nextron.no&quot;&gt;Nextron&lt;/a&gt;, did order everything from me, and I would get the motherboard with a preinstalled cooler. Cool (pun intended). It took, however, a bit long to get it. The motherboards with a Xeon with more than 4 cores can be ordered with a cooler in a less bureaucratic way.&lt;/p&gt;
-
-&lt;h3 id=&quot;memory&quot;&gt;Memory&lt;/h3&gt;
-
-&lt;p&gt;That was an easy choice - got a &lt;a href=&quot;https://www.amazon.com/gp/product/B07DFLTWN3/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;amp;psc=1&quot;&gt;Supermicro certified 64gb RAM&lt;/a&gt;. I was tempted to get two 32GB modules and get the interleave going, but, well, I can always get another 64GB in the future if I need it.&lt;/p&gt;
-
-&lt;h3 id=&quot;case&quot;&gt;Case&lt;/h3&gt;
-
-&lt;p&gt;I really liked those Fractal Design cases, so decided to go for the &lt;a href=&quot;https://www.fractal-design.com/products/cases/node/node-804/black/&quot;&gt;Node 804&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;other-stuff&quot;&gt;Other stuff&lt;/h3&gt;
-
-&lt;p&gt;The other equipment I ordered:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PSU: a &lt;a href=&quot;https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/Power-Supply-Units-Advanced/RMx-Series/p/CP-9020179-NA&quot;&gt;Corsair RM750X&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Storage: &lt;a href=&quot;https://www.intel.com/content/www/us/en/products/memory-storage/solid-state-drives/consumer-ssds/6-series/ssd-660p-series.html&quot;&gt;Intel 660p SSD&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;HBA: &lt;a href=&quot;https://www.ebay.com/itm/HP-H220-6Gbps-SAS-PCI-E-3-0-HBA-LSI-9207-8i-P20-IT-Mode-for-ZFS-FreeNAS-unRAID/162862201664?ssPageName=STRK%3AMEBIDX%3AIT&amp;amp;_trksid=p2057872.m2749.l2649&quot;&gt;This one&lt;/a&gt;, as it is already flashed with the right FreeNAS-friendly firmware&lt;/li&gt;
-  &lt;li&gt;a few cables to connect the HBA to the hard disks.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;the-building&quot;&gt;The building&lt;/h2&gt;
-
-&lt;p&gt;The installation of the motherboard into the case was as smooth as it can be for a first timer. It went well. The only few things that didn’t go according to the plan was that I didn’t manage to plug some of the stuff (HDD led, Power LED) into the motherboard, as I didn’t find where to plug them. It seems there was lacking ground connections for some of the cables. I also couldn’t get a stable mount of the hard disk, as the models I have - two 8TB Seagate Ironwolf - only have four screw holes, while the cage expects a 6 screws HD. Fractal Design’s support was kind enough to send me the adapters for this new type of drive, so I’ll install them as soon as I get them.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/2019/IMG_7533.jpg&quot; alt=&quot;an over view of my installation - halfway through&quot; title=&quot;Halfway through&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Everything mounted and all, so it was the time to press the power button. Scary. It didn’t work. I haven’t connected the cables to the power supply properly, so I did that and boom, things worked!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/2019/itworks.JPG&quot; alt=&quot;It works!&quot; title=&quot;It works!&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I installed ESXi, and I noticed I could passthrough two SATA controllers, which made me thing that I had no need for the HBA I bought. Boom, I opened the case and removed the HBA. I connected the hard disks to one of the two miniSAS connectors, and to my surprise they were immediately recognized and imported by my FreeNAS VM.&lt;/p&gt;
-
-&lt;p&gt;Overall, I am very happy with the machine, except for the noisy fan. I ordered a new fan to replace the one from Supermicro, but I don’t know if I will dare to remove the heatsink to install it. We’ll see. Now I’ve managed to follow some instructions on the net and reduced the fan speed to an acceptable noise level, while maintaining the CPU cool enough. Let’s see how that goes.&lt;/p&gt;
-
-&lt;p&gt;UPDATE 4.9.2019: I didn’t have to remove the heatsink to replace the fan. It is a bit annoying, but it is possible to remove the fan cage only, which was much better than reapplying the thermal paste, and possibly voiding my warranty.&lt;/p&gt;
-
-&lt;p&gt;I installed a Noctua fan that works well. It’s very silent, but I want to go back to the Supermicro cooler as soon as noise is not an issue, as it was way more efficient to cool the machine.&lt;/p&gt;
-
-&lt;p&gt;The hard disks, however, were the culprit when it comes to the noise. When the FreeNAS VM is shut down, the machine is almost silent. I rearranged the disks, not having them all on the same cage, and it got them better airflow and temps.&lt;/p&gt;
-</description>
-        <pubDate>Sat, 17 Aug 2019 14:00:23 +0200</pubDate>
-        <link>https://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2019/Building-a-Supermicro-based-Freenas/</guid>
-        
-        <category>supermicro</category>
-        
-        <category>freenas</category>
-        
-        <category>esxi</category>
         
         
         <category>personal</category>

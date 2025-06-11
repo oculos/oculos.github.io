@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>How to use Keycloak as an IdP for Entra ID via ADFS</title>
+  <meta name="description" content="What?
+This is a post about how to use Keycloak (or another SAML-supporting IdP) as an IdP for Entra ID via ADFS. Or, putting it in more technically correct terms, how to use Keycloak as an IdP for an ADFS instance that is federated with Entra ID.
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How to use Keycloak as an IdP for Entra ID via ADFS">
+  <meta name="twitter:description" content="What?
+This is a post about how to use Keycloak (or another SAML-supporting IdP) as an IdP for Entra ID via ADFS. Or, putting it in more technically correct terms, how to use Keycloak as an IdP for an ADFS instance that is federated with Entra ID.
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to use Keycloak as an IdP for Entra ID via ADFS">
+  <meta property="og:description" content="What?
+This is a post about how to use Keycloak (or another SAML-supporting IdP) as an IdP for Entra ID via ADFS. Or, putting it in more technically correct terms, how to use Keycloak as an IdP for an ADFS instance that is federated with Entra ID.
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1749680248641288000">
+  <link rel="canonical" href="https://francisaugusto.com/2025/How-to-use-Keycloak-as-idp-for-ADFS-Entra/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="11 Jun 2025" class="post-meta__date date">11 Jun 2025</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#entra">entra</a> <a href="/tags/#microsoft">microsoft</a> <a href="/tags/#keycloak">keycloak</a> <a href="/tags/#idp">idp</a> <a href="/tags/#saml">saml</a> </span>
+      
+    </div>
+    <h1 class="post-title">How to use Keycloak as an IdP for Entra ID via ADFS</h1>
+  </header>
+
+  <section class="post">
+    <h3 id="what">What?</h3>
+<p>This is a post about how to use Keycloak (or another SAML-supporting IdP) as an IdP for Entra ID via ADFS. Or, putting it in more technically correct terms, how to use Keycloak as an IdP for an ADFS instance that is federated with Entra ID.</p>
+
+<p>I decided to write this after suffering a lot to find good documentation and/or reports on how this should be done.</p>
+
+<h3 id="disclaimers">Disclaimers</h3>
+<p>I think it is fair to say a few things before we get started:</p>
+
+<ul>
+  <li>I don’t like Microsoft. You’ll see a bit why when you keep reading this document.</li>
+  <li>I am not, and never have been, a Windows user. So my experience on Windows is quite limited</li>
+  <li>This document represents my own opinions and ideology, and not those of my employer.</li>
+</ul>
+
+<p>Thanks to my awesome Windows colleagues who helped me testing a few of these things that I describe here.</p>
+
+<h3 id="why">Why?</h3>
+<p>I am glad you ask.</p>
+
+<p>You see, there are many reasons why you’d want to federate your authentication when using Microsoft:</p>
+<ul>
+  <li>You might have your on-premise Keycloak or another IdP, but you also have Microsoft services, and users end up having two different authentication portals;</li>
+  <li>You don’t like ADFS’ own authentication portal;</li>
+  <li>You certainly don’t want to export your password hashes to Microsoft, especially in these Trump-times.</li>
+</ul>
+
+<p>The good thing is that by going this route, your users will have single-sign on between your Microsoft and their apps (including those you register on Entra ID) and your Keycloak-based authentication provider and apps that use its instance for authentication.</p>
+
+<p>The bad thing is that you need to choose what to do with 2FA. Will you keep it on Microsoft? Will you use Keycloak’s 2FA options? Either way, there are options we will discuss.</p>
+
+<h3 id="introduction">Introduction</h3>
+<p>Suppose your organization uses Entra ID, and it isn’t ready to sync your users’ passwords to your Entra/Azure tenant. You still want to provide on-prem authentication.</p>
+
+<p>Entra ID allows this in what is called “federated” authentication. But this is Microsoft: they simply are unable to use their definitions in a consistent way. If you google “federated authentication microsoft”, you will see that what they call “federated authentication” can be two things:</p>
+
+<ul>
+  <li>Having authentication delegated to an external IdP, as described <a href="https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-fed">here</a>.</li>
+  <li>Having an external IdP configured for <em>external</em> users, ie, not your own users, as described <a href="https://learn.microsoft.com/en-us/entra/external-id/direct-federation">here</a>.</li>
+</ul>
+
+<p>We are interested in authenticate our own users on our premises. This is something Microsoft does not document well and they don’t really go out of their way to help with this, since they really want you to export your password hashes to the cloud. But it is <a href="https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp">supported</a> nevertheless.</p>
+
+<p>So you have two (actually three) options here if you want to use on-premise authentication:</p>
+
+<ul>
+  <li>use the good’ol ADFS;</li>
+  <li>use Keycloak directly, by configuring Keycloak as a SAML federated IdP for Entra ID;</li>
+  <li>use the good’ol ADFS, but configuring it to use Keycloak as its IdP.</li>
+</ul>
+
+<p>Why don’t you just federate with Keycloak directly? Well, because Microsoft. They list some limitations on the <a href="https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp">document about how to configure a SAML IdP</a>, but the real deal is if you use Intune with Entra ID, device registration won’t work if the IdP you use does not support the protocol who is dying but Microsoft keeps it breathing: WS-Fed. You can read about this limitation <a href="https://learn.microsoft.com/en-us/education/windows/federated-sign-in?tabs=intune">here</a>, but the problem is that nobody, including Keycloak, supports WS-Fed.</p>
+
+<p>But not everything is lost: you can still use ADFS (which also refuses to die), and configure it to redirect your users to your on-premises IdP - in our case, Keycloak. So while you won’t get rid of ADFS, it will give you the compatibility you need.</p>
+
+<h3 id="configuring-adfs-to-use-keycloak-as-an-idp">Configuring ADFS to use Keycloak as an IdP</h3>
+
+<p>Here we need to clarify a few definitions, because Microsoft refuses to call things like everyone else.</p>
+
+<p>Look at this table:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Microsoft</td>
+      <td>SAML</td>
+      <td>OAuth2</td>
+    </tr>
+    <tr>
+      <td>Claims Provider Trust</td>
+      <td>SSO IdP</td>
+      <td>IdP/Resource server/</td>
+    </tr>
+    <tr>
+      <td>Relying Party Trust</td>
+      <td>SSO SP (Service Provider)</td>
+      <td>client</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>So here what you need is to configure Keycloak as a Claims Provider Trust (CPT) on your ADFS. A Claims Provider Trust is basically an IdP. The default CPT in ADFS is Active Directory, but you can configure a SAML (or a WS-Fed) IdP there as well.</p>
+
+<p>A Relying Party Trust (RPT) is an application that authenticates via your ADFS. In other words, they authenticate on one (or more) of your CPT’s. In SAML lingo, they are SP (Service Providers). In the scenario we are talking about here, where Entra ID will send users to its federated authentication IdP, the RPT is… Entra ID! But you probably know that by now: when you use Entra Connect to configure User sign in so that users will authenticate on ADFS, it creates an RPT that points to Entra ID on your ADFS.</p>
+
+<p>So, without further ado, how do you add Keycloak as an IDP?</p>
+
+<ul>
+  <li>open ADFS, click on Claims Provider Trust on your left, and then Add Claims Provider Trust on your right</li>
+</ul>
+
+<p><img src="../../assets/2025/adfs/configure-cpt.png" alt="Create a new CPT" title="Choose to add a new CPT" /></p>
+
+<ul>
+  <li>On the window that shows up, choose “Start”</li>
+  <li>Enter the SAML metadata for your keycloak instance and realm, something like https://<mykeycloak>/realms/<myrealm>/protocol/saml/descriptor:</myrealm></mykeycloak></li>
+</ul>
+
+<p><img src="../../assets/2025/adfs/add-keycloak.png" alt="Enter Keycloak’s metadata url" title="Add Keycloak as a CPT" /></p>
+
+<ul>
+  <li>follow the additional steps which are self explanatory.</li>
+</ul>
+
+<p>There, now Keycloak is an IdP. But you are far from done, my friend. This is Microsoft, and you need to get into the Microsoft way of doing things…</p>
+
+<h3 id="claims-claims-and-more-claims">Claims, claims and more claims</h3>
+
+<p>Coming from Keycloak world, you are used to something called account matching: you can configure Keycloak in a way that, when you use an external IdP, if the username or e-mail of the external user already exists on your user base, it will then establish a link between the external and internal users, so that the internal user’s attributes are the ones that Keycloak sends to the applications. This is a way to simplify it, things can be configured differently, but the point is that a pretty default way of using keycloak is establishing links between internal and external users.</p>
+
+<p>ADFS works very differently. When you configure a CPT, the user claims received from Keycloak are not used to fetch a user and all their attributes. If you want to match a Keycloak user to an Active Directory user (and you know you want that), you need to match <em>claim by claim</em>. You cannot simply say “Oh, fetch me the user myuser@mydomain.com and their attributes”. You need, in a way, reconstruct the claims your RPT needs.</p>
+
+<p>When configuring Keycloak to be used as an IdP for ADFS on an Entra ID scenario, you will see that Entra ID expects a lot of claims in a very special format, something like that <code class="language-plaintext highlighter-rouge">http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. So you need to provide a claim like that.</p>
+
+<p>Let’s see how you do that:</p>
+
+<ul>
+  <li>Add Claim rules to your newly created CPT</li>
+</ul>
+
+<p><img src="../../assets/2025/adfs/add-claim-rules.png" alt="Add claim rules" title="Add Claim rules" /></p>
+
+<ul>
+  <li>Click on “Add rule” on the window that shows up.</li>
+  <li>Choose “Send claims Using a Custom Rule”:</li>
+</ul>
+
+<p><img src="../../assets/2025/adfs/send-claims.png" alt="Send claims as a custom rule" title="Custom rules" /></p>
+
+<blockquote>
+  <p>I am using custom rules here because I need to translate the claims from Keycloak to those used by Entra ID. I could use other types of rules (like for example “passthrough” if the claims already come with the right claim name from Keycloak. This is really up to you.</p>
+</blockquote>
+
+<p>You’ll get a window like this:</p>
+
+<p><img src="../../assets/2025/adfs/custom-rule.png" alt="Custom rule" title="Custom rule" /></p>
+
+<p>Here you need to enter something in a Microsoft ADFS Claim language. Basically what you want is to say:</p>
+
+<ul>
+  <li>Which claim received from Keycloak you want to do something about;</li>
+  <li>How that claim will be called (and made available to) the RPT’s.</li>
+</ul>
+
+<p>Let’s start with the <code class="language-plaintext highlighter-rouge">userPrincipalName</code>claim. Entra ID requires the so-called UPN in a few formats. So if you have a claim in keycloak that gets your user in the <code class="language-plaintext highlighter-rouge">user@domain</code>format, you fetch it, and give it a name Entra ID will like. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "userPrincipalName"]
+ =&gt; issue(store = "Active Directory", types = ("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
+"http://schemas.xmlsoap.org/claims/UPN"), 
+query = "(userPrincipalName={0});mail,givenName,sn,userPrincipalName,userPrincipalName;MYDOMAIN\adfs", param = c.Value);
+
+</code></pre></div></div>
+
+<p>Ok, this is confusing. What happens here?</p>
+
+<ul>
+  <li>I get a claim from Keycloak called <code class="language-plaintext highlighter-rouge">userPrincipalName</code></li>
+  <li>I query that claim in Active Directory to find a user that matches it</li>
+  <li>I assign this user’s <code class="language-plaintext highlighter-rouge">mail</code><code class="language-plaintext highlighter-rouge">givenName</code>, <code class="language-plaintext highlighter-rouge">sn</code> and <code class="language-plaintext highlighter-rouge">userPrincipalName</code> to the clames on the “types” array.</li>
+</ul>
+
+<p>Of course, you can simply send the claims with values you fetch from Keycloak, this is fine. But I’d rather use Active Directory as an authoritative source for the user’s identity.</p>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">MYDOMAIN\adfs</code> is something not clear to me. It seems that you put any user here, and it will work - as a sort of placeholder. But in some documents I read this needs to be an existing user, specifically one that binds to AD. I admit I am not sure, so I just used one I created when configuring ADFS. Again, Microsoft’s documentation is not very nice here.</p>
+</blockquote>
+
+<p>You still need to add two more rules. After saving the first one, add another rule, like the first one, but with the following content:  </p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "userPrincipalName"]
+ =&gt; issue(store = "Active Directory", types = ("http://schemas.microsoft.com/LiveID/Federation/2008/05/ImmutableID"), query = "(userPrincipalName={0});ms-DS-ConsistencyGuid;MYDOMAIN\adfs", param = c.Value);
+</code></pre></div></div>
+
+<p>Again you use the <code class="language-plaintext highlighter-rouge">userPrincipalName</code>to fetch an attribute that will be used as the ImmutableID.</p>
+
+<p>The last mandatory rule is this one:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "userPrincipalName"]
+ =&gt; issue(Type = "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname", Value = "MYDOMAIN\" + regexreplace(c.Value, "^(.*?)@.*$", "$1"));
+</code></pre></div></div>
+
+<p>You are good to go! Now you’re ready to test it. Go to https://login.microsoftonline.com, enter your username, and you will be redirect to your Keycloak instance. Or maybe you will see a list with your Keycloak instance name and Active Directory. This is fine for testing, but I guess you want the user to be sent right away to Keycloak.</p>
+
+<p>If so, use the following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Set-AdfsProperties -EnableLocalAuthenticationTypes $false
+</code></pre></div></div>
+
+<blockquote>
+  <p>I configured way more claims on my test instance. That’s because I see that Entra ID, on its RPT’s Claims Issuance Policy, uses a few other claims that Active Directory has, but Keycloak doesn’t, such as primary group, <code class="language-plaintext highlighter-rouge">objectguid</code>, <code class="language-plaintext highlighter-rouge">msdsconsitencyguid</code>, etc. But to be honest Ii am not sure you need all those. At the end of this articlel I give you a list of all the rules I configured, and you can decide if you want to configure them or not.</p>
+</blockquote>
+
+<h3 id="2fa-or-not-2fa-thats-the-question">2FA or not 2FA? That’s the question</h3>
+
+<p>Now, suppose you have 2FA configured in Keycloak, or in Entra, or in both. You need an strategy here: are you going to use Keycloak’s, Microsoft Entra’s, or both? Both is not ideal, of course.</p>
+
+<p>The issue here is that you might want to give up Microsoft’s 2FA. For security reasons, you might not want to turn off Keycloak’s 2FA for the ADFS client. You want to make sure that a Keycloak user who authenticated via Keycloak has used 2FA.</p>
+
+<p>The problem is this: suppose you turn off 2FA in Keycloak for the ADFS authentication, relying on Entra ID’s 2FA. The user will authenticate in Keycloak, but just with username and password. The same user don’t go ahead with Entra ID authentication. But he is already fully authenticated in Keycloak! So if he goes ahead to another application, he’ll be already logged in, thus skipping 2FA.</p>
+
+<p>So that’s why you want to keep 2FA in Keycloak, but, in such integration you might want to send a message to Entra saying “Never mind, this user has already used 2FA with me, let him without further ado”.</p>
+
+<p>This is something where the documentation fails blatantly. So what you have to do is to add a Claim Issuance Policy to your RPT (in this case, Entra’s RPT, usually called “Microsoft Office 365 Identity Platform Worldwide”, and add a rule there:</p>
+
+<p><img src="../../assets/2025/adfs/add-rpt-rule.png" alt="Add RPT rule" title="Add RPT rule" /></p>
+
+<p>Then choose “Add rule”, “Sending claims using a custom rule”, and enter the following rule:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=&gt; issue(Type = "http://schemas.microsoft.com/claims/authnmethodsreferences", Value = "http://schemas.microsoft.com/claims/multipleauthn");
+</code></pre></div></div>
+
+<blockquote>
+  <p>Please notice that this will also make Entra ID stop asking for 2FA even if you actually authenticate from Active Directory. To avoid that, don’t configure the rule above. Instesd, configure it on the CPT, and add it again to the RPT, like this:</p>
+</blockquote>
+
+<p>CPT:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=&gt; issue(Type = "http://schemas.microsoft.com/claims/authnmethodsreferences", Value = "http://schemas.microsoft.com/claims/multipleauthn");
+</code></pre></div></div>
+
+<p>RPT:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "http://schemas.microsoft.com/claims/authnmethodsreferences", Issuer = "mykeycloakcpt"]
+ =&gt; issue(claim = c);
+</code></pre></div></div>
+
+<p>Remember to replace “mykeycloakcpt” for the name of your CPT that has your Keycloak configuration.</p>
+
+<blockquote>
+  <p>This was just another example how Microsoft’s documentation can be misleading. The documenttaion found <a href="https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-expected-inbound-assertions">here</a> never worked. It seems the claims were all wrong. It was only after seing how Ping does it that we got it right:
+<a href="https://support.pingidentity.com/s/article/PingID-as-on-premises-MFA-for-federated-Office-365-users">See here.</a></p>
+</blockquote>
+
+<p>Oh, and run these Powershell commands:</p>
+
+<p>Run these two commands on Powershell:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Update-MgDomainFederationConfiguration -DomainId &lt;yourdomain&gt; -InternalDomainFederationId  &lt;yourdomainfederationid&gt; -PromptLoginBehavior nativeSupport
+</code></pre></div></div>
+<p>and</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Update-MgDomainFederationConfiguration -DomainId &lt;yourdomain&gt; -InternalDomainFederationId  &lt;yourdomainfederationid&gt; -federatedIdpMfaBehavior acceptIfMfaDoneByFederatedIdp 
+</code></pre></div></div>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>I hope this helps you to configure Keycloak as an IdP for Entra ID. It’s recommended to test this with a lot of authentication scenarioes, like e-mail, device enrollment, etc, to see if everything works.</p>
+
+<h3 id="appendix">Appendix</h3>
+
+<p>Here is a list of other CPT rules I configured, though I’m almost sure we din’t need them:</p>
+
+<p>[](msdsconsitencyguid:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "userPrincipalName"]
+ =&gt; issue(store = "Active Directory",
+          types = ("http://schemas.microsoft.com/ws/2016/02/identity/claims/msdsconsistencyguid"),
+          query = "(userPrincipalName={0});ms-DS-ConsistencyGuid;MYDOMAIN\adfs",
+          param = c.Value);
+</code></pre></div></div>
+
+<p>objectguid:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"]
+ =&gt; issue(store = "Active Directory",
+          types = ("http://schemas.microsoft.com/ws/2008/06/identity/claims/objectguid"),
+          query = "(userPrincipalName={0});objectGUID;MYDOMAIN\adfs",
+          param = c.Value);
+</code></pre></div></div>
+
+<p>groupsid:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"]
+ =&gt; issue(store = "Active Directory",
+          types = ("http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid"),
+          query = "(userPrincipalName={0});tokenGroupsSid;MYDOMAIN\adfs",
+          param = c.Value);
+</code></pre></div></div>
+
+<p>Account type:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"]
+ =&gt; issue(store = "Active Directory",
+          types = ("http://schemas.microsoft.com/ws/2012/01/accounttype"),
+          query = "(userPrincipalName={0});objectClass;MYDOMAIN\adfs",
+          param = c.Value);
+</code></pre></div></div>
+
+<p>onpremobjectguid:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:[Type == "userPrincipalName"]
+ =&gt; issue(store = "Active Directory", types = ("http://schemas.microsoft.com/identity/claims/onpremobjectguid"), query = "(userPrincipalName={0});objectGUID;MYDOMAIN\adfs", param = c.Value);
+</code></pre></div></div>
+
+<p>primarysid:</p>
+
+<p><code class="language-plaintext highlighter-rouge">
+c:[Type == "userPrincipalName"]
+ =&gt; issue(store = "Active Directory", types = ("http://schemas.microsoft.com/ws/2008/06/identity/claims/primarysid"), query = "(userPrincipalName={0});objectSid;MYDOMAIN\adfs", param = c.Value);
+</code>)</p>
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2025/How-to-use-Keycloak-as-idp-for-ADFS-Entra/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2025/How-to-use-Keycloak-as-idp-for-ADFS-Entra'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2025 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1749680248641288000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>
