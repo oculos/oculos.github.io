@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Platform Single Sign-on DIY</title>
+  <meta name="description" content="What?
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Platform Single Sign-on DIY">
+  <meta name="twitter:description" content="What?
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Platform Single Sign-on DIY">
+  <meta property="og:description" content="What?
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1763829791419405000">
+  <link rel="canonical" href="https://francisaugusto.com/2025/Platform_single_sign_on_diy/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="22 Nov 2025" class="post-meta__date date">22 Nov 2025</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#keycloak">keycloak</a> <a href="/tags/#idp">idp</a> <a href="/tags/#apple">apple</a> </span>
+      
+    </div>
+    <h1 class="post-title">Platform Single Sign-on DIY</h1>
+  </header>
+
+  <section class="post">
+    <h3 id="what">What?</h3>
+
+<p>This is a post about<a href="https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web">how to implement Platform Single Sign-on</a>, Apple’s framework for simplifying logins from macOS devices. It builds upon the <a href="https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web">SSO Extensions</a>, but takes it a bit further. But it is also a collection of thoughts.
+Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the <a href="https://twocanoes.com/psso-technical-deep-dive/">excellent article</a> written by Timothy Perfitt from <a href="https://twocanoes.com">Twocanoes</a> on the subject. Timothy also wrote a very popular example on <a href="https://github.com/twocanoes/psso-server-go/tree/main">how to implement a simple Platform SSO server.</a>. 
+I plan not to repeat what Timothy wrote on his <a href="https://twocanoes.com/sso/">series of articles</a> about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.</p>
+
+<h3 id="disclaimers">Disclaimers</h3>
+
+<p>My opinions are mine and mine only, and do not by any means reflect those of my employer.
+Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.</p>
+
+<h3 id="implementing-platform-sso-from-the-perspective-of-an-idp">Implementing Platform SSO from the perspective of an IdP</h3>
+
+<p>The rumour goes that Platform SSO hasn’t really become popular. The only two known implementations took a few years to became available, and those are basically Microsoft’s and Okta’s. It is difficult to speculate why this happened, but I have a few theories:</p>
+
+<ul>
+  <li><strong>Lack of MDM native support</strong>: Platform SSO (PSSO from now on) is basically IdP-centric. Besides configuring Platform SSO and having the possibility to integrate device registration with MDM’s, its implementation requires IdP-compatibility and tight cooperation between Mac admins and teams responsible for authentication;</li>
+  <li><strong>Substantial implementation of API’s on IdPs</strong>: PSSO requires some APIs that need to be implemented on IdPs.  This basically requires that every IdP needs to come up with its own implementation.</li>
+  <li><strong>Scarce documentation and examples</strong>: This is probably debatable. There <em>is</em> <a href="https://developer.apple.com/documentation/authenticationservices/authentication-process">documentation on how to implement PSSO</a>, it there is little documentation with code examples and possible pattern flows. Or, in other words, sometimes it is hard to understand what Apple is thinking or how they want IdPs to implement this.</li>
+  <li><strong>Passkeys</strong>: One could simply ask: why go through this hassle if the IdP could simply support Passkeys and call it a day? While Platform SSO gives macOS users the best possible experience, as well as giving IdP admins good tools to manage sessions, Passkeys are almost as easy to use, without having to implement a whole set of APIs to support just macOS devices.</li>
+</ul>
+
+<p>Nevertheless, PSSO is a great addition to any IdP who wants to offer an unbeatable user experience for macOS users. 
+The organization I work for has (through me :) developed a <a href="https://github.com/unioslo/keycloak-psso-extension">Platform Single Sign-on extension</a> for <a href="https://www.keycloak.org">Keycloak</a>, an open-source IdP and IAM that is quite popular. Keycloak is incredibly expandable, and could easily be extended to support PSSO.</p>
+
+<h3 id="requirements-for-idps-and-how-we-did-it">Requirements for IdPs and how we did it</h3>
+
+<p>Before we dive into what IdPs need to offer Platform SSO, it is important to distinguish an SSO Extension to a Platform SSO Extension. Both will be on the same package, but one can develop an SSO Extension without support for Platform SSO. 
+What does an SSO Extension does? Well, it basically intercepts any call to a configurable URL (the configuration needs to be managed by an MDM) so that you can add some logic of how to authenticate the user, so that other applications/websites can reuse that authentication.
+On the <a href="https://twocanoes.com/building-a-single-sign-on-extension-on-macos/">example provided by Twocanoes</a>, that logic, for example, is simply saving cookies the IdP sets into the Keychain, so that they are sent back to whatever attempts to authenticate again.  With PSSO we might want to do things a bit differently, but the point is that there’s no recipe of what an SSO Extension should do - it needs to be implemented according to the logic of the IdP. Cookies are possibly the most common pattern here, so it makes sense to use them in this context.
+On an SSO Extension, everytime an application or Safari hits a predefined point, the <code class="language-plaintext highlighter-rouge">beginAuthorization</code>method of your extension, and from here on you are free to do whatever you want: present a login screen if the user isn’t authenticated, send back some cookies, etc.
+But Platform SSO takes this further: it fetches tokens from the IdP on behalf of the user so that they can be used by the SSO Extension to authenticate the user.
+Let’s suppose your IdP does a standard OIDC flow.  Platform SSO doesn’t change that, and you can develop your SSO to cope with that OIDC flow. What Platform SSO introduces is the possibility of registering the device and the user on the IdP so that the SSO Extension can use that token as a <em>credential</em> for the user, instead of simply presenting a login screen.  The idea is that when the abovementioned <code class="language-plaintext highlighter-rouge">beginAuthorization</code>method is called on your SSO Extension, you inject that credential (or make it available for the IdP as a cookie, for example - I wouldn’t do that, but it is possible) into the request, and your IdP will evaluate it, the same way it evaluates a password, a MFA credential, etc.</p>
+
+<p>So, what do you need to implement, basically, to provide PSSO on your IdP? Well, here’s the answer, but notice that there are many ways to Rome:</p>
+
+<p>Custom endpoints (Apple doesn’t really tell you how you create these, and is not so opinionated about it):</p>
+<ul>
+  <li>an endpoint to register the device (called <em>Device registration</em> by Apple)</li>
+  <li>an endpoint to register the user (called <em>User registration</em>), which is basically to create some sort of credential for the user based on his key - more about keys later</li>
+</ul>
+
+<p>Endpoints that conforms to Apple’s expectations:</p>
+<ul>
+  <li>an endpoint to request a <code class="language-plaintext highlighter-rouge">nonce</code> value to be used during logins.</li>
+  <li>an endpoint to request tokens, which is basically an endpoint where you send a <em><a href="https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request">login request</a></em> and obtain a <em><a href="https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response">login response</a></em>.  A <em>login request</em> and a <em>login response</em> could probably be best described as <em>credential request</em> and <em>credential response</em>, or, maybe, <em>token request</em> or <em>token response</em>. Don’t think of this as logging in the user (you do that on the SSO extension). Here, you simply obtain credentials to log that user in later on the SSO Extension.</li>
+</ul>
+
+<p>Besides these endpoints, you need to come up with a way to recognize these tokens when the user authenticates via the SSO extension. More on that later.</p>
+
+<h3 id="requirements-for-your-psso-extension">Requirements for your PSSO Extension</h3>
+
+<p>Well, the PSSO Extension is basically an implementation of the <code class="language-plaintext highlighter-rouge">ASAuthorizationProviderExtensionRegistrationHandler</code> and its methods. The main ones are:</p>
+
+<p><code class="language-plaintext highlighter-rouge">- beginDeviceRegistration</code>
+<code class="language-plaintext highlighter-rouge">- beginUserRegistration</code></p>
+
+<p>Their implementation is quite similar. What you want to do here is to:</p>
+<ul>
+  <li>fetch some keys from the Secure Enclave (their public keys, mind you)</li>
+  <li>send them to the IdP for registration</li>
+  <li>Implement some logic for authentication</li>
+</ul>
+
+<h3 id="how-we-did-it-on-the-idp">How we did it on the IdP</h3>
+
+<p>So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on <a href="https://github.com/unioslo/keycloak-psso-extension">our repo on github</a>.  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
+All our endpoints are configured as a Keycloak resource. You can see all of them <a href="https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java">here</a>.</p>
+
+<p>You are free to give the endpoints any name you wish. On your PSSO Extension, you need to configure the token and the nonce endpoint, as well as the keys endpoint.</p>
+
+<p>Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: <code class="language-plaintext highlighter-rouge">app-sso  platform -m</code>, when developing your PSSO Extension.</p>
+
+<h4 id="the-nonceendpoint">The <code class="language-plaintext highlighter-rouge">nonce</code>endpoint:</h4>
+
+<p>Apple requires the <code class="language-plaintext highlighter-rouge">nonce</code> endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.</p>
+
+<p>How does the Mac send its <code class="language-plaintext highlighter-rouge">nonce</code> request? <a href="https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce">According to the documentation:</a></p>
+
+<p><code class="language-plaintext highlighter-rouge"> POST /oauth2/token HTTP/1.1
+Host: auth.example.com
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
+grant_type=srv_challenge
+</code>
+Send back a json containing a key with the <code class="language-plaintext highlighter-rouge">nonce</code> value. You can configure the name of that key on your PSSO Extension, otherwise <code class="language-plaintext highlighter-rouge">nonce</code>is used.</p>
+
+<p>On our implementation, the endpoint is called <code class="language-plaintext highlighter-rouge">/nonce</code>.</p>
+
+<h4 id="the-device-registration-endpoint">The device registration endpoint</h4>
+
+<p>Here, you are free to do as you want. What do you want to do here? Basically, you want to receive the request with the device keys and persist them somewhere.
+Here, you might also want to perform some sort of authentication., otherwise anyone could simple send certificates to your server.
+Apple doesn’t really care how and if you do anything here. Their documentation gives some hints of what you should be doing, but they don’t dive deep into this.
+They say you might want to use a <code class="language-plaintext highlighter-rouge">RegistrationToken</code>, which is something the MDM generates dynamically so that the IdP can use to actually check with the MDM if that device is legit, or you can use <em>device attestation</em><code class="language-plaintext highlighter-rouge">.
+Since our MDM (Workspace ONE) doesn’t really implement the </code>RegistrationToken`on its SSO Extension profile, we need to do it the hard way and implement device attestation. more on that later.</p>
+
+<p>Our endpoint for device registration is called <code class="language-plaintext highlighter-rouge">/enroll</code>, and it accepts <code class="language-plaintext highlighter-rouge">POST</code>requests with a json with the following keys/values:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">DeviceSigningKey</code></li>
+  <li><code class="language-plaintext highlighter-rouge">DeviceEncryptionKey</code></li>
+  <li><code class="language-plaintext highlighter-rouge">SignKeyID</code></li>
+  <li><code class="language-plaintext highlighter-rouge">EncKeyID</code></li>
+  <li><code class="language-plaintext highlighter-rouge">attestation</code></li>
+  <li><code class="language-plaintext highlighter-rouge">nonce</code></li>
+  <li><code class="language-plaintext highlighter-rouge">accessToken</code></li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">DeviceSigningKey</code>and the <code class="language-plaintext highlighter-rouge">DeviceEncryptionKey</code> are used to, well, sign and encrypt login requests and responses between the macOS device and the IdP. Their ID counterparts are used so that you can search for the keys on your database.
+The <code class="language-plaintext highlighter-rouge">attestation</code>is a cryptographic token that is signed with the private key of your SigningKey (you can use another key here as well) that lives on your Secure Enclave. You can then check this against Apple’s root CA, which we include with our extension. You need to<code class="language-plaintext highlighter-rouge">AllowDeviceIdentifiersInAttestation</code> on your configuration profile so that you can extract the serial number and <code class="language-plaintext highlighter-rouge">deviceUDID</code>from the attestation. This is information that you can use as part of your device management workflows. Our extension requires this.
+On our <a href="https://github.com/unioslo/weblogin-mac-sso-extension">Weblogin SSO Extension</a>, you can see how we generated the keys and the attestation on our <code class="language-plaintext highlighter-rouge">registerDevice()</code>method on this <a href="https://github.com/unioslo/weblogin-mac-sso-extension/blob/main/ssoe/AuthenticationViewController.swift">file</a>.</p>
+
+<p>You need to send a <code class="language-plaintext highlighter-rouge">nonce</code>that you previously acquired via the <code class="language-plaintext highlighter-rouge">/nonce</code> endpoint.</p>
+
+<p>You also need to send authenticate the user and send their <code class="language-plaintext highlighter-rouge">accessToken</code>. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is “ours” with the MDM, we introduce this authentication - which you kinda need to do for the user anyway. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.</p>
+
+<p>If you modify the extension, you might remove the accessToken verification and introduce some MDM check.</p>
+
+<p>This was the only part of this Keycloak extension where we needed to use database storage. Fortunately, this wasn’t super hard to do with Keycloak.</p>
+
+<h4 id="the-user-registration-endpoint">The user registration endpoint</h4>
+
+<p>This endpoint is called <code class="language-plaintext highlighter-rouge">/enrolluser</code> and is very similar to the device registration. The keys we send are similar:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">nonce</code></li>
+  <li><code class="language-plaintext highlighter-rouge">userKey</code></li>
+  <li><code class="language-plaintext highlighter-rouge">userKeyId</code></li>
+  <li><code class="language-plaintext highlighter-rouge">attestation</code></li>
+  <li><code class="language-plaintext highlighter-rouge">accessToken</code></li>
+</ul>
+
+<p>What is super cool here is that Keycloak makes it very easy to save the user’s key as a <em>credential</em>. This allows both admins and users to revoke it on their admin and user GUI, respectively:</p>
+
+<p><img src="../../assets/2025/keycloak_psso_account.jpg «User account showing the Platform SSO credential»" alt="User account console showing the Platform SSO credential" /></p>
+
+<p>Keycloak stores this as a <code class="language-plaintext highlighter-rouge">CredentialModel</code>. 
+Here we do need the <code class="language-plaintext highlighter-rouge">accessToken</code> so that we can confirm the user registering the device really has an account. 
+Again, on our companion SSO Extension you can see how we provide the keys and attestation.</p>
+
+<h4 id="the-token-endpoint">The token endpoint</h4>
+
+<p>Next, we created the <code class="language-plaintext highlighter-rouge">/token</code> endpoint in order to receive the <em>login request</em> and send back the <em>login response</em>.</p>
+
+<p>We created some classes to <a href="https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/token/JWSDecoder.java">validate the request</a> as <a href="https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request">suggested by Apple</a>, and also to <a href="https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/token/JweBuilder.java">build the response</a> in a <a href="https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response">format the macOS will accept</a>.</p>
+
+<p>So, the endpoints above is basically what you need to process Platform SSO requests from a Mac.  While the <code class="language-plaintext highlighter-rouge">/enroll</code> and <code class="language-plaintext highlighter-rouge">/enrolluser</code> are called by your extension when you decide that they should be called, the <code class="language-plaintext highlighter-rouge">/nonce</code> and <code class="language-plaintext highlighter-rouge">/token</code> endpoints need to be written according to Apple specifications.</p>
+
+<h4 id="when-does-the-psso-extension-call-these-endpoints">When does the PSSO extension call these endpoints?</h4>
+
+<p>So, as I said, you decide when to call the <code class="language-plaintext highlighter-rouge">/enroll</code> and <code class="language-plaintext highlighter-rouge">/enrolluser</code> endpoints. You might want to call them from your <code class="language-plaintext highlighter-rouge">beginDeviceRegistration</code> and <code class="language-plaintext highlighter-rouge">beginUserRegistration</code> respectively.  Everytime you start or repair your device registration, the first method is called, and when you register the user - either right after a device registration or later - the second method is called.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">/token</code> method is called:</p>
+<ul>
+  <li>when the user authenticates on his mac, by restarting the machine or unlocking it</li>
+  <li><a href="https://developer.apple.com/documentation/authenticationservices/platform-single-sign-on-sso">by itself when the tokens have expired</a></li>
+</ul>
+
+<p>The <em>login response</em> will include the <code class="language-plaintext highlighter-rouge">id_token</code>and a <code class="language-plaintext highlighter-rouge">refresh_token</code>, and here goes a very special rant from me:</p>
+
+<p>When using an authentication method that is not the Secure Enclave key, the Platform SSO will call the <code class="language-plaintext highlighter-rouge">/token</code> endpoint and send the <code class="language-plaintext highlighter-rouge">refresh_token</code>
+in order to get new, fresh <code class="language-plaintext highlighter-rouge">id_tokens</code>. But for some reason I don’t understand, it won’t do that with the Secure Enclave. Here is <a href="https://developer.apple.com/documentation/authenticationservices/creating-a-refresh-request">Apple’s  explanation</a> for that:</p>
+
+<blockquote>
+  <p>A refresh request uses the previous refresh token to request a new token without prompting the user for credentials. The system attempts it when the existing token hasn’t expired and the time since the last full login hasn’t exceeded the LoginFrequency in the Device Management profile. It doesn’t apply to User Secure Enclave key authentication, <em>because the user isn’t prompted for credentials</em>.</p>
+</blockquote>
+
+<p>I really don’t get it. What is Apple trying to say here?</p>
+
+<ul>
+  <li>Should I prompt the user for credentials with the Secure Enclave when the refresh token expires?</li>
+  <li>Should we implement some logic on the PSSO extension to update that <code class="language-plaintext highlighter-rouge">id_token</code>?</li>
+</ul>
+
+<p>I really don’t understand why Apple renews the id token for other authentication methods except for the Secure Enclave.</p>
+
+<p>This means that we need to either:</p>
+<ul>
+  <li>renew the <code class="language-plaintext highlighter-rouge">id_token</code> ourselves, or</li>
+  <li>disregard the <code class="language-plaintext highlighter-rouge">id_token</code> and simply use the <code class="language-plaintext highlighter-rouge">refresh_token</code> as an opaque credential.</li>
+</ul>
+
+<p>Grudgingly, we went for the second.  We don’t use the <code class="language-plaintext highlighter-rouge">refresh_token</code> to refresh anything.  We just piggyback on its verifiability on Keycloak, as well as on its long lifetime. If Keycloak is configured to only allow the refresh token to be used once, this extension doesn’t work so well. Luckily, the default configuration of Keycloak is that the reuse of refresh tokens is allowed.</p>
+
+<p>We might need to revisit this in the future, but we really hope that Apple extends the automatic renewal of refresh tokens to Secure Enclave authentication. It makes more sense to use id tokens for authentication.</p>
+
+<h4 id="the-authentication-itself">The authentication itself</h4>
+
+<p>One thing that you need to keep in mind:</p>
+
+<p>In common with the Platform SSO and the SSO Extensions is the <code class="language-plaintext highlighter-rouge">loginManager</code>, an instance of the <code class="language-plaintext highlighter-rouge">ASAuthorizationProviderExtensionLoginManager</code> protocol.  The <code class="language-plaintext highlighter-rouge">loginManager</code> has access to:</p>
+
+<ul>
+  <li>the <a href="https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionloginmanager/loginconfiguration">loginConfiguration</a>, which is where the data regarding your idp, its endpoints, etc, is saved,</li>
+  <li>the <a href="https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionuserloginconfiguration">userLoginConfiguration</a>, where you can save the username and other claims you need on each login request.</li>
+  <li>the <a href="https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionloginmanager/ssotokens">ssoTokens</a> - this is where you fetch the tokens you need on your <code class="language-plaintext highlighter-rouge">beginAuthorization</code> method of your SSO extension.</li>
+</ul>
+
+<p>So, when the PSSO fetches the <em>login response</em>, it saves the <code class="language-plaintext highlighter-rouge">id_token</code>and the <code class="language-plaintext highlighter-rouge">refresh_token</code> on the <code class="language-plaintext highlighter-rouge">ssoTokens</code> member of the <code class="language-plaintext highlighter-rouge">loginManager</code>. That’s where you fetch them if you need them to authenticate the user at the IdP.</p>
+
+<p>We developed an authenticator, which is how Keycloak calls the diverse methods to verify a user.  Keycloak comes with built-in authenticators, such as username/password, OTP, kerberos, passkeys, etc., and allows developers to code their own.</p>
+
+<p>Our <a href="https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOAuthenticator.java">authenticator</a> inspects the header of the authentication requests and checks if a <code class="language-plaintext highlighter-rouge">Platform-SSO-Authorization</code> header is present. If so, we evaluate it and authenticate the user.</p>
+
+<p>The token we send with the header is an encoded json in base64 format, with the following key/values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">refresh_token</code></li>
+  <li><code class="language-plaintext highlighter-rouge">kid</code> (the Signing Key ID of the device, so that we find which key to use for verifying that this is a legit request)</li>
+  <li><code class="language-plaintext highlighter-rouge">signed_at</code></li>
+  <li><code class="language-plaintext highlighter-rouge">username</code> (doesn’t really work, it seems Apple doesn’t allow the explicit use of the saved <a href="https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionuserloginconfiguration/loginusername">loginUserName</a></li>
+</ul>
+
+<p>Since we added the username to the refresh token, with this data the authenticator will be able to:</p>
+<ul>
+  <li>check if the request came from a known device</li>
+  <li>validate the refresh token using Keycloak’s own API</li>
+  <li>consider the user authenticated</li>
+  <li>attach all authentication results from the same device to the same session, which makes it easier to manage sessions (and the reason why we’d love Apple to allow automatic renewal of id tokens.</li>
+</ul>
+
+<p>So our SSO Extension basically does this:</p>
+
+<ul>
+  <li>when triggered by a call to the <code class="language-plaintext highlighter-rouge">/protocol/openid-connect/auth</code>, the SSO extension injects the header with our token, as described above,</li>
+  <li>if the response is not the callback with the value from the <code class="language-plaintext highlighter-rouge">redirect_uri</code> with a code, but rather a form with a password field, we display the login window.</li>
+  <li>we return the the browser as soon as we get a redirect to the callback, which is always the <code class="language-plaintext highlighter-rouge">redirect_uri</code>.</li>
+</ul>
+
+<p>It should work a bit the same way with SAML, except it doesn’t.  So, right now, our SAML flow is a bit erratic. If you can help us to fix it, we’d love to hear from you.</p>
+
+<p>We don’t care about the cookies anymore, because if another application needs the cookies, they simply authenticate again and the extension will give them back with the response.  The SSO is performed by injecting the token into the request, not by keeping cookies. All in all, it will be the same session anyway.</p>
+
+<h3 id="a-few-things-that-dont-work-well--yet">A few things that don’t work well  yet</h3>
+
+<p>There are a few things that need to be fixed:</p>
+
+<ul>
+  <li>better handling of required actions: Keycloak has some required actions that, when called from their internal clients like the <em>Account console</em>, seems to create a reauthentication flow that don’t play ball well with our interception of the authentication url. It works perfectly now, but the required action is performed inside the SSO Extension, not on the browser. We’d like to get this done on the browser, but there’s a conflict with cookies that we can’t seem to solve.</li>
+  <li>SAML, as pointed above,</li>
+  <li>the implementation of some security checks during the authentication, the same way that Keycloak does when using their <a href="https://github.com/keycloak/keycloak/blob/081d8e5a01aa84e04236a8de7adb573dd5c6cc0b/services/src/main/java/org/keycloak/authentication/authenticators/browser/CookieAuthenticator.java#L40">CookieAuthenticator</a>. This will be done soon, but until then, if your Keycloak instance makes use of ACR/LoA, this authenticator might not comply with your authentication rules.</li>
+</ul>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We believe that this implementation might be helpful for a lot of people that want either to try Platform SSO or to provide Platform SSO without having to rely on one of the big IdPs. Theoretically, with a few modifications and by using <a href="https://www.keycloak.org/securing-apps/token-exchange">Token Exchange,</a> , this solution can potentially be used in a way where Keycloak becomes a broker between Macs and other IdPs, but this is not something we tested or implemented.</p>
+
+<p>It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the #Keycloak channel at the MacAdmins<a href="https://macadmins.slack.com/archives/C09UKEDGBEH">Slack</a> .</p>
+
+<p>Finally,  I just wish Apple could be a bit more explicit on how they believe this extension should be used:</p>
+
+<ul>
+  <li>After a token expiration, should we renew automatically for the user (after all, the <code class="language-plaintext highlighter-rouge">loginManager</code> has a method for that,  or should the user authenticate manually?</li>
+  <li>How should we handle SAML flows?</li>
+  <li>Why no refreshing of tokens for Secure Enclave flows?</li>
+</ul>
+
+<p>I think there’s a lot that could be accomplished here if some of Apple’s <em>intentions</em> were known. But i must admit that, after implementing this extension, a lot of the documentation makes more sense - in the beginning, it felt insufficient, but I guess that’s mostly because there are no examples or design patterns shown anywhere, except by those examples from Twocanoes.</p>
+
+<h3 id="acknowledgments">Acknowledgments</h3>
+
+<p>We are very grateful to the work of Timothy Perfitt and Joel Rennich, who across presentations and articles made this subject a bit clearer to a lot of people, myself included.</p>
+
+<p>I am also grateful to my colleagues Gaute and Thomas, who encouraged me to write this, and who came with good ideas and feedback along the way.</p>
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2025/Platform_single_sign_on_diy/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2025/Platform_single_sign_on_diy'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2025 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1763829791419405000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>

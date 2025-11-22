@@ -5,9 +5,292 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 12 Jun 2025 00:17:28 +0200</pubDate>
-    <lastBuildDate>Thu, 12 Jun 2025 00:17:28 +0200</lastBuildDate>
+    <pubDate>Sat, 22 Nov 2025 17:43:11 +0100</pubDate>
+    <lastBuildDate>Sat, 22 Nov 2025 17:43:11 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>Platform Single Sign-on DIY</title>
+        <description>&lt;h3 id=&quot;what&quot;&gt;What?&lt;/h3&gt;
+
+&lt;p&gt;This is a post about&lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web&quot;&gt;how to implement Platform Single Sign-on&lt;/a&gt;, Apple’s framework for simplifying logins from macOS devices. It builds upon the &lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web&quot;&gt;SSO Extensions&lt;/a&gt;, but takes it a bit further. But it is also a collection of thoughts.
+Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the &lt;a href=&quot;https://twocanoes.com/psso-technical-deep-dive/&quot;&gt;excellent article&lt;/a&gt; written by Timothy Perfitt from &lt;a href=&quot;https://twocanoes.com&quot;&gt;Twocanoes&lt;/a&gt; on the subject. Timothy also wrote a very popular example on &lt;a href=&quot;https://github.com/twocanoes/psso-server-go/tree/main&quot;&gt;how to implement a simple Platform SSO server.&lt;/a&gt;. 
+I plan not to repeat what Timothy wrote on his &lt;a href=&quot;https://twocanoes.com/sso/&quot;&gt;series of articles&lt;/a&gt; about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.&lt;/p&gt;
+
+&lt;h3 id=&quot;disclaimers&quot;&gt;Disclaimers&lt;/h3&gt;
+
+&lt;p&gt;My opinions are mine and mine only, and do not by any means reflect those of my employer.
+Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.&lt;/p&gt;
+
+&lt;h3 id=&quot;implementing-platform-sso-from-the-perspective-of-an-idp&quot;&gt;Implementing Platform SSO from the perspective of an IdP&lt;/h3&gt;
+
+&lt;p&gt;The rumour goes that Platform SSO hasn’t really become popular. The only two known implementations took a few years to became available, and those are basically Microsoft’s and Okta’s. It is difficult to speculate why this happened, but I have a few theories:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Lack of MDM native support&lt;/strong&gt;: Platform SSO (PSSO from now on) is basically IdP-centric. Besides configuring Platform SSO and having the possibility to integrate device registration with MDM’s, its implementation requires IdP-compatibility and tight cooperation between Mac admins and teams responsible for authentication;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Substantial implementation of API’s on IdPs&lt;/strong&gt;: PSSO requires some APIs that need to be implemented on IdPs.  This basically requires that every IdP needs to come up with its own implementation.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Scarce documentation and examples&lt;/strong&gt;: This is probably debatable. There &lt;em&gt;is&lt;/em&gt; &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/authentication-process&quot;&gt;documentation on how to implement PSSO&lt;/a&gt;, it there is little documentation with code examples and possible pattern flows. Or, in other words, sometimes it is hard to understand what Apple is thinking or how they want IdPs to implement this.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Passkeys&lt;/strong&gt;: One could simply ask: why go through this hassle if the IdP could simply support Passkeys and call it a day? While Platform SSO gives macOS users the best possible experience, as well as giving IdP admins good tools to manage sessions, Passkeys are almost as easy to use, without having to implement a whole set of APIs to support just macOS devices.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Nevertheless, PSSO is a great addition to any IdP who wants to offer an unbeatable user experience for macOS users. 
+The organization I work for has (through me :) developed a &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;Platform Single Sign-on extension&lt;/a&gt; for &lt;a href=&quot;https://www.keycloak.org&quot;&gt;Keycloak&lt;/a&gt;, an open-source IdP and IAM that is quite popular. Keycloak is incredibly expandable, and could easily be extended to support PSSO.&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements-for-idps-and-how-we-did-it&quot;&gt;Requirements for IdPs and how we did it&lt;/h3&gt;
+
+&lt;p&gt;Before we dive into what IdPs need to offer Platform SSO, it is important to distinguish an SSO Extension to a Platform SSO Extension. Both will be on the same package, but one can develop an SSO Extension without support for Platform SSO. 
+What does an SSO Extension does? Well, it basically intercepts any call to a configurable URL (the configuration needs to be managed by an MDM) so that you can add some logic of how to authenticate the user, so that other applications/websites can reuse that authentication.
+On the &lt;a href=&quot;https://twocanoes.com/building-a-single-sign-on-extension-on-macos/&quot;&gt;example provided by Twocanoes&lt;/a&gt;, that logic, for example, is simply saving cookies the IdP sets into the Keychain, so that they are sent back to whatever attempts to authenticate again.  With PSSO we might want to do things a bit differently, but the point is that there’s no recipe of what an SSO Extension should do - it needs to be implemented according to the logic of the IdP. Cookies are possibly the most common pattern here, so it makes sense to use them in this context.
+On an SSO Extension, everytime an application or Safari hits a predefined point, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method of your extension, and from here on you are free to do whatever you want: present a login screen if the user isn’t authenticated, send back some cookies, etc.
+But Platform SSO takes this further: it fetches tokens from the IdP on behalf of the user so that they can be used by the SSO Extension to authenticate the user.
+Let’s suppose your IdP does a standard OIDC flow.  Platform SSO doesn’t change that, and you can develop your SSO to cope with that OIDC flow. What Platform SSO introduces is the possibility of registering the device and the user on the IdP so that the SSO Extension can use that token as a &lt;em&gt;credential&lt;/em&gt; for the user, instead of simply presenting a login screen.  The idea is that when the abovementioned &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method is called on your SSO Extension, you inject that credential (or make it available for the IdP as a cookie, for example - I wouldn’t do that, but it is possible) into the request, and your IdP will evaluate it, the same way it evaluates a password, a MFA credential, etc.&lt;/p&gt;
+
+&lt;p&gt;So, what do you need to implement, basically, to provide PSSO on your IdP? Well, here’s the answer, but notice that there are many ways to Rome:&lt;/p&gt;
+
+&lt;p&gt;Custom endpoints (Apple doesn’t really tell you how you create these, and is not so opinionated about it):&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;an endpoint to register the device (called &lt;em&gt;Device registration&lt;/em&gt; by Apple)&lt;/li&gt;
+  &lt;li&gt;an endpoint to register the user (called &lt;em&gt;User registration&lt;/em&gt;), which is basically to create some sort of credential for the user based on his key - more about keys later&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Endpoints that conforms to Apple’s expectations:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;an endpoint to request a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; value to be used during logins.&lt;/li&gt;
+  &lt;li&gt;an endpoint to request tokens, which is basically an endpoint where you send a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request&quot;&gt;login request&lt;/a&gt;&lt;/em&gt; and obtain a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response&quot;&gt;login response&lt;/a&gt;&lt;/em&gt;.  A &lt;em&gt;login request&lt;/em&gt; and a &lt;em&gt;login response&lt;/em&gt; could probably be best described as &lt;em&gt;credential request&lt;/em&gt; and &lt;em&gt;credential response&lt;/em&gt;, or, maybe, &lt;em&gt;token request&lt;/em&gt; or &lt;em&gt;token response&lt;/em&gt;. Don’t think of this as logging in the user (you do that on the SSO extension). Here, you simply obtain credentials to log that user in later on the SSO Extension.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Besides these endpoints, you need to come up with a way to recognize these tokens when the user authenticates via the SSO extension. More on that later.&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements-for-your-psso-extension&quot;&gt;Requirements for your PSSO Extension&lt;/h3&gt;
+
+&lt;p&gt;Well, the PSSO Extension is basically an implementation of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ASAuthorizationProviderExtensionRegistrationHandler&lt;/code&gt; and its methods. The main ones are:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;- beginDeviceRegistration&lt;/code&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;- beginUserRegistration&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Their implementation is quite similar. What you want to do here is to:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;fetch some keys from the Secure Enclave (their public keys, mind you)&lt;/li&gt;
+  &lt;li&gt;send them to the IdP for registration&lt;/li&gt;
+  &lt;li&gt;Implement some logic for authentication&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;how-we-did-it-on-the-idp&quot;&gt;How we did it on the IdP&lt;/h3&gt;
+
+&lt;p&gt;So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;our repo on github&lt;/a&gt;.  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
+All our endpoints are configured as a Keycloak resource. You can see all of them &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You are free to give the endpoints any name you wish. On your PSSO Extension, you need to configure the token and the nonce endpoint, as well as the keys endpoint.&lt;/p&gt;
+
+&lt;p&gt;Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app-sso  platform -m&lt;/code&gt;, when developing your PSSO Extension.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-nonceendpoint&quot;&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;endpoint:&lt;/h4&gt;
+
+&lt;p&gt;Apple requires the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.&lt;/p&gt;
+
+&lt;p&gt;How does the Mac send its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; request? &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce&quot;&gt;According to the documentation:&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; POST /oauth2/token HTTP/1.1
+Host: auth.example.com
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
+grant_type=srv_challenge
+&lt;/code&gt;
+Send back a json containing a key with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; value. You can configure the name of that key on your PSSO Extension, otherwise &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;is used.&lt;/p&gt;
+
+&lt;p&gt;On our implementation, the endpoint is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/nonce&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-device-registration-endpoint&quot;&gt;The device registration endpoint&lt;/h4&gt;
+
+&lt;p&gt;Here, you are free to do as you want. What do you want to do here? Basically, you want to receive the request with the device keys and persist them somewhere.
+Here, you might also want to perform some sort of authentication., otherwise anyone could simple send certificates to your server.
+Apple doesn’t really care how and if you do anything here. Their documentation gives some hints of what you should be doing, but they don’t dive deep into this.
+They say you might want to use a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistrationToken&lt;/code&gt;, which is something the MDM generates dynamically so that the IdP can use to actually check with the MDM if that device is legit, or you can use &lt;em&gt;device attestation&lt;/em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.
+Since our MDM (Workspace ONE) doesn’t really implement the &lt;/code&gt;RegistrationToken`on its SSO Extension profile, we need to do it the hard way and implement device attestation. more on that later.&lt;/p&gt;
+
+&lt;p&gt;Our endpoint for device registration is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enroll&lt;/code&gt;, and it accepts &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt;requests with a json with the following keys/values:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DeviceSigningKey&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DeviceEncryptionKey&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SignKeyID&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EncKeyID&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attestation&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DeviceSigningKey&lt;/code&gt;and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DeviceEncryptionKey&lt;/code&gt; are used to, well, sign and encrypt login requests and responses between the macOS device and the IdP. Their ID counterparts are used so that you can search for the keys on your database.
+The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attestation&lt;/code&gt;is a cryptographic token that is signed with the private key of your SigningKey (you can use another key here as well) that lives on your Secure Enclave. You can then check this against Apple’s root CA, which we include with our extension. You need to&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllowDeviceIdentifiersInAttestation&lt;/code&gt; on your configuration profile so that you can extract the serial number and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deviceUDID&lt;/code&gt;from the attestation. This is information that you can use as part of your device management workflows. Our extension requires this.
+On our &lt;a href=&quot;https://github.com/unioslo/weblogin-mac-sso-extension&quot;&gt;Weblogin SSO Extension&lt;/a&gt;, you can see how we generated the keys and the attestation on our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;registerDevice()&lt;/code&gt;method on this &lt;a href=&quot;https://github.com/unioslo/weblogin-mac-sso-extension/blob/main/ssoe/AuthenticationViewController.swift&quot;&gt;file&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You need to send a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;that you previously acquired via the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/nonce&lt;/code&gt; endpoint.&lt;/p&gt;
+
+&lt;p&gt;You also need to send authenticate the user and send their &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt;. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is “ours” with the MDM, we introduce this authentication - which you kinda need to do for the user anyway. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.&lt;/p&gt;
+
+&lt;p&gt;If you modify the extension, you might remove the accessToken verification and introduce some MDM check.&lt;/p&gt;
+
+&lt;p&gt;This was the only part of this Keycloak extension where we needed to use database storage. Fortunately, this wasn’t super hard to do with Keycloak.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-user-registration-endpoint&quot;&gt;The user registration endpoint&lt;/h4&gt;
+
+&lt;p&gt;This endpoint is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enrolluser&lt;/code&gt; and is very similar to the device registration. The keys we send are similar:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userKey&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;userKeyId&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attestation&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;What is super cool here is that Keycloak makes it very easy to save the user’s key as a &lt;em&gt;credential&lt;/em&gt;. This allows both admins and users to revoke it on their admin and user GUI, respectively:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/2025/keycloak_psso_account.jpg «User account showing the Platform SSO credential»&quot; alt=&quot;User account console showing the Platform SSO credential&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Keycloak stores this as a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CredentialModel&lt;/code&gt;. 
+Here we do need the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt; so that we can confirm the user registering the device really has an account. 
+Again, on our companion SSO Extension you can see how we provide the keys and attestation.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-token-endpoint&quot;&gt;The token endpoint&lt;/h4&gt;
+
+&lt;p&gt;Next, we created the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt; endpoint in order to receive the &lt;em&gt;login request&lt;/em&gt; and send back the &lt;em&gt;login response&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;We created some classes to &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/token/JWSDecoder.java&quot;&gt;validate the request&lt;/a&gt; as &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request&quot;&gt;suggested by Apple&lt;/a&gt;, and also to &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/token/JweBuilder.java&quot;&gt;build the response&lt;/a&gt; in a &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response&quot;&gt;format the macOS will accept&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So, the endpoints above is basically what you need to process Platform SSO requests from a Mac.  While the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enroll&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enrolluser&lt;/code&gt; are called by your extension when you decide that they should be called, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/nonce&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt; endpoints need to be written according to Apple specifications.&lt;/p&gt;
+
+&lt;h4 id=&quot;when-does-the-psso-extension-call-these-endpoints&quot;&gt;When does the PSSO extension call these endpoints?&lt;/h4&gt;
+
+&lt;p&gt;So, as I said, you decide when to call the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enroll&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/enrolluser&lt;/code&gt; endpoints. You might want to call them from your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginDeviceRegistration&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginUserRegistration&lt;/code&gt; respectively.  Everytime you start or repair your device registration, the first method is called, and when you register the user - either right after a device registration or later - the second method is called.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt; method is called:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;when the user authenticates on his mac, by restarting the machine or unlocking it&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/platform-single-sign-on-sso&quot;&gt;by itself when the tokens have expired&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The &lt;em&gt;login response&lt;/em&gt; will include the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_token&lt;/code&gt;and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt;, and here goes a very special rant from me:&lt;/p&gt;
+
+&lt;p&gt;When using an authentication method that is not the Secure Enclave key, the Platform SSO will call the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt; endpoint and send the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt;
+in order to get new, fresh &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_tokens&lt;/code&gt;. But for some reason I don’t understand, it won’t do that with the Secure Enclave. Here is &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-a-refresh-request&quot;&gt;Apple’s  explanation&lt;/a&gt; for that:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A refresh request uses the previous refresh token to request a new token without prompting the user for credentials. The system attempts it when the existing token hasn’t expired and the time since the last full login hasn’t exceeded the LoginFrequency in the Device Management profile. It doesn’t apply to User Secure Enclave key authentication, &lt;em&gt;because the user isn’t prompted for credentials&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I really don’t get it. What is Apple trying to say here?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Should I prompt the user for credentials with the Secure Enclave when the refresh token expires?&lt;/li&gt;
+  &lt;li&gt;Should we implement some logic on the PSSO extension to update that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_token&lt;/code&gt;?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I really don’t understand why Apple renews the id token for other authentication methods except for the Secure Enclave.&lt;/p&gt;
+
+&lt;p&gt;This means that we need to either:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;renew the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_token&lt;/code&gt; ourselves, or&lt;/li&gt;
+  &lt;li&gt;disregard the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_token&lt;/code&gt; and simply use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt; as an opaque credential.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Grudgingly, we went for the second.  We don’t use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt; to refresh anything.  We just piggyback on its verifiability on Keycloak, as well as on its long lifetime. If Keycloak is configured to only allow the refresh token to be used once, this extension doesn’t work so well. Luckily, the default configuration of Keycloak is that the reuse of refresh tokens is allowed.&lt;/p&gt;
+
+&lt;p&gt;We might need to revisit this in the future, but we really hope that Apple extends the automatic renewal of refresh tokens to Secure Enclave authentication. It makes more sense to use id tokens for authentication.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-authentication-itself&quot;&gt;The authentication itself&lt;/h4&gt;
+
+&lt;p&gt;One thing that you need to keep in mind:&lt;/p&gt;
+
+&lt;p&gt;In common with the Platform SSO and the SSO Extensions is the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;loginManager&lt;/code&gt;, an instance of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ASAuthorizationProviderExtensionLoginManager&lt;/code&gt; protocol.  The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;loginManager&lt;/code&gt; has access to:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionloginmanager/loginconfiguration&quot;&gt;loginConfiguration&lt;/a&gt;, which is where the data regarding your idp, its endpoints, etc, is saved,&lt;/li&gt;
+  &lt;li&gt;the &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionuserloginconfiguration&quot;&gt;userLoginConfiguration&lt;/a&gt;, where you can save the username and other claims you need on each login request.&lt;/li&gt;
+  &lt;li&gt;the &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionloginmanager/ssotokens&quot;&gt;ssoTokens&lt;/a&gt; - this is where you fetch the tokens you need on your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt; method of your SSO extension.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So, when the PSSO fetches the &lt;em&gt;login response&lt;/em&gt;, it saves the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id_token&lt;/code&gt;and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt; on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssoTokens&lt;/code&gt; member of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;loginManager&lt;/code&gt;. That’s where you fetch them if you need them to authenticate the user at the IdP.&lt;/p&gt;
+
+&lt;p&gt;We developed an authenticator, which is how Keycloak calls the diverse methods to verify a user.  Keycloak comes with built-in authenticators, such as username/password, OTP, kerberos, passkeys, etc., and allows developers to code their own.&lt;/p&gt;
+
+&lt;p&gt;Our &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOAuthenticator.java&quot;&gt;authenticator&lt;/a&gt; inspects the header of the authentication requests and checks if a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Platform-SSO-Authorization&lt;/code&gt; header is present. If so, we evaluate it and authenticate the user.&lt;/p&gt;
+
+&lt;p&gt;The token we send with the header is an encoded json in base64 format, with the following key/values:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;refresh_token&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kid&lt;/code&gt; (the Signing Key ID of the device, so that we find which key to use for verifying that this is a legit request)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;signed_at&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;username&lt;/code&gt; (doesn’t really work, it seems Apple doesn’t allow the explicit use of the saved &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/asauthorizationproviderextensionuserloginconfiguration/loginusername&quot;&gt;loginUserName&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Since we added the username to the refresh token, with this data the authenticator will be able to:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;check if the request came from a known device&lt;/li&gt;
+  &lt;li&gt;validate the refresh token using Keycloak’s own API&lt;/li&gt;
+  &lt;li&gt;consider the user authenticated&lt;/li&gt;
+  &lt;li&gt;attach all authentication results from the same device to the same session, which makes it easier to manage sessions (and the reason why we’d love Apple to allow automatic renewal of id tokens.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So our SSO Extension basically does this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;when triggered by a call to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/protocol/openid-connect/auth&lt;/code&gt;, the SSO extension injects the header with our token, as described above,&lt;/li&gt;
+  &lt;li&gt;if the response is not the callback with the value from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redirect_uri&lt;/code&gt; with a code, but rather a form with a password field, we display the login window.&lt;/li&gt;
+  &lt;li&gt;we return the the browser as soon as we get a redirect to the callback, which is always the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redirect_uri&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It should work a bit the same way with SAML, except it doesn’t.  So, right now, our SAML flow is a bit erratic. If you can help us to fix it, we’d love to hear from you.&lt;/p&gt;
+
+&lt;p&gt;We don’t care about the cookies anymore, because if another application needs the cookies, they simply authenticate again and the extension will give them back with the response.  The SSO is performed by injecting the token into the request, not by keeping cookies. All in all, it will be the same session anyway.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-few-things-that-dont-work-well--yet&quot;&gt;A few things that don’t work well  yet&lt;/h3&gt;
+
+&lt;p&gt;There are a few things that need to be fixed:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;better handling of required actions: Keycloak has some required actions that, when called from their internal clients like the &lt;em&gt;Account console&lt;/em&gt;, seems to create a reauthentication flow that don’t play ball well with our interception of the authentication url. It works perfectly now, but the required action is performed inside the SSO Extension, not on the browser. We’d like to get this done on the browser, but there’s a conflict with cookies that we can’t seem to solve.&lt;/li&gt;
+  &lt;li&gt;SAML, as pointed above,&lt;/li&gt;
+  &lt;li&gt;the implementation of some security checks during the authentication, the same way that Keycloak does when using their &lt;a href=&quot;https://github.com/keycloak/keycloak/blob/081d8e5a01aa84e04236a8de7adb573dd5c6cc0b/services/src/main/java/org/keycloak/authentication/authenticators/browser/CookieAuthenticator.java#L40&quot;&gt;CookieAuthenticator&lt;/a&gt;. This will be done soon, but until then, if your Keycloak instance makes use of ACR/LoA, this authenticator might not comply with your authentication rules.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;We believe that this implementation might be helpful for a lot of people that want either to try Platform SSO or to provide Platform SSO without having to rely on one of the big IdPs. Theoretically, with a few modifications and by using &lt;a href=&quot;https://www.keycloak.org/securing-apps/token-exchange&quot;&gt;Token Exchange,&lt;/a&gt; , this solution can potentially be used in a way where Keycloak becomes a broker between Macs and other IdPs, but this is not something we tested or implemented.&lt;/p&gt;
+
+&lt;p&gt;It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the #Keycloak channel at the MacAdmins&lt;a href=&quot;https://macadmins.slack.com/archives/C09UKEDGBEH&quot;&gt;Slack&lt;/a&gt; .&lt;/p&gt;
+
+&lt;p&gt;Finally,  I just wish Apple could be a bit more explicit on how they believe this extension should be used:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;After a token expiration, should we renew automatically for the user (after all, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;loginManager&lt;/code&gt; has a method for that,  or should the user authenticate manually?&lt;/li&gt;
+  &lt;li&gt;How should we handle SAML flows?&lt;/li&gt;
+  &lt;li&gt;Why no refreshing of tokens for Secure Enclave flows?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think there’s a lot that could be accomplished here if some of Apple’s &lt;em&gt;intentions&lt;/em&gt; were known. But i must admit that, after implementing this extension, a lot of the documentation makes more sense - in the beginning, it felt insufficient, but I guess that’s mostly because there are no examples or design patterns shown anywhere, except by those examples from Twocanoes.&lt;/p&gt;
+
+&lt;h3 id=&quot;acknowledgments&quot;&gt;Acknowledgments&lt;/h3&gt;
+
+&lt;p&gt;We are very grateful to the work of Timothy Perfitt and Joel Rennich, who across presentations and articles made this subject a bit clearer to a lot of people, myself included.&lt;/p&gt;
+
+&lt;p&gt;I am also grateful to my colleagues Gaute and Thomas, who encouraged me to write this, and who came with good ideas and feedback along the way.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 22 Nov 2025 14:30:23 +0100</pubDate>
+        <link>https://francisaugusto.com/2025/Platform_single_sign_on_diy/</link>
+        <guid isPermaLink="true">https://francisaugusto.com/2025/Platform_single_sign_on_diy/</guid>
+        
+        <category>keycloak</category>
+        
+        <category>idp</category>
+        
+        <category>apple</category>
+        
+        
+        <category>technology</category>
+        
+      </item>
     
       <item>
         <title>How to use Keycloak as an IdP for Entra ID via ADFS</title>
@@ -1353,128 +1636,6 @@ RunOnceScriptTimeout=120 # Adjust here if you believe that your rejoins take mor
         <category>vmware</category>
         
         <category>horizon</category>
-        
-        
-        <category>personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Using FreeIPA with FreeNAS</title>
-        <description>&lt;p&gt;I have long wanted to play a bit with LDAP, and got it working once on a Raspberry PI. When it finally worked, my SD card got corrupted and I lost all my hard work.&lt;/p&gt;
-
-&lt;p&gt;I decided to play with &lt;a href=&quot;https://freeipa.org&quot;&gt;FreeIPA&lt;/a&gt;, as it takes all the complexity of setting up LDAP and its security away from the user. I am really impressed by how easy was to setup FreeIPA and to use for authenticate users on other systems.&lt;/p&gt;
-
-&lt;p&gt;I’ve now succesfully managed to use FreeIPA to provide user directory for both &lt;a href=&quot;https://freenas.org&quot;&gt;FreeNAS&lt;/a&gt; and &lt;a href=&quot;https://nextcloud.com&quot;&gt;Nextcloud&lt;/a&gt;, though I will wait a bit to use it as my main source for authentication as it will take a bit of time to migrate my local users on those services to my directory ones.&lt;/p&gt;
-
-&lt;p&gt;I was surprised by the lack of guidance on how to use FreeIPA with FreeNAS, so I decided to write what I learned here after reading some forums and trying some stuff.&lt;/p&gt;
-
-&lt;p&gt;Before starting, it might be helpful to set your nameserver on FreeNAS to the one provided by FreeIPA.&lt;/p&gt;
-
-&lt;h2 id=&quot;configuring-kerberos&quot;&gt;Configuring Kerberos&lt;/h2&gt;
-
-&lt;p&gt;Start here, so you get things working.&lt;/p&gt;
-
-&lt;h4 id=&quot;configure-the-kerberos-realm&quot;&gt;Configure the Kerberos Realm&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory Services&lt;/code&gt;, then then choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Kerberos Realms&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Type your REALM.&lt;/li&gt;
-  &lt;li&gt;I clicked on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Advanced Mode&lt;/code&gt; and entered the kdc and Admin server, which basically are my FreeIPA server address.&lt;/li&gt;
-  &lt;li&gt;Save it&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;configure-the-kerberos-keytabs&quot;&gt;Configure the Kerberos keytabs:&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;On your FreeIPA server (or on a client that has been enrolled and has the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ipa&lt;/code&gt; set of commands), type:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ipa host-add &amp;lt;yourfreenas&amp;gt; # Enter your FreeNAS FQDN here
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Get the keytab file to install on your FreeNAS:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ipa-getkeytab -p host/yourfreenas -k freenas.keytab -e aes256-cts-hmac-sha1-96,aes128-cts-hmac-sha1-96 # you don't really need the -e and the encryption, but I used it as it worked better with some services
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Now, on your FreeNAS, go to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory Services&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Kerberos keytabs&lt;/code&gt; and click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Upload the file you just created&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;configure-the-kerberos-settings&quot;&gt;Configure the Kerberos Settings&lt;/h4&gt;
-
-&lt;p&gt;I am not sure if this is necessary, but I configured it anyway:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Go to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory services&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Kerberos settings&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Under &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libdefaults Auxiliary parameters&lt;/code&gt;, write this:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;default_realm = YOURREALM # ex. MYREALM.LOCAL
-dns_lookup_kdc = true
-allow_weak_crypto = true
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Good? Good. Now the real stuff:&lt;/p&gt;
-
-&lt;h4 id=&quot;configuring-ldap&quot;&gt;Configuring LDAP&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory Services&lt;/code&gt; and choose (guess what) &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LDAP&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;On &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hostname&lt;/code&gt;, type the address of your FreeIPA server&lt;/li&gt;
-  &lt;li&gt;On &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Base DN&lt;/code&gt;, write what usually is your realm’s DN: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dc=myrealm,dc=local&lt;/code&gt;, for example&lt;/li&gt;
-  &lt;li&gt;Follow the documentation under “System Accounts” at &lt;a href=&quot;https://www.freeipa.org/page/HowTo/LDAP&quot;&gt;FreeIPA’s LDAP how-to&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;If you followed the previous step, you might have ended up with a biding user like this: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uid=bidinguser,cn=sysaccounts,cn=etc,dc=myrealm,dc=local&lt;/code&gt;. Copy that under &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bind DN&lt;/code&gt; on your FreeNAS&lt;/li&gt;
-  &lt;li&gt;Enter the bind password as created following the steps above.&lt;/li&gt;
-  &lt;li&gt;Click &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Advanced mode&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;On &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Kerberos realm&lt;/code&gt;, choose the realm you created&lt;/li&gt;
-  &lt;li&gt;On &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Kerberos principal&lt;/code&gt;, choose the host corresponding to the keytab you created&lt;/li&gt;
-  &lt;li&gt;Choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;START_TLS&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Check on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enable&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Edit idmap&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Adjust the Range low and Range high values. This is important because the default values won’t reach the default range on FreeIPA. Be aware not to choose a range between 900000000 and 1000000000. The default values on FreeNAS are 20000 and 900000000, but these fall below the default values of FreeIPA. If you are using FreeIPA’s default range, choose 1000000001 and 2000000000.&lt;/li&gt;
-  &lt;li&gt;You might want to repeat your User DN (same as the “Biding DN”), but it works for me without that.&lt;/li&gt;
-  &lt;li&gt;You also might want to enter the URL, something like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://myfreeipaserver.local&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;That’s it. Things might be working for you now!&lt;/p&gt;
-
-&lt;p&gt;A few notes:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Your directory users do not show up on your main list of users under &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Accounts&lt;/code&gt;, but they will show up whenever you have the option to choose a user.&lt;/li&gt;
-  &lt;li&gt;Watch out for a little &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;i&lt;/code&gt; icon on the top-right of your FreeNAS web interface - it shows the status of your connection to directory services.&lt;/li&gt;
-  &lt;li&gt;Type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id &amp;lt;someuserfromldap&amp;gt;&lt;/code&gt; on the shell to see if you are retrieving users.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;things-i-didnt-manage-to-get-to-work&quot;&gt;Things I didn’t manage to get to work&lt;/h4&gt;
-
-&lt;p&gt;I still haven’t managed to make NFSv4 work with FreeNAS and this setup. I am basically finding the same problems described on this &lt;a href=&quot;https://www.truenas.com/community/threads/setting-up-nfsv4-and-kerberos.86335/#post-613819&quot;&gt;forum post&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
-
-&lt;p&gt;Using FreeIPA is great, and I wish I had tried it before. Having setup Nextcloud, FreeNAS, a mail server based on Postfix+Dovecot, Bitwarden, etc, it would have helped me extremly when it comes to centralize user information.&lt;/p&gt;
-
-&lt;p&gt;Also, as I experiment a lot with some VM’s, it would have helped me to mount my home directory on new servers, so that I could skip copying files.&lt;/p&gt;
-
-&lt;p&gt;My next step is to create a replica of FreeIPA and start migrating the systems I use to it, so that user management might become easier.&lt;/p&gt;
-
-&lt;p&gt;Let me know if this guide helped you!&lt;/p&gt;
-</description>
-        <pubDate>Sun, 08 Nov 2020 19:00:23 +0100</pubDate>
-        <link>https://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</link>
-        <guid isPermaLink="true">https://francisaugusto.com/2020/Using-FreeIPA-with-FreeNAS/</guid>
-        
-        <category>freeipa</category>
-        
-        <category>ldap</category>
-        
-        <category>freenas</category>
         
         
         <category>personal</category>
