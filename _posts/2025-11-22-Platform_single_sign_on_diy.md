@@ -9,13 +9,15 @@ tags:  keycloak idp apple
 
 ### What?
 
-This is a post about[how to implement Platform Single Sign-on](https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web), Apple’s framework for simplifying logins from macOS devices. It builds upon the [SSO Extensions](https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web), but takes it a bit further. But it is also a collection of thoughts.
+This is a post about how to implement [Platform Single Sign-on](https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web), Apple’s framework for simplifying logins from macOS devices. It builds upon the [SSO Extensions](https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web), but takes it a bit further. But it is also a collection of thoughts.
+
 Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the [excellent article](https://twocanoes.com/psso-technical-deep-dive/) written by Timothy Perfitt from [Twocanoes](https://twocanoes.com) on the subject. Timothy also wrote a very popular example on [how to implement a simple Platform SSO server.](https://github.com/twocanoes/psso-server-go/tree/main). 
 I plan not to repeat what Timothy wrote on his [series of articles](https://twocanoes.com/sso/) about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.
 
 ### Disclaimers
 
 My opinions are mine and mine only, and do not by any means reflect those of my employer.
+
 Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.
 
 ### Implementing Platform SSO from the perspective of an IdP
@@ -55,8 +57,8 @@ Besides these endpoints, you need to come up with a way to recognize these token
 
 Well, the PSSO Extension is basically an implementation of the `ASAuthorizationProviderExtensionRegistrationHandler` and its methods. The main ones are:
 
-`- beginDeviceRegistration`
-`- beginUserRegistration`
+- `beginDeviceRegistration`
+- `beginUserRegistration`
 
 Their implementation is quite similar. What you want to do here is to:
 - fetch some keys from the Secure Enclave (their public keys, mind you)
@@ -72,11 +74,12 @@ You are free to give the endpoints any name you wish. On your PSSO Extension, yo
 
 Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: `app-sso  platform -m`, when developing your PSSO Extension.
 
-#### The `nonce`endpoint:
+#### The `nonce` endpoint:
 
 Apple requires the `nonce` endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.  
 
 How does the Mac send its `nonce` request? [According to the documentation:](https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce) 
+
 
 ``` POST /oauth2/token HTTP/1.1
 Host: auth.example.com
@@ -85,6 +88,7 @@ Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
 grant_type=srv_challenge
 ```
+
 Send back a json containing a key with the `nonce` value. You can configure the name of that key on your PSSO Extension, otherwise `nonce`is used.
 
 On our implementation, the endpoint is called `/nonce`.
@@ -107,10 +111,12 @@ Our endpoint for device registration is called `/enroll`, and it accepts `POST`r
 - `accessToken`
 
 The `DeviceSigningKey`and the `DeviceEncryptionKey` are used to, well, sign and encrypt login requests and responses between the macOS device and the IdP. Their ID counterparts are used so that you can search for the keys on your database.
+
 The `attestation`is a cryptographic token that is signed with the private key of your SigningKey (you can use another key here as well) that lives on your Secure Enclave. You can then check this against Apple’s root CA, which we include with our extension. You need to`AllowDeviceIdentifiersInAttestation` on your configuration profile so that you can extract the serial number and `deviceUDID`from the attestation. This is information that you can use as part of your device management workflows. Our extension requires this.
+
 On our [Weblogin SSO Extension](https://github.com/unioslo/weblogin-mac-sso-extension), you can see how we generated the keys and the attestation on our `registerDevice()`method on this [file](https://github.com/unioslo/weblogin-mac-sso-extension/blob/main/ssoe/AuthenticationViewController.swift).
 
-You need to send a `nonce`that you previously acquired via the `/nonce` endpoint.  
+You need to send a `nonce` that you previously acquired via the `/nonce` endpoint.  
 
 You also need to send authenticate the user and send their `accessToken`. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is "ours" with the MDM, we introduce this authentication - which you kinda need to do for the user anyway. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.  
 
@@ -130,7 +136,7 @@ This endpoint is called `/enrolluser` and is very similar to the device registra
 
 What is super cool here is that Keycloak makes it very easy to save the user’s key as a _credential_. This allows both admins and users to revoke it on their admin and user GUI, respectively:
 
-![User account console showing the Platform SSO credential](../../assets/2025/keycloak_psso_account.jpg «User account showing the Platform SSO credential»)
+![User account console showing the Platform SSO credential](../../assets/2025/keycloak_psso_account.jpg)
 
 Keycloak stores this as a `CredentialModel`. 
 Here we do need the `accessToken` so that we can confirm the user registering the device really has an account. 
@@ -227,7 +233,7 @@ There are a few things that need to be fixed:
 
 We believe that this implementation might be helpful for a lot of people that want either to try Platform SSO or to provide Platform SSO without having to rely on one of the big IdPs. Theoretically, with a few modifications and by using [Token Exchange,](https://www.keycloak.org/securing-apps/token-exchange) , this solution can potentially be used in a way where Keycloak becomes a broker between Macs and other IdPs, but this is not something we tested or implemented.
 
-It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the \#Keycloak channel at the MacAdmins[Slack](https://macadmins.slack.com/archives/C09UKEDGBEH) . 
+It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the \#Keycloak channel at the MacAdmins [Slack](https://macadmins.slack.com/archives/C09UKEDGBEH) . 
 
 Finally,  I just wish Apple could be a bit more explicit on how they believe this extension should be used:
 

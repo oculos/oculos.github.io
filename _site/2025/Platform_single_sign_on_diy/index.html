@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1763829810371872000">
+  <link rel="stylesheet" href="/css/main.css?1763830220065882000">
   <link rel="canonical" href="https://francisaugusto.com/2025/Platform_single_sign_on_diy/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -202,14 +202,16 @@
   <section class="post">
     <h3 id="what">What?</h3>
 
-<p>This is a post about<a href="https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web">how to implement Platform Single Sign-on</a>, Apple’s framework for simplifying logins from macOS devices. It builds upon the <a href="https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web">SSO Extensions</a>, but takes it a bit further. But it is also a collection of thoughts.
-Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the <a href="https://twocanoes.com/psso-technical-deep-dive/">excellent article</a> written by Timothy Perfitt from <a href="https://twocanoes.com">Twocanoes</a> on the subject. Timothy also wrote a very popular example on <a href="https://github.com/twocanoes/psso-server-go/tree/main">how to implement a simple Platform SSO server.</a>. 
+<p>This is a post about how to implement <a href="https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web">Platform Single Sign-on</a>, Apple’s framework for simplifying logins from macOS devices. It builds upon the <a href="https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web">SSO Extensions</a>, but takes it a bit further. But it is also a collection of thoughts.</p>
+
+<p>Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the <a href="https://twocanoes.com/psso-technical-deep-dive/">excellent article</a> written by Timothy Perfitt from <a href="https://twocanoes.com">Twocanoes</a> on the subject. Timothy also wrote a very popular example on <a href="https://github.com/twocanoes/psso-server-go/tree/main">how to implement a simple Platform SSO server.</a>. 
 I plan not to repeat what Timothy wrote on his <a href="https://twocanoes.com/sso/">series of articles</a> about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.</p>
 
 <h3 id="disclaimers">Disclaimers</h3>
 
-<p>My opinions are mine and mine only, and do not by any means reflect those of my employer.
-Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.</p>
+<p>My opinions are mine and mine only, and do not by any means reflect those of my employer.</p>
+
+<p>Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.</p>
 
 <h3 id="implementing-platform-sso-from-the-perspective-of-an-idp">Implementing Platform SSO from the perspective of an IdP</h3>
 
@@ -254,8 +256,10 @@ Let’s suppose your IdP does a standard OIDC flow.  Platform SSO doesn’t chan
 
 <p>Well, the PSSO Extension is basically an implementation of the <code class="language-plaintext highlighter-rouge">ASAuthorizationProviderExtensionRegistrationHandler</code> and its methods. The main ones are:</p>
 
-<p><code class="language-plaintext highlighter-rouge">- beginDeviceRegistration</code>
-<code class="language-plaintext highlighter-rouge">- beginUserRegistration</code></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">beginDeviceRegistration</code></li>
+  <li><code class="language-plaintext highlighter-rouge">beginUserRegistration</code></li>
+</ul>
 
 <p>Their implementation is quite similar. What you want to do here is to:</p>
 <ul>
@@ -273,7 +277,7 @@ All our endpoints are configured as a Keycloak resource. You can see all of them
 
 <p>Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: <code class="language-plaintext highlighter-rouge">app-sso  platform -m</code>, when developing your PSSO Extension.</p>
 
-<h4 id="the-nonceendpoint">The <code class="language-plaintext highlighter-rouge">nonce</code>endpoint:</h4>
+<h4 id="the-nonce-endpoint">The <code class="language-plaintext highlighter-rouge">nonce</code> endpoint:</h4>
 
 <p>Apple requires the <code class="language-plaintext highlighter-rouge">nonce</code> endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.</p>
 
@@ -285,8 +289,9 @@ Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
 grant_type=srv_challenge
-</code>
-Send back a json containing a key with the <code class="language-plaintext highlighter-rouge">nonce</code> value. You can configure the name of that key on your PSSO Extension, otherwise <code class="language-plaintext highlighter-rouge">nonce</code>is used.</p>
+</code></p>
+
+<p>Send back a json containing a key with the <code class="language-plaintext highlighter-rouge">nonce</code> value. You can configure the name of that key on your PSSO Extension, otherwise <code class="language-plaintext highlighter-rouge">nonce</code>is used.</p>
 
 <p>On our implementation, the endpoint is called <code class="language-plaintext highlighter-rouge">/nonce</code>.</p>
 
@@ -309,11 +314,13 @@ Since our MDM (Workspace ONE) doesn’t really implement the </code>Registration
   <li><code class="language-plaintext highlighter-rouge">accessToken</code></li>
 </ul>
 
-<p>The <code class="language-plaintext highlighter-rouge">DeviceSigningKey</code>and the <code class="language-plaintext highlighter-rouge">DeviceEncryptionKey</code> are used to, well, sign and encrypt login requests and responses between the macOS device and the IdP. Their ID counterparts are used so that you can search for the keys on your database.
-The <code class="language-plaintext highlighter-rouge">attestation</code>is a cryptographic token that is signed with the private key of your SigningKey (you can use another key here as well) that lives on your Secure Enclave. You can then check this against Apple’s root CA, which we include with our extension. You need to<code class="language-plaintext highlighter-rouge">AllowDeviceIdentifiersInAttestation</code> on your configuration profile so that you can extract the serial number and <code class="language-plaintext highlighter-rouge">deviceUDID</code>from the attestation. This is information that you can use as part of your device management workflows. Our extension requires this.
-On our <a href="https://github.com/unioslo/weblogin-mac-sso-extension">Weblogin SSO Extension</a>, you can see how we generated the keys and the attestation on our <code class="language-plaintext highlighter-rouge">registerDevice()</code>method on this <a href="https://github.com/unioslo/weblogin-mac-sso-extension/blob/main/ssoe/AuthenticationViewController.swift">file</a>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">DeviceSigningKey</code>and the <code class="language-plaintext highlighter-rouge">DeviceEncryptionKey</code> are used to, well, sign and encrypt login requests and responses between the macOS device and the IdP. Their ID counterparts are used so that you can search for the keys on your database.</p>
 
-<p>You need to send a <code class="language-plaintext highlighter-rouge">nonce</code>that you previously acquired via the <code class="language-plaintext highlighter-rouge">/nonce</code> endpoint.</p>
+<p>The <code class="language-plaintext highlighter-rouge">attestation</code>is a cryptographic token that is signed with the private key of your SigningKey (you can use another key here as well) that lives on your Secure Enclave. You can then check this against Apple’s root CA, which we include with our extension. You need to<code class="language-plaintext highlighter-rouge">AllowDeviceIdentifiersInAttestation</code> on your configuration profile so that you can extract the serial number and <code class="language-plaintext highlighter-rouge">deviceUDID</code>from the attestation. This is information that you can use as part of your device management workflows. Our extension requires this.</p>
+
+<p>On our <a href="https://github.com/unioslo/weblogin-mac-sso-extension">Weblogin SSO Extension</a>, you can see how we generated the keys and the attestation on our <code class="language-plaintext highlighter-rouge">registerDevice()</code>method on this <a href="https://github.com/unioslo/weblogin-mac-sso-extension/blob/main/ssoe/AuthenticationViewController.swift">file</a>.</p>
+
+<p>You need to send a <code class="language-plaintext highlighter-rouge">nonce</code> that you previously acquired via the <code class="language-plaintext highlighter-rouge">/nonce</code> endpoint.</p>
 
 <p>You also need to send authenticate the user and send their <code class="language-plaintext highlighter-rouge">accessToken</code>. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is “ours” with the MDM, we introduce this authentication - which you kinda need to do for the user anyway. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.</p>
 
@@ -335,7 +342,7 @@ On our <a href="https://github.com/unioslo/weblogin-mac-sso-extension">Weblogin 
 
 <p>What is super cool here is that Keycloak makes it very easy to save the user’s key as a <em>credential</em>. This allows both admins and users to revoke it on their admin and user GUI, respectively:</p>
 
-<p><img src="../../assets/2025/keycloak_psso_account.jpg «User account showing the Platform SSO credential»" alt="User account console showing the Platform SSO credential" /></p>
+<p><img src="../../assets/2025/keycloak_psso_account.jpg" alt="User account console showing the Platform SSO credential" /></p>
 
 <p>Keycloak stores this as a <code class="language-plaintext highlighter-rouge">CredentialModel</code>. 
 Here we do need the <code class="language-plaintext highlighter-rouge">accessToken</code> so that we can confirm the user registering the device really has an account. 
@@ -448,7 +455,7 @@ in order to get new, fresh <code class="language-plaintext highlighter-rouge">id
 
 <p>We believe that this implementation might be helpful for a lot of people that want either to try Platform SSO or to provide Platform SSO without having to rely on one of the big IdPs. Theoretically, with a few modifications and by using <a href="https://www.keycloak.org/securing-apps/token-exchange">Token Exchange,</a> , this solution can potentially be used in a way where Keycloak becomes a broker between Macs and other IdPs, but this is not something we tested or implemented.</p>
 
-<p>It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the #Keycloak channel at the MacAdmins<a href="https://macadmins.slack.com/archives/C09UKEDGBEH">Slack</a> .</p>
+<p>It would be very nice if other developers could join our efforts, especially when it comes to the SSO Extension and its processing of SAML flows. If you can and want to help, send PR’s our way or drop as a line on the #Keycloak channel at the MacAdmins <a href="https://macadmins.slack.com/archives/C09UKEDGBEH">Slack</a> .</p>
 
 <p>Finally,  I just wish Apple could be a bit more explicit on how they believe this extension should be used:</p>
 
@@ -495,7 +502,7 @@ in order to get new, fresh <code class="language-plaintext highlighter-rouge">id
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1763829810371872000"></script>
+<script type="text/javascript" src="/js/main.js?1763830220065882000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
