@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Nov 2025 06:11:48 +0100</pubDate>
-    <lastBuildDate>Sun, 23 Nov 2025 06:11:48 +0100</lastBuildDate>
+    <pubDate>Sun, 23 Nov 2025 06:20:38 +0100</pubDate>
+    <lastBuildDate>Sun, 23 Nov 2025 06:20:38 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -225,13 +225,13 @@ All our endpoints are configured as a Keycloak resource. You can see all of them
 
 &lt;p&gt;How does the Mac send its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; request? &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce&quot;&gt;According to the documentation:&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
-POST /oauth2/token HTTP/1.1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /oauth2/token HTTP/1.1
 Host: auth.example.com
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
-granttype=srvchallenge &lt;/code&gt;&lt;/p&gt;
+granttype=srvchallenge 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Send back a json containing a key with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; value. You can configure the name of that key on your PSSO Extension, otherwise &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;is used.&lt;/p&gt;
 

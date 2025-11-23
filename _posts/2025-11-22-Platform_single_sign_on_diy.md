@@ -216,7 +216,8 @@ Host: auth.example.com
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
-granttype=srvchallenge ``` 
+granttype=srvchallenge 
+```
 
 
 Send back a json containing a key with the `nonce` value. You can configure the name of that key on your PSSO Extension, otherwise `nonce`is used.
