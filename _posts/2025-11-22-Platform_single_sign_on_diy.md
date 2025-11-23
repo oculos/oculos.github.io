@@ -53,6 +53,15 @@ Endpoints that conforms to Apple’s expectations:
 
 Besides these endpoints, you need to come up with a way to recognize these tokens when the user authenticates via the SSO extension. More on that later.
 
+On Keycloak, we also created a client. It isn’t confidential, but uses PKCE with SHA256, and it needs to have the `urn:apple:platformsso`  scope.
+This client is used by the SSO extension in two ways:
+
+-  to authenticate the user for device and/or user registration (but we don’t _have_ to - this depends on how you want to associate the user and the IdP, and what checks you make to allow device registration as well. Our Keycloak extension expects a token from this client;
+- as a part of macOS own token retrieval process.
+
+On our Weblogin SSO Extension, as well as on Keycloak, we used a hardcoded name for the client, so when you create yours, name it _psso_. In the future, we will make this configurable.
+
+
 ### Requirements for your PSSO Extension
 
 Well, the PSSO Extension is basically an implementation of the `ASAuthorizationProviderExtensionRegistrationHandler` and its methods. The main ones are:
@@ -64,6 +73,124 @@ Their implementation is quite similar. What you want to do here is to:
 - fetch some keys from the Secure Enclave (their public keys, mind you)
 - send them to the IdP for registration
 - Implement some logic for authentication
+
+The extension needs to be configured with a profile managed by your MDM. This profile is - but doesn’t have to me - made up of multiple payloads:
+
+- One for your SSO Extension, including the Platform Extension configuration
+- another for the preferences of your application. Here you can save thing you will need on the app, like the URL of your IdP, the client ID, etc.
+
+It needs to be configured by your MDM. This configuration will look like this: 
+
+```
+<plist version=«1.0»>
+  <dict>
+    <key>PayloadContent</key>
+    <array>
+      <dict>
+        <key>BaseURL</key>
+        <string>https://<YOURINSTANCE>/realms/<YOURREALM>/</string>
+        <key>Issuer</key>
+        <string>https://<YOURINSTANCE>/</string>
+        <key>Audience</key>
+        <string>psso</string>
+        <key>ClientID</key>
+        <string>psso</string>
+        <key>PayloadDisplayName</key>
+        <string>Weblogin SSOE</string>
+        <key>PayloadIdentifier</key>
+        <string>mdscentral.00A38C42-503B-4016-A86D-2186CDA5989C.no.uio.WebloginSSO.3E7FAF27-6179-46AA-B1A3-B55E08D3273D</string>
+        <key>PayloadOrganization</key>
+        <string></string>
+        <key>PayloadType</key>
+        <string>no.uio.WebloginSSO.ssoe</string>
+        <key>PayloadUUID</key>
+        <string>3F7FDF27-6179-46AA-B1A3-B55E08D3273D</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>PayloadDisplayName</key>
+        <string>Weblogin Platform SSO</string>
+        <key>PayloadIdentifier</key>
+        <string>mdscentral.00A38C42-503B-4016-A86D-2186CDA5989C</string>
+        <key>PayloadOrganization</key>
+        <string></string>
+        <key>PayloadScope</key>
+        <string>System</string>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadUUID</key>
+        <string>851A1B46-6A8A-442B-91CB-BC12FF416766</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>AuthenticationMethod</key>
+        <string>UserSecureEnclaveKey</string>
+        <key>ExtensionIdentifier</key>
+        <string>no.uio.WebloginSSO.ssoe</string>
+        <key>PayloadDisplayName</key>
+        <string>Weblogin SSO</string>
+        <key>PayloadIdentifier</key>
+        <string>com.apple.extensiblesso.CA351D35-96B1-41CF-B25B-DF3273189AAD</string>
+        <key>PayloadOrganization</key>
+        <string></string>
+        <key>PayloadType</key>
+        <string>com.apple.extensiblesso</string>
+        <key>PayloadUUID</key>
+        <string>4B7148CD-1069-4140-95CE-78F61BCD9C2B</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>URLs</key>
+        <array>
+          <string>https://<YOURINSTANCE>/realms/<YOURREALM>/protocol/</string>
+          <string>https://YOURINSTANCE/realms/<YOURREALM>/psso</string>
+        </array>
+        <key>PlatformSSO</key>
+        <dict>
+          <key>AccountDisplayName</key>
+          <string>Universitet i Oslo - Weblogin</string>
+          <key>AuthenticationMethod</key>
+          <string>UserSecureEnclaveKey</string>
+          <key>EnableAuthorization</key>
+          <true />
+          <key>EnableCreateUserAtLogin</key>
+          <true />
+          <key>NewUserAuthorizationMode</key>
+          <string>Groups</string>
+          <key>UseSharedDeviceKeys</key>
+          <true />
+          <key>UserAuthorizationMode</key>
+          <string>Groups</string>
+          <key>AllowDeviceIdentifiersInAttestation</key>
+          <true />
+        </dict>
+        <key>TeamIdentifier</key>
+        <string>YOURTEAM</string>
+        <key>Type</key>
+        <string>Redirect</string>
+      </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string></string>
+    <key>PayloadDisplayName</key>
+    <string>Weblogin Platform SSO test/V_41</string>
+    <key>PayloadIdentifier</key>
+    <string>37f5c3b4-36c6-101f-9485-90082e154a1a</string>
+    <key>PayloadOrganization</key>
+    <string></string>
+    <key>PayloadRemovalDisallowed</key>
+    <false />
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>dbacb344-7490-4948-b51a-b395d948fd54_41</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>PayloadScope</key>
+    <string>System</string>
+  </dict>
+</plist> ``` 
 
 ### How we did it on the IdP
 
@@ -81,13 +208,14 @@ Apple requires the `nonce` endpoint so that replay attacks can be avoided. So yo
 How does the Mac send its `nonce` request? [According to the documentation:](https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce) 
 
 
-``` POST /oauth2/token HTTP/1.1
+```
+POST /oauth2/token HTTP/1.1
 Host: auth.example.com
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
-grant_type=srv_challenge
-```
+granttype=srvchallenge ``` 
+
 
 Send back a json containing a key with the `nonce` value. You can configure the name of that key on your PSSO Extension, otherwise `nonce`is used.
 
