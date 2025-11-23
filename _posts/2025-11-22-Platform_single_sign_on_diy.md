@@ -190,9 +190,10 @@ It needs to be configured by your MDM. This configuration will look like this:
     <key>PayloadScope</key>
     <string>System</string>
   </dict>
-</plist> ``` 
+</plist>
+ ``
 
-### How we did it on the IdP
+### How  we did it on the IdP
 
 So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on [our repo on github](https://github.com/unioslo/keycloak-psso-extension).  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
 All our endpoints are configured as a Keycloak resource. You can see all of them [here](https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java).

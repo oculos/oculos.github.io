@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Nov 2025 06:08:25 +0100</pubDate>
-    <lastBuildDate>Sun, 23 Nov 2025 06:08:25 +0100</lastBuildDate>
+    <pubDate>Sun, 23 Nov 2025 06:09:51 +0100</pubDate>
+    <lastBuildDate>Sun, 23 Nov 2025 06:09:51 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -206,9 +206,10 @@ This client is used by the SSO extension in two ways:&lt;/p&gt;
     &amp;lt;key&amp;gt;PayloadScope&amp;lt;/key&amp;gt;
     &amp;lt;string&amp;gt;System&amp;lt;/string&amp;gt;
   &amp;lt;/dict&amp;gt;
-&amp;lt;/plist&amp;gt; ``` 
+&amp;lt;/plist&amp;gt;
+ ``
 
-### How we did it on the IdP
+### How  we did it on the IdP
 
 So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on [our repo on github](https://github.com/unioslo/keycloak-psso-extension).  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
 All our endpoints are configured as a Keycloak resource. You can see all of them [here](https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java).
