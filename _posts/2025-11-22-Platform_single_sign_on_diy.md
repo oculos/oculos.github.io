@@ -191,7 +191,8 @@ It needs to be configured by your MDM. This configuration will look like this:
     <string>System</string>
   </dict>
 </plist>
- ``
+ 
+```
 
 ### How  we did it on the IdP
 

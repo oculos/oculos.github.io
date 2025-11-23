@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Nov 2025 06:10:51 +0100</pubDate>
-    <lastBuildDate>Sun, 23 Nov 2025 06:10:51 +0100</lastBuildDate>
+    <pubDate>Sun, 23 Nov 2025 06:11:48 +0100</pubDate>
+    <lastBuildDate>Sun, 23 Nov 2025 06:11:48 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -207,31 +207,31 @@ This client is used by the SSO extension in two ways:&lt;/p&gt;
     &amp;lt;string&amp;gt;System&amp;lt;/string&amp;gt;
   &amp;lt;/dict&amp;gt;
 &amp;lt;/plist&amp;gt;
- ``
-
-### How  we did it on the IdP
-
-So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on [our repo on github](https://github.com/unioslo/keycloak-psso-extension).  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
-All our endpoints are configured as a Keycloak resource. You can see all of them [here](https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java).
-
-You are free to give the endpoints any name you wish. On your PSSO Extension, you need to configure the token and the nonce endpoint, as well as the keys endpoint.
-
-Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: `app-sso  platform -m`, when developing your PSSO Extension.
-
-#### The `nonce` endpoint:
-
-Apple requires the `nonce` endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.  
-
-How does the Mac send its `nonce` request? [According to the documentation:](https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce) 
-
-
+ 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;POST /oauth2/token HTTP/1.1
+
+&lt;h3 id=&quot;how--we-did-it-on-the-idp&quot;&gt;How  we did it on the IdP&lt;/h3&gt;
+
+&lt;p&gt;So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;our repo on github&lt;/a&gt;.  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
+All our endpoints are configured as a Keycloak resource. You can see all of them &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You are free to give the endpoints any name you wish. On your PSSO Extension, you need to configure the token and the nonce endpoint, as well as the keys endpoint.&lt;/p&gt;
+
+&lt;p&gt;Notice that, for those endpoints where Apple requires a certain standard, you need to accept requests with a few characteristics. Fortunately, Apple tells you how requests should be formed. You can check the documentation, but it is easy to see the format using this command on your terminal: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app-sso  platform -m&lt;/code&gt;, when developing your PSSO Extension.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-nonce-endpoint&quot;&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; endpoint:&lt;/h4&gt;
+
+&lt;p&gt;Apple requires the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; endpoint so that replay attacks can be avoided. So you need to implement some mechanism to receive these requests and return a value.&lt;/p&gt;
+
+&lt;p&gt;How does the Mac send its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; request? &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/obtaining-a-server-nonce&quot;&gt;According to the documentation:&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
+POST /oauth2/token HTTP/1.1
 Host: auth.example.com
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 client-request-id: DCAB01D3-B1FE-4E1C-802F-B3EBDCDF9E67
-granttype=srvchallenge ```&lt;/p&gt;
+granttype=srvchallenge &lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Send back a json containing a key with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; value. You can configure the name of that key on your PSSO Extension, otherwise &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt;is used.&lt;/p&gt;
 
