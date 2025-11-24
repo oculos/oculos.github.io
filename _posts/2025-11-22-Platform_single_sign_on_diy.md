@@ -59,6 +59,8 @@ This client is used by the SSO extension in two ways:
 -  to authenticate the user for device and/or user registration (but we don’t _have_ to - this depends on how you want to associate the user and the IdP, and what checks you make to allow device registration as well. Our Keycloak extension expects a token from this client;
 - as a part of macOS own token retrieval process.
 
+The client also needs a single redirect uri, which is `weblogin-sso://idp-login-redirect`.
+
 On our Weblogin SSO Extension, as well as on Keycloak, we used a hardcoded name for the client, so when you create yours, name it _psso_. In the future, we will make this configurable.
 
 

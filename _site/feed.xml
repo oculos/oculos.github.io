@@ -5,8 +5,8 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Nov 2025 06:24:53 +0100</pubDate>
-    <lastBuildDate>Sun, 23 Nov 2025 06:24:53 +0100</lastBuildDate>
+    <pubDate>Mon, 24 Nov 2025 12:07:43 +0100</pubDate>
+    <lastBuildDate>Mon, 24 Nov 2025 12:07:43 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
@@ -70,6 +70,8 @@ This client is used by the SSO extension in two ways:&lt;/p&gt;
   &lt;li&gt;to authenticate the user for device and/or user registration (but we don’t &lt;em&gt;have&lt;/em&gt; to - this depends on how you want to associate the user and the IdP, and what checks you make to allow device registration as well. Our Keycloak extension expects a token from this client;&lt;/li&gt;
   &lt;li&gt;as a part of macOS own token retrieval process.&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;The client also needs a single redirect uri, which is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;weblogin-sso://idp-login-redirect&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;On our Weblogin SSO Extension, as well as on Keycloak, we used a hardcoded name for the client, so when you create yours, name it &lt;em&gt;psso&lt;/em&gt;. In the future, we will make this configurable.&lt;/p&gt;
 

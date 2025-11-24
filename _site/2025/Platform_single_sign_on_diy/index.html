@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1763875493165938000">
+  <link rel="stylesheet" href="/css/main.css?1763982463159460000">
   <link rel="canonical" href="https://francisaugusto.com/2025/Platform_single_sign_on_diy/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -259,6 +259,8 @@ This client is used by the SSO extension in two ways:</p>
   <li>to authenticate the user for device and/or user registration (but we don’t <em>have</em> to - this depends on how you want to associate the user and the IdP, and what checks you make to allow device registration as well. Our Keycloak extension expects a token from this client;</li>
   <li>as a part of macOS own token retrieval process.</li>
 </ul>
+
+<p>The client also needs a single redirect uri, which is <code class="language-plaintext highlighter-rouge">weblogin-sso://idp-login-redirect</code>.</p>
 
 <p>On our Weblogin SSO Extension, as well as on Keycloak, we used a hardcoded name for the client, so when you create yours, name it <em>psso</em>. In the future, we will make this configurable.</p>
 
@@ -633,7 +635,7 @@ in order to get new, fresh <code class="language-plaintext highlighter-rouge">id
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1763875493165938000"></script>
+<script type="text/javascript" src="/js/main.js?1763982463159460000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
