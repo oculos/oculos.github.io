@@ -5,66 +5,81 @@
     <description>IT Engineer with background in IT-Law, running enthusiast</description>
     <link>https://francisaugusto.com/</link>
     <atom:link href="https://francisaugusto.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 24 Nov 2025 12:07:43 +0100</pubDate>
-    <lastBuildDate>Mon, 24 Nov 2025 12:07:43 +0100</lastBuildDate>
+    <pubDate>Sun, 30 Nov 2025 11:52:07 +0100</pubDate>
+    <lastBuildDate>Sun, 30 Nov 2025 11:52:07 +0100</lastBuildDate>
     <generator>Jekyll v3.9.2</generator>
     
       <item>
         <title>Platform Single Sign-on DIY</title>
         <description>&lt;h3 id=&quot;what&quot;&gt;What?&lt;/h3&gt;
 
-&lt;p&gt;This is a post about how to implement &lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web&quot;&gt;Platform Single Sign-on&lt;/a&gt;, Apple’s framework for simplifying logins from macOS devices. It builds upon the &lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web&quot;&gt;SSO Extensions&lt;/a&gt;, but takes it a bit further. But it is also a collection of thoughts.&lt;/p&gt;
+&lt;p&gt;This is a post about how to implement &lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web&quot;&gt;Platform Single Sign-on&lt;/a&gt;, Apple’s framework for simplifying logins from macOS devices. It builds on the &lt;a href=&quot;https://support.apple.com/en-vn/guide/deployment/depfdbf18f55/web&quot;&gt;SSO Extensions&lt;/a&gt;, but it takes it a bit further. It is also a collection of thoughts about Platform Single Sign-on and the challenges when designing it.&lt;/p&gt;
 
-&lt;p&gt;Why, you ask? The reason is pretty simple: it is almost impossible to find a piece of documentation where we can understand clearly what is it that Apple want IdPs to implement. The only exception to my impression on this is the &lt;a href=&quot;https://twocanoes.com/psso-technical-deep-dive/&quot;&gt;excellent article&lt;/a&gt; written by Timothy Perfitt from &lt;a href=&quot;https://twocanoes.com&quot;&gt;Twocanoes&lt;/a&gt; on the subject. Timothy also wrote a very popular example on &lt;a href=&quot;https://github.com/twocanoes/psso-server-go/tree/main&quot;&gt;how to implement a simple Platform SSO server.&lt;/a&gt;. 
-I plan not to repeat what Timothy wrote on his &lt;a href=&quot;https://twocanoes.com/sso/&quot;&gt;series of articles&lt;/a&gt; about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.&lt;/p&gt;
+&lt;p&gt;Why, you ask? The reason is pretty simple: it is almost impossible to find good documentation where we can understand clearly what is it that Apple want IdPs to implement when they develop their SSO Extensions. The only exception to my impression on this is the &lt;a href=&quot;https://twocanoes.com/psso-technical-deep-dive/&quot;&gt;excellent article&lt;/a&gt; written by Timothy Perfitt from &lt;a href=&quot;https://twocanoes.com&quot;&gt;Twocanoes&lt;/a&gt; on the subject. Timothy also wrote a very popular example on &lt;a href=&quot;https://github.com/twocanoes/psso-server-go/tree/main&quot;&gt;how to implement a simple Platform SSO server.&lt;/a&gt;. 
+I don’t want to repeat what Timothy wrote on his &lt;a href=&quot;https://twocanoes.com/sso/&quot;&gt;series of articles&lt;/a&gt; about Platform SSO. I’d rather go a bit further and discuss ideas and design possibilities, as well as what I consider lacking.&lt;/p&gt;
 
 &lt;h3 id=&quot;disclaimers&quot;&gt;Disclaimers&lt;/h3&gt;
 
 &lt;p&gt;My opinions are mine and mine only, and do not by any means reflect those of my employer.&lt;/p&gt;
 
-&lt;p&gt;Everything written here is based on using shared keys from the Secure Enclave. Other authentication methods, such as using Passwords or smartcards are not covered.&lt;/p&gt;
+&lt;p&gt;Everything written here is based on using shared keys from the Secure Enclave as the Authentication Method for the Platform SSO. Other authentication methods, such as using Passwords or smartcards are not covered.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-platform-sso&quot;&gt;What is Platform SSO?&lt;/h3&gt;
+
+&lt;p&gt;Platform Single Sign-On is a macOS feature allowing Macs to seamless authenticate to an IdP when they authenticate locally on their Macs. This avoids double authentication, that is, authenticating on the Mac &lt;em&gt;and&lt;/em&gt; authenticating to the IdP using the same or different credentials.&lt;/p&gt;
 
 &lt;h3 id=&quot;implementing-platform-sso-from-the-perspective-of-an-idp&quot;&gt;Implementing Platform SSO from the perspective of an IdP&lt;/h3&gt;
 
 &lt;p&gt;The rumour goes that Platform SSO hasn’t really become popular. The only two known implementations took a few years to became available, and those are basically Microsoft’s and Okta’s. It is difficult to speculate why this happened, but I have a few theories:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Lack of MDM native support&lt;/strong&gt;: Platform SSO (PSSO from now on) is basically IdP-centric. Besides configuring Platform SSO and having the possibility to integrate device registration with MDM’s, its implementation requires IdP-compatibility and tight cooperation between Mac admins and teams responsible for authentication;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Substantial implementation of API’s on IdPs&lt;/strong&gt;: PSSO requires some APIs that need to be implemented on IdPs.  This basically requires that every IdP needs to come up with its own implementation.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Scarce documentation and examples&lt;/strong&gt;: This is probably debatable. There &lt;em&gt;is&lt;/em&gt; &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/authentication-process&quot;&gt;documentation on how to implement PSSO&lt;/a&gt;, it there is little documentation with code examples and possible pattern flows. Or, in other words, sometimes it is hard to understand what Apple is thinking or how they want IdPs to implement this.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Lack of MDM native support&lt;/strong&gt;: Platform SSO (PSSO from now on) is basically IdP-centric. Besides configuring Platform SSO and having the possibility to integrate device registration with MDM’s, its implementation requires IdP-compatibility and tight cooperation between Mac admins and teams responsible for authentication/identity management;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Substantial implementation of API’s on IdPs&lt;/strong&gt;: PSSO requires some APIs that need to be implemented on IdPs.  This basically requires that every IdP has to come up with their own implementation.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Scarce documentation and examples&lt;/strong&gt;: This is probably debatable. There &lt;em&gt;is&lt;/em&gt; &lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/authentication-process&quot;&gt;documentation on how to implement PSSO&lt;/a&gt;, but there is little documentation with code examples and possible pattern flows. Or, in other words, sometimes it is hard to understand what Apple is thinking or how they want IdPs to implement this.&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Passkeys&lt;/strong&gt;: One could simply ask: why go through this hassle if the IdP could simply support Passkeys and call it a day? While Platform SSO gives macOS users the best possible experience, as well as giving IdP admins good tools to manage sessions, Passkeys are almost as easy to use, without having to implement a whole set of APIs to support just macOS devices.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Nevertheless, PSSO is a great addition to any IdP who wants to offer an unbeatable user experience for macOS users. 
-The organization I work for has (through me :) developed a &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;Platform Single Sign-on extension&lt;/a&gt; for &lt;a href=&quot;https://www.keycloak.org&quot;&gt;Keycloak&lt;/a&gt;, an open-source IdP and IAM that is quite popular. Keycloak is incredibly expandable, and could easily be extended to support PSSO.&lt;/p&gt;
+The organization I work for has (through me :)) developed a &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;Platform Single Sign-on extension&lt;/a&gt; for &lt;a href=&quot;https://www.keycloak.org&quot;&gt;Keycloak&lt;/a&gt;, an open-source IdP and IAM that is quite popular. Keycloak is incredibly extendable, and could easily be extended to support PSSO.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements-for-idps-and-how-we-did-it&quot;&gt;Requirements for IdPs and how we did it&lt;/h3&gt;
 
 &lt;p&gt;Before we dive into what IdPs need to offer Platform SSO, it is important to distinguish an SSO Extension to a Platform SSO Extension. Both will be on the same package, but one can develop an SSO Extension without support for Platform SSO. 
-What does an SSO Extension does? Well, it basically intercepts any call to a configurable URL (the configuration needs to be managed by an MDM) so that you can add some logic of how to authenticate the user, so that other applications/websites can reuse that authentication.
-On the &lt;a href=&quot;https://twocanoes.com/building-a-single-sign-on-extension-on-macos/&quot;&gt;example provided by Twocanoes&lt;/a&gt;, that logic, for example, is simply saving cookies the IdP sets into the Keychain, so that they are sent back to whatever attempts to authenticate again.  With PSSO we might want to do things a bit differently, but the point is that there’s no recipe of what an SSO Extension should do - it needs to be implemented according to the logic of the IdP. Cookies are possibly the most common pattern here, so it makes sense to use them in this context.
-On an SSO Extension, everytime an application or Safari hits a predefined point, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method of your extension, and from here on you are free to do whatever you want: present a login screen if the user isn’t authenticated, send back some cookies, etc.
-But Platform SSO takes this further: it fetches tokens from the IdP on behalf of the user so that they can be used by the SSO Extension to authenticate the user.
-Let’s suppose your IdP does a standard OIDC flow.  Platform SSO doesn’t change that, and you can develop your SSO to cope with that OIDC flow. What Platform SSO introduces is the possibility of registering the device and the user on the IdP so that the SSO Extension can use that token as a &lt;em&gt;credential&lt;/em&gt; for the user, instead of simply presenting a login screen.  The idea is that when the abovementioned &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method is called on your SSO Extension, you inject that credential (or make it available for the IdP as a cookie, for example - I wouldn’t do that, but it is possible) into the request, and your IdP will evaluate it, the same way it evaluates a password, a MFA credential, etc.&lt;/p&gt;
+What does an SSO Extension does? Well, it basically intercepts any call to a configurable URL (the configuration needs to be managed by an MDM) so that you can add some logic on how to authenticate the user, so that other applications/websites can reuse that authentication.&lt;/p&gt;
+
+&lt;p&gt;On the &lt;a href=&quot;https://twocanoes.com/building-a-single-sign-on-extension-on-macos/&quot;&gt;example provided by Twocanoes&lt;/a&gt;, that logic, for example, is simply saving cookies the IdP sets into the Keychain, so that they are sent back to whatever attempts to authenticate again.  With PSSO we might want to do things a bit differently, but the point is that there’s no recipe for what an SSO Extension should do to authenticate the user - it needs to be implemented according to the logic of the IdP. Cookies are possibly the most common pattern here, so it makes sense to use them in this context.&lt;/p&gt;
+
+&lt;p&gt;On an SSO Extension, everytime an application or Safari hits a predefined endpoint, the OS calles your extension, and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method  is called. From here on you are free to do whatever you want: present a login screen if the user isn’t authenticated, send back some cookies, etc.&lt;/p&gt;
+
+&lt;p&gt;But Platform SSO takes this further: it fetches tokens from the IdP on behalf of the user so that they can be used by the SSO Extension to authenticate the user.&lt;/p&gt;
+
+&lt;p&gt;Let’s suppose your IdP does a standard OIDC flow.  Platform SSO doesn’t change that, and you can develop your SSO to cope with that OIDC flow. What Platform SSO introduces is the possibility of registering the device and the user on the IdP &lt;em&gt;and&lt;/em&gt; fetching a token automatically whenever the user authenticates on the Mac. Then the SSO Extension can use that token as a &lt;em&gt;credential&lt;/em&gt; for the user,  instead of simply presenting a login screen.  The idea is that when the abovementioned &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;beginAuthorization&lt;/code&gt;method is called on your SSO Extension, you inject that credential (or make it available for the IdP as a cookie, for example - I wouldn’t do that, but it is possible) into the request, and your IdP will evaluate it, the same way it evaluates a password, a MFA credential, etc.&lt;/p&gt;
 
 &lt;p&gt;So, what do you need to implement, basically, to provide PSSO on your IdP? Well, here’s the answer, but notice that there are many ways to Rome:&lt;/p&gt;
 
 &lt;p&gt;Custom endpoints (Apple doesn’t really tell you how you create these, and is not so opinionated about it):&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;an endpoint to register the device (called &lt;em&gt;Device registration&lt;/em&gt; by Apple)&lt;/li&gt;
   &lt;li&gt;an endpoint to register the user (called &lt;em&gt;User registration&lt;/em&gt;), which is basically to create some sort of credential for the user based on his key - more about keys later&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Endpoints that conforms to Apple’s expectations:&lt;/p&gt;
+&lt;p&gt;Endpoints that have to conform to Apple’s specifications:&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;an endpoint to request a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; value to be used during logins.&lt;/li&gt;
-  &lt;li&gt;an endpoint to request tokens, which is basically an endpoint where you send a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request&quot;&gt;login request&lt;/a&gt;&lt;/em&gt; and obtain a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response&quot;&gt;login response&lt;/a&gt;&lt;/em&gt;.  A &lt;em&gt;login request&lt;/em&gt; and a &lt;em&gt;login response&lt;/em&gt; could probably be best described as &lt;em&gt;credential request&lt;/em&gt; and &lt;em&gt;credential response&lt;/em&gt;, or, maybe, &lt;em&gt;token request&lt;/em&gt; or &lt;em&gt;token response&lt;/em&gt;. Don’t think of this as logging in the user (you do that on the SSO extension). Here, you simply obtain credentials to log that user in later on the SSO Extension.&lt;/li&gt;
+  &lt;li&gt;an endpoint to request tokens, which is basically an endpoint where you send a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request&quot;&gt;login request&lt;/a&gt;&lt;/em&gt; and obtain a &lt;em&gt;&lt;a href=&quot;https://developer.apple.com/documentation/authenticationservices/creating-a-json-web-encryption-jwe-login-response&quot;&gt;login response&lt;/a&gt;&lt;/em&gt;.  A &lt;em&gt;login request&lt;/em&gt; and a &lt;em&gt;login response&lt;/em&gt; could probably be best described as &lt;em&gt;credential request&lt;/em&gt; and &lt;em&gt;credential response&lt;/em&gt;, or, maybe, &lt;em&gt;token request&lt;/em&gt; or &lt;em&gt;token response&lt;/em&gt;. Don’t think of this as &lt;em&gt;just&lt;/em&gt; logging in the user (you do that on the SSO extension). Here, you simply obtain credentials to log that user in later on the SSO Extension.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Besides these endpoints, you need to come up with a way to recognize these tokens when the user authenticates via the SSO extension. More on that later.&lt;/p&gt;
 
-&lt;p&gt;On Keycloak, we also created a client. It isn’t confidential, but uses PKCE with SHA256, and it needs to have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;urn:apple:platformsso&lt;/code&gt;  scope.
-This client is used by the SSO extension in two ways:&lt;/p&gt;
+&lt;p&gt;When implementing these endpoints on Keycloak, we also need a client. You need it to attach the tokens you create to the it, as well as to authenticate the user when registering the device/user.  Because it will be used to authentication on a native device (and not on a backend server), It shouldn’t be confidential. Therefore, it uses PKCE with SHA256 for security reasons. As per Apple request, it needs to have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;urn:apple:platformsso&lt;/code&gt;  scope.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Avoid using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;offline_access&lt;/code&gt;scope. The Mac already asks for new tokens everything the user authenticates locally. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;offline_access&lt;/code&gt;gives the Mac an extremly long token.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This client is used by the SSO extension in two ways:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;to authenticate the user for device and/or user registration (but we don’t &lt;em&gt;have&lt;/em&gt; to - this depends on how you want to associate the user and the IdP, and what checks you make to allow device registration as well. Our Keycloak extension expects a token from this client;&lt;/li&gt;
@@ -87,18 +102,22 @@ This client is used by the SSO extension in two ways:&lt;/p&gt;
 &lt;p&gt;Their implementation is quite similar. What you want to do here is to:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;fetch some keys from the Secure Enclave (their public keys, mind you)&lt;/li&gt;
+  &lt;li&gt;Implement some logic for the user authentication&lt;/li&gt;
   &lt;li&gt;send them to the IdP for registration&lt;/li&gt;
-  &lt;li&gt;Implement some logic for authentication&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;The extension needs to be configured with a profile managed by your MDM. This profile is - but doesn’t have to me - made up of multiple payloads:&lt;/p&gt;
+&lt;p&gt;The extension needs to be configured with a profile managed by your MDM. This profile is - but doesn’t have to be - made up from multiple payloads:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;One for your SSO Extension, including the Platform Extension configuration&lt;/li&gt;
   &lt;li&gt;another for the preferences of your application. Here you can save thing you will need on the app, like the URL of your IdP, the client ID, etc.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;It needs to be configured by your MDM. This configuration will look like this:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;You can actually send an array of key/value strings under &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExtensionData&lt;/code&gt;on your SSO Extension configuration, which might make your payload much more manageable. We will do this in the future and read configuration from there instead.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This configuration will look like this:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;plist version=«1.0»&amp;gt;
   &amp;lt;dict&amp;gt;
@@ -214,7 +233,7 @@ This client is used by the SSO extension in two ways:&lt;/p&gt;
 
 &lt;h3 id=&quot;how--we-did-it-on-the-idp&quot;&gt;How  we did it on the IdP&lt;/h3&gt;
 
-&lt;p&gt;So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see their implementation on &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;our repo on github&lt;/a&gt;.  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
+&lt;p&gt;So, I said already that Keycloak is easy to expand, right? So, what we did at first was to create the necessary endpoints. You can see this implementation on &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension&quot;&gt;our repo on github&lt;/a&gt;.  Note that this Keycloak extension still needs a few things to be production grade, and we’ll try to point out here what is missing.
 All our endpoints are configured as a Keycloak resource. You can see all of them &lt;a href=&quot;https://github.com/unioslo/keycloak-psso-extension/blob/main/src/main/java/no/uio/keycloak/psso/PSSOResource.java&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;You are free to give the endpoints any name you wish. On your PSSO Extension, you need to configure the token and the nonce endpoint, as well as the keys endpoint.&lt;/p&gt;
@@ -241,9 +260,11 @@ grant_type=srv_challenge 
 
 &lt;h4 id=&quot;the-device-registration-endpoint&quot;&gt;The device registration endpoint&lt;/h4&gt;
 
-&lt;p&gt;Here, you are free to do as you want. What do you want to do here? Basically, you want to receive the request with the device keys and persist them somewhere.
-Here, you might also want to perform some sort of authentication., otherwise anyone could simple send certificates to your server.
-Apple doesn’t really care how and if you do anything here. Their documentation gives some hints of what you should be doing, but they don’t dive deep into this.
+&lt;p&gt;Here, you are free to do as you want. What do you want to do here?&lt;/p&gt;
+
+&lt;p&gt;Basically, you want to receive the request with the device keys and persist them somewhere. You might also want to perform some sort of authentication., otherwise anyone could simple send certificates to your server.&lt;/p&gt;
+
+&lt;p&gt;Apple doesn’t really care how and if you do anything here. Their documentation gives some hints of what you should be doing, but they don’t dive deep into this.
 They say you might want to use a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistrationToken&lt;/code&gt;, which is something the MDM generates dynamically so that the IdP can use to actually check with the MDM if that device is legit, or you can use &lt;em&gt;device attestation&lt;/em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.
 Since our MDM (Workspace ONE) doesn’t really implement the &lt;/code&gt;RegistrationToken`on its SSO Extension profile, we need to do it the hard way and implement device attestation. more on that later.&lt;/p&gt;
 
@@ -266,7 +287,7 @@ Since our MDM (Workspace ONE) doesn’t really implement the &lt;/code&gt;Regist
 
 &lt;p&gt;You need to send a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nonce&lt;/code&gt; that you previously acquired via the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/nonce&lt;/code&gt; endpoint.&lt;/p&gt;
 
-&lt;p&gt;You also need to send authenticate the user and send their &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt;. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is “ours” with the MDM, we introduce this authentication - which you kinda need to do for the user anyway. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.&lt;/p&gt;
+&lt;p&gt;You also need to send authenticate the user and send their &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accessToken&lt;/code&gt;. You can also see on our extension how we ask the user to authenticate. You don’t really need to authenticate the user here, actually.  But since the extension doesn’t check, after the attestation,  if that device is “ours” with the MDM, we introduce this authentication - which is something you need to perform for the user anyway when doing the user registration. Attestation tells us the device is legit, and that it is managed.  But it doesn’t prove it is managed by us.&lt;/p&gt;
 
 &lt;p&gt;If you modify the extension, you might remove the accessToken verification and introduce some MDM check.&lt;/p&gt;
 
