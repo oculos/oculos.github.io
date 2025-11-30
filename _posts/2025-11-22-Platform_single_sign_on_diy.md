@@ -65,7 +65,7 @@ Besides these endpoints, you need to come up with a way to recognize these token
 
 When implementing these endpoints on Keycloak, we also need a client. You need it to attach the tokens you create to the it, as well as to authenticate the user when registering the device/user.  Because it will be used to authentication on a native device (and not on a backend server), It shouldn’t be confidential. Therefore, it uses PKCE with SHA256 for security reasons. As per Apple request, it needs to have the `urn:apple:platformsso`  scope. 
 
-> Avoid using the `offline_access`scope. The Mac already asks for new tokens everything the user authenticates locally. The `offline_access`gives the Mac an extremly long token.
+> I also recommend adding the `offline_access`scope. If you don’t, the user will be prompted for a new authentication if the tokens are expired. With `offline_access`, this won’t happen very often.
 
 This client is used by the SSO extension in two ways:
 
