@@ -9,13 +9,13 @@ tags:  keycloak idp apple psso
 
 ### Platform Single Sign-on: Simplified setup
 
-Let's discuss a bit abou tsome of the forms to _deploy_ [Platform Single Sign-on](https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web). 
+Let's discuss a bit about some of the forms to _deploy_ [Platform Single Sign-on](https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web). 
 
 We at the University of Oslo developed an open-sourced based Platform Single Sign-on Extension. You can find it here: https://github.com/unioslo/keycloak-psso-extension
 
-But as we started to use this extension, we still had a few questions: how do we use biometrics for authentication? How do users setup Platform SSO on the Setup Assitant? 
+But as we started to use this extension, we ended up with a few questions: how do we use biometrics for authentication? How do users setup Platform SSO on the Setup Assitant? 
 
-I still have a lot of questions, but as time goes by, and as I follow useful discussions on the MacAdmins slack, some of the things are becoming a bit more clear to me. Note that I have not by any measure figured everything out, but I'd like to share what is now my understanding about setting up Platform SSO during the Setup Assistant. 
+I still have a lot of questions, but as time goes by, and as I follow useful discussions on the MacAdmins slack, some of the things are becoming a bit more clear to me. Note that I have not by any measure figured everything out, but I'd like to share what is now my understanding about setting up Platform SSO during the Setup Assistant. There might be misunderstandings from my part, so take this blog post more as a state of what I understand than as a guide of how things actually are. 
 
 It seems that there are two ways to do it - both very similar from the user perspective, but with different outcomes for the Mac administrator. It also seems that there is a bit of a confusion between two types of Platform SSO registration during Setup Assistant. 
 
@@ -23,7 +23,7 @@ It seems that there are two ways to do it - both very similar from the user pers
 
 Starting with macOS 26 (Tahoe), it became possible to configure Platform SSO during the Setup Assistant. Your extension needs to support - I think - v2.0 of Platform Single Sign-on. There's no new capability that is required from your MDM to support this. 
 
-What you need to implement it? 
+What do you need to implement it? 
 
 - a bootstrap package that installs your extension during device enrollment
 - a Platform SSO profile that has the key `EnableCreateFirstUserDuringSetup`.
@@ -48,9 +48,13 @@ Note that this requires the IdP to support a [Login request](https://developer.a
 ![Setting up the first user](../../assets/2026/userreg.png)
 
 
-- Later, when the Setup Assistant starts to configure user-specific things, the user is asked to register on Platform SSO. This time, this is the user, not the device, registration. Here, the IdP might want to authenticate the user on its native interface, for example, to ask for 2FA:
-
+- Later, when the Setup Assistant starts to configure user-specific things, the user is asked to register on Platform SSO. This time, this is the user, not the device, registration:
 ![PSSO user registration](../../assets/2026/userreg2.png)
+
+The user is prompted to allow this registration, usually with the Touch ID if you had it configured during the previous steps of the Setup Assistant.
+
+Then, the IdP might want to authenticate the user on its native interface, for example, to ask for 2FA:
+
 
 ![IdP authentication for PSSO user registration](../../assets/2026/userreg3.png)
 
@@ -66,7 +70,7 @@ This flow does the job, but it has one little problem: if you require the user t
 
 This flow requires MDM support. Omnissa [announced](https://community.omnissa.com/technical-blog/configuring-platform-sso-during-automated-device-enrollment-platform-sso-overview-r198/) support for it on its 2604 release, and Jamf seems to support it, but I can't confirm as our organization doesn't use it. 
 
-Apple documents this flow on its [Implement Platform SSO during device enrollment](https://developer.apple.com/documentation/devicemanagement/implementing-platform-sso-during-device-enrollment). This is substantially different from the flow I described as the "Simplified Setup". Some vendors call this flow also as "Simplified Setup", but there's really no source of truth regarding this. Joel Rennich, in a [presentation at MacSysAdmin in 2025](https://www.youtube.com/watch?v=muIP4ahmjmc), called this AdePSSO, and many admins - myself included - uses this name to make it a point that this is distinguished from the other method.
+Apple documents this flow on its [Implement Platform SSO during device enrollment](https://developer.apple.com/documentation/devicemanagement/implementing-platform-sso-during-device-enrollment). This is substantially different from the flow I described as the "Simplified Setup". Some vendors call this flow also as "Simplified Setup", but there's really no source of truth regarding this. Joel Rennich, in a [presentation at MacSysAdmin in 2025](https://www.youtube.com/watch?v=muIP4ahmjmc), called this AdePSSO, and many admins - myself included - uses this name to make it a point that this is distinguished from the other so-called "Simplified Setup" method.
 
 The flow here is basically:
 
