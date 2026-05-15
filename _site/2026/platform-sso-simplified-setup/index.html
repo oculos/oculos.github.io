@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Platform Single Sign-on Simplified Setup</title>
+  <meta name="description" content="Platform Single Sign-on: Simplified setup
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Platform Single Sign-on Simplified Setup">
+  <meta name="twitter:description" content="Platform Single Sign-on: Simplified setup
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Platform Single Sign-on Simplified Setup">
+  <meta property="og:description" content="Platform Single Sign-on: Simplified setup
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1778832227055533000">
+  <link rel="canonical" href="https://francisaugusto.com/2026/platform-sso-simplified-setup/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="14 May 2026" class="post-meta__date date">14 May 2026</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#keycloak">keycloak</a> <a href="/tags/#idp">idp</a> <a href="/tags/#apple">apple</a> <a href="/tags/#psso">psso</a> </span>
+      
+    </div>
+    <h1 class="post-title">Platform Single Sign-on Simplified Setup</h1>
+  </header>
+
+  <section class="post">
+    <h3 id="platform-single-sign-on-simplified-setup">Platform Single Sign-on: Simplified setup</h3>
+
+<p>Let’s discuss a bit abou tsome of the forms to <em>deploy</em> <a href="https://support.apple.com/en-vn/guide/deployment/dep7bbb05313/web">Platform Single Sign-on</a>.</p>
+
+<p>We at the University of Oslo developed an open-sourced based Platform Single Sign-on Extension. You can find it here: https://github.com/unioslo/keycloak-psso-extension</p>
+
+<p>But as we started to use this extension, we still had a few questions: how do we use biometrics for authentication? How do users setup Platform SSO on the Setup Assitant?</p>
+
+<p>I still have a lot of questions, but as time goes by, and as I follow useful discussions on the MacAdmins slack, some of the things are becoming a bit more clear to me. Note that I have not by any measure figured everything out, but I’d like to share what is now my understanding about setting up Platform SSO during the Setup Assistant.</p>
+
+<p>It seems that there are two ways to do it - both very similar from the user perspective, but with different outcomes for the Mac administrator. It also seems that there is a bit of a confusion between two types of Platform SSO registration during Setup Assistant.</p>
+
+<h3 id="simplified-setup">Simplified Setup</h3>
+
+<p>Starting with macOS 26 (Tahoe), it became possible to configure Platform SSO during the Setup Assistant. Your extension needs to support - I think - v2.0 of Platform Single Sign-on. There’s no new capability that is required from your MDM to support this.</p>
+
+<p>What you need to implement it?</p>
+
+<ul>
+  <li>a bootstrap package that installs your extension during device enrollment</li>
+  <li>a Platform SSO profile that has the key <code class="language-plaintext highlighter-rouge">EnableCreateFirstUserDuringSetup</code>.</li>
+</ul>
+
+<p>What will happen here?</p>
+
+<ul>
+  <li>Right after Device enrollment into the MDM, your Mac will receive the SSO Extension and its PSSO profile.</li>
+  <li>Right after enrollment, the user will be presented with the PSSO registration screen:</li>
+</ul>
+
+<p><img src="../../assets/2026/psso1.png" alt="PSSO device registration starts" /></p>
+
+<ul>
+  <li>After clicking on “Continue”, the user will then use his IdP credentials to authenticate:</li>
+</ul>
+
+<p><img src="../../assets/2026/psso2.png" alt="PSSO device registration authentication" /></p>
+
+<p>Note that this requires the IdP to support a <a href="https://developer.apple.com/documentation/authenticationservices/creating-and-validating-a-login-request">Login request</a> with the Password grant type.</p>
+
+<ul>
+  <li>
+    <p>the device is now registered on the IdP, but not (yet) the user;</p>
+  </li>
+  <li>
+    <p>The user will then be authenticated to the IdP, and his user data, available on his ID token, can be used to pre-fill the first user creation on that Mac:</p>
+  </li>
+</ul>
+
+<p><img src="../../assets/2026/userreg.png" alt="Setting up the first user" /></p>
+
+<ul>
+  <li>Later, when the Setup Assistant starts to configure user-specific things, the user is asked to register on Platform SSO. This time, this is the user, not the device, registration. Here, the IdP might want to authenticate the user on its native interface, for example, to ask for 2FA:</li>
+</ul>
+
+<p><img src="../../assets/2026/userreg2.png" alt="PSSO user registration" /></p>
+
+<p><img src="../../assets/2026/userreg3.png" alt="IdP authentication for PSSO user registration" /></p>
+
+<p>So, this is what most of the vendors call as the “Simplified Setup”. It doesn’t really require MDM support per se. The requirements are basically that:</p>
+
+<ul>
+  <li>the PSSO extension needs to be installed right away by the MDM, preferably as a bootstrap package, because it needs to be available for the PSSO extension;</li>
+  <li>the PSSO Extension needs to be installed and contains the <code class="language-plaintext highlighter-rouge">EnableRegistrationDuringSetup</code></li>
+</ul>
+
+<p>This flow does the job, but it has one little problem: if you require the user to authenticate to the MDM prior device enrollment, you end up with one more authentication than it is necessary. That’s a problem that can be solved with the other flow for PSSO during Setup Assistant:</p>
+
+<h3 id="the-403-flow-aka-adepsso-aka-platform-sso-during-device-enrollment">The 403 flow aka ADEPsso aka Platform SSO during device enrollment</h3>
+
+<p>This flow requires MDM support. Omnissa <a href="https://community.omnissa.com/technical-blog/configuring-platform-sso-during-automated-device-enrollment-platform-sso-overview-r198/">announced</a> support for it on its 2604 release, and Jamf seems to support it, but I can’t confirm as our organization doesn’t use it.</p>
+
+<p>Apple documents this flow on its <a href="https://developer.apple.com/documentation/devicemanagement/implementing-platform-sso-during-device-enrollment">Implement Platform SSO during device enrollment</a>. This is substantially different from the flow I described as the “Simplified Setup”. Some vendors call this flow also as “Simplified Setup”, but there’s really no source of truth regarding this. Joel Rennich, in a <a href="https://www.youtube.com/watch?v=muIP4ahmjmc">presentation at MacSysAdmin in 2025</a>, called this AdePSSO, and many admins - myself included - uses this name to make it a point that this is distinguished from the other method.</p>
+
+<p>The flow here is basically:</p>
+
+<ul>
+  <li>prior to device enrollment into the MDM, the device gets a 403 HTTP response code from the MDM with a JSON object containing links to the PSSO extension profile, the manifest for the PSSO extension app, and the <code class="language-plaintext highlighter-rouge">authURL</code>, which will be use for IdP authentication.</li>
+  <li>The user will then, <em>prior to MDM enrollment</em>, be presented with a PSSO enrollment where both the device and the user will be registered into the IdP. This authentication can be reused by the MDM.</li>
+  <li>The machine starts MDM enrollment, Setup Assistant executes, the first user is created with the data fetched from the IdP, and the machine is setup normally.</li>
+</ul>
+
+<p>This flow has the immediate advantage that the user potentially will have to type his password only once (twice if he is required to choose a password for his local user). It will be used for PSSO registration (device and user) and MDM enrollment. No need to even require it prior to user registration (on the “Somplified Setup” flow, the user needs to type the password - or use touch id, if available, to proceed to user registration).</p>
+
+<p>This is a very nice flow. However, it has a bit of complexity that might be a deal beaker for many organizations:</p>
+
+<ul>
+  <li>It requires some MDM changes. Support has been announced by most MDM vendors, but it is a bit more complex to use it;</li>
+  <li>It <em>potentially</em> breaks a few assumptions and uses:
+    <ul>
+      <li>the profile distributed with this flow probably shouldn’t use the <code class="language-plaintext highlighter-rouge">RegistrationToken</code> for silent device registration, since it can be downloaded via HTTPS on a public address;</li>
+      <li>Ideally, the MDM should be able to validate the access token used on PSSO registration to authenticate the user. This requires some sort of integration between the MDM and IdP. I am not sure how vendors will solve this problem. Since there are only two major vendors using PSSO (Microsoft and Okta), maybe some MDM solutions like Jamf already thought this through.</li>
+      <li>you might not be able to enforce biometrics when registering PSSO this way, since the user still hasn’t registered his fingerprint. In order to uspport it later, re-registration will be necessary. This flow also affects the “Simplified Setup”, but there this is more like a bug, since the user already have Touch ID configured if that’s included on your DEP profile.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>See Joel’s presentation <a href="https://www.youtube.com/watch?v=muIP4ahmjmc">here</a> so that you see how this flow works.</p>
+
+<h3 id="which-flow-should-i-implement">Which flow should I implement?</h3>
+
+<p>This is a difficult question. If your MDM supports it and you have a good integration between your MDM and IdP, AdePSSO offers a better user experience by reducing the amount of times the user has to type his password.</p>
+
+<p>However, if you require MDM authentication during device enrollment, AdePSSO might - and I’m not sure how - require tighter integration between the MDM and the IdP, for two reasons:</p>
+
+<ul>
+  <li>if silent device registration is important for you, and device attestation is not enough, for example in case your IdP wants to check with the MDM if that device belongs to it, it might need to query the MDM for that info. This might be overkill for most organizations, but with <code class="language-plaintext highlighter-rouge">RegistrationToken</code> you had that info that tied the device, the IdP and the MDM together. With AdePSSO, you loose this. Though, if the device already got an answer from the MDM, so this might be overthinking</li>
+  <li>If your MDM needs to use the access token obtained during the PSSO registration, it needs to know how to use it to validate the enroll request. See <a href="https://developer.apple.com/documentation/devicemanagement/implementing-platform-sso-during-device-enrollment#Enroll-the-device">this</a>. This means that the MDM should have the IdP configuration in order to introspect that token. I am not able to verify as of now if the MDM’s who support AdePSSO have that kind of verification.</li>
+</ul>
+
+<h3 id="summary">Summary</h3>
+
+<p>The Simplified Setup is available now. It is very similar from the user perspective and will ask the user for a bit more authentication than the AdePSSO flow. So here’s a choice between the ultimate experience, but with a few caveats, and a flow that doesn’t require any MDM capability than delivering a bootstrap package and the profile.</p>
+
+<p>I’m curious to see if Apple will come with something to easen up these flows on WWDC. It seems to me that, while Apple did an amazing job by designing PSSO to be open to anyone who wants to implement it, its biggest flaw in my opinion is that sometimes it assumes that there will be some sort of integration between the IdP and the MDM. This ends up making it dependant on how well the IdP can talk to the MDM and vice-versa. A big vendor might implement support for Microsoft and Okta, but then support will be non-existant for smaller and/or on-premise IdPs.</p>
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2026/platform-sso-simplified-setup/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2026/platform-sso-simplified-setup'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2026 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1778832227055533000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>
