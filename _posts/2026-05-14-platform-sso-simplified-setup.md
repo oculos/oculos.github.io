@@ -25,8 +25,8 @@ Starting with macOS 26 (Tahoe), it became possible to configure Platform SSO dur
 
 What do you need to implement it? 
 
-- a bootstrap package that installs your extension during device enrollment
-- a Platform SSO profile that has the key `EnableCreateFirstUserDuringSetup`.
+- a bootstrap package that installs your extension during device enrollment. This means that the package needs to be installed by the `InstallEnterpriseApplication` command - which is what the major MDM products use to install initial packages;
+- a Platform SSO profile that has the key `EnableRegistrationDuringSetup`. I didn't see that adding `EnableCreateFirstUserDuringSetup` did any difference here.
 
 What will happen here? 
 
@@ -51,7 +51,7 @@ Note that this requires the IdP to support a [Login request](https://developer.a
 - Later, when the Setup Assistant starts to configure user-specific things, the user is asked to register on Platform SSO. This time, this is the user, not the device, registration:
 ![PSSO user registration](../../assets/2026/userreg2.png)
 
-The user is prompted to allow this registration, usually with the Touch ID if you had it configured during the previous steps of the Setup Assistant.
+The user _might_ be  prompted to allow this registration, usually with the Touch ID if you had it configured during the previous steps of the Setup Assistant. This happens in some circumstances, such as when the user had to use his credentials to set up Filevault prior to this step, or if the user goes back on the Setup Assistant and attempts PSSO user registration again (for example after a failed registration). Othwerise, the user goes straight to PSSO user registration.
 
 Then, the IdP might want to authenticate the user on its native interface, for example, to ask for 2FA:
 
@@ -101,6 +101,6 @@ However, if you require MDM authentication during device enrollment, AdePSSO mig
 
 ### Summary
 
-The Simplified Setup is available now. It is very similar from the user perspective and will ask the user for a bit more authentication than the AdePSSO flow. So here's a choice between the ultimate experience, but with a few caveats, and a flow that doesn't require any MDM capability than delivering a bootstrap package and the profile.
+The Simplified Setup is available now. It is very similar from the user perspective. It might feel a bit less streamlined than the AdePSSO flow. So here's a choice between the ultimate experience, but with a few caveats, and a flow that doesn't require any new MDM capability other than delivering a bootstrap package and the profile.
 
 I'm curious to see if Apple will come with something to easen up these flows on WWDC. It seems to me that, while Apple did an amazing job by designing PSSO to be open to anyone who wants to implement it, its biggest flaw in my opinion is that sometimes it assumes that there will be some sort of integration between the IdP and the MDM. This ends up making it dependant on how well the IdP can talk to the MDM and vice-versa. A big vendor might implement support for Microsoft and Okta, but then support will be non-existant for smaller and/or on-premise IdPs.

@@ -66,7 +66,7 @@
   <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
   
-  <link rel="stylesheet" href="/css/main.css?1778832743722464000">
+  <link rel="stylesheet" href="/css/main.css?1778919040630511000">
   <link rel="canonical" href="https://francisaugusto.com/2026/platform-sso-simplified-setup/">
   <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
 </head>
@@ -219,8 +219,8 @@
 <p>What do you need to implement it?</p>
 
 <ul>
-  <li>a bootstrap package that installs your extension during device enrollment</li>
-  <li>a Platform SSO profile that has the key <code class="language-plaintext highlighter-rouge">EnableCreateFirstUserDuringSetup</code>.</li>
+  <li>a bootstrap package that installs your extension during device enrollment. This means that the package needs to be installed by the <code class="language-plaintext highlighter-rouge">InstallEnterpriseApplication</code> command - which is what the major MDM products use to install initial packages;</li>
+  <li>a Platform SSO profile that has the key <code class="language-plaintext highlighter-rouge">EnableRegistrationDuringSetup</code>. I didn’t see that adding <code class="language-plaintext highlighter-rouge">EnableCreateFirstUserDuringSetup</code> did any difference here.</li>
 </ul>
 
 <p>What will happen here?</p>
@@ -256,7 +256,7 @@
 <img src="../../assets/2026/userreg2.png" alt="PSSO user registration" /></li>
 </ul>
 
-<p>The user is prompted to allow this registration, usually with the Touch ID if you had it configured during the previous steps of the Setup Assistant.</p>
+<p>The user <em>might</em> be  prompted to allow this registration, usually with the Touch ID if you had it configured during the previous steps of the Setup Assistant. This happens in some circumstances, such as when the user had to use his credentials to set up Filevault prior to this step, or if the user goes back on the Setup Assistant and attempts PSSO user registration again (for example after a failed registration). Othwerise, the user goes straight to PSSO user registration.</p>
 
 <p>Then, the IdP might want to authenticate the user on its native interface, for example, to ask for 2FA:</p>
 
@@ -315,7 +315,7 @@
 
 <h3 id="summary">Summary</h3>
 
-<p>The Simplified Setup is available now. It is very similar from the user perspective and will ask the user for a bit more authentication than the AdePSSO flow. So here’s a choice between the ultimate experience, but with a few caveats, and a flow that doesn’t require any MDM capability than delivering a bootstrap package and the profile.</p>
+<p>The Simplified Setup is available now. It is very similar from the user perspective. It might feel a bit less streamlined than the AdePSSO flow. So here’s a choice between the ultimate experience, but with a few caveats, and a flow that doesn’t require any new MDM capability other than delivering a bootstrap package and the profile.</p>
 
 <p>I’m curious to see if Apple will come with something to easen up these flows on WWDC. It seems to me that, while Apple did an amazing job by designing PSSO to be open to anyone who wants to implement it, its biggest flaw in my opinion is that sometimes it assumes that there will be some sort of integration between the IdP and the MDM. This ends up making it dependant on how well the IdP can talk to the MDM and vice-versa. A big vendor might implement support for Microsoft and Okta, but then support will be non-existant for smaller and/or on-premise IdPs.</p>
 
@@ -348,7 +348,7 @@
 </footer>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="/js/main.js?1778832743722464000"></script>
+<script type="text/javascript" src="/js/main.js?1778919040630511000"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
