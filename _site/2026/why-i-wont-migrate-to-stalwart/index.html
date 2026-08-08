@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110056323-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110056323-1');
+</script>
+
+
+  
+  <title>Why I won't migrate from Postfix+Dovecot to Stalwart</title>
+  <meta name="description" content="TL;DR and Disclaimer
+
+">
+  <meta name="author" content="Francis Augusto Medeiros-Logeay">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Why I won't migrate from Postfix+Dovecot to Stalwart">
+  <meta name="twitter:description" content="TL;DR and Disclaimer
+
+">
+  
+  <meta name="twitter:creator" content="francisaugusto">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Why I won't migrate from Postfix+Dovecot to Stalwart">
+  <meta property="og:description" content="TL;DR and Disclaimer
+
+">
+  <meta property="og:image" content="/images/profile.jpg" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1786181006772862000">
+  <link rel="canonical" href="https://francisaugusto.com/2026/why-i-wont-migrate-to-stalwart/">
+  <link rel="alternate" type="application/rss+xml" title="Francis Augusto Medeiros-Logeay" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of Francis Augusto Medeiros-Logeay">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">Francis Augusto Medeiros-Logeay</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">IT Engineer with background in IT-Law, running enthusiast</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/about.html" title="About me" class="blog-button">About</a></li>
+            </ul>
+          </nav>
+
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+				
+              <li class="navigation__item"><a href="/#blog" title="link to Francis Augusto Medeiros-Logeay blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+		  
+		  
+		  
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/francisaugusto" title="@francisaugusto on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Facebook -->
+              <li class="navigation__item">
+                <a href="http://fb.me/francisaugusto" title="francisaugusto on Facebook" target="_blank">
+                  <i class="icon icon-social-facebook"></i>
+                  <span class="label">Facebook</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/francismedeiros" title="francismedeiros on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/oculos" title="oculos on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="/contact-form" title="Contact" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="8 Aug 2026" class="post-meta__date date">8 Aug 2026</time>
+      
+      &#8226; <span class="post-meta__tags">on <a href="/tags/#postfix">postfix</a> <a href="/tags/#dovecot">dovecot</a> <a href="/tags/#stalwart">stalwart</a> <a href="/tags/#mail">mail</a> <a href="/tags/#mailserver">mailserver</a> </span>
+      
+    </div>
+    <h1 class="post-title">Why I won't migrate from Postfix+Dovecot to Stalwart</h1>
+  </header>
+
+  <section class="post">
+    <h3 id="tldr-and-disclaimer">TL;DR and Disclaimer</h3>
+
+<p>Stalwart is excellent, but it replaces Dovecot’s mail replication with cluster infrastructure I don’t want to run for a personal setup - so I’m staying on Dovecot + Wormhole.</p>
+
+<p>I feel Stalwart is the best option out there for those starting with a new mail server or who want to migrate to a cluster-based mail server. But for those who have been running Dovecot for a while, it won’t be a very good replacement for their current setup.</p>
+
+<p>I am by no means an expert on the art of being a postmaster. These reflections here are based on my own experience and limited knowledge and requirements.</p>
+
+<p>This is not a comparison between Stalwart and Postfix+Dovecot - it is a description of why I wanted to migrate to Stalwart and why I realized it wasn’t for me. For a thorough comparison between them, check this really <a href="https://www.tobias-weiss.org/content/devops/dovecot-vs-stalwart-imap-production-comparison/">nice post</a>. The only thing I disagree with Tobias Weiß, who wrote that post, about is when he counts mail sync as a feature of Stalwart. I don’t think it has that feature, which is exactly why I didn’t migrate.</p>
+
+<h3 id="me-myself-and-postfixdovecot">Me, myself and Postfix+Dovecot</h3>
+
+<p>Contrary to every advice, I decided in 2019 to host my own e-mail server. I’m glad I did it: not only did I learn a lot by doing so, but it feels good to be less dependent on a commercial and expensive mail provider. Today, according to a quick search on Google, about 60-90% of e-mail is provided by Microsoft, Google and the likes.</p>
+
+<p>When the internet started, each ISP was an e-mail provider. That granularity is gone, and this is problematic for many reasons. I highlighted some of the problems <a href="https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/">here</a>.</p>
+
+<p>I admit: I didn’t understand much of how the pieces of an e-mail ecosystem worked together. I followed an older version of <a href="https://www.scaleway.com/en/docs/tutorials/setup-postfix-ubuntu-bionic/">this article</a> and set up my first e-mail server on some cheap ARM VPS on Scaleway. Good times…</p>
+
+<p>As the years went by, I learned more about how things were tied together, and improved my setup.</p>
+
+<h3 id="my-current-setup">My current setup</h3>
+
+<p>Today, my setup has two important characteristics that are relevant for this article:</p>
+
+<ul>
+  <li>
+    <p>Since around 2020, I started using Dovecot’s now removed replication feature. This gave me peace of mind that whenever one server was down, the other would still receive e-mail and they would synchronize things back and forth. This saved me more than once throughout these years. It is therefore very important for me to have geographic redundancy when it comes to e-mail. I’d freak out if I lost an important e-mail.</p>
+  </li>
+  <li>
+    <p>LDAP as the backend. Until around 2023, I used MariaDB+PostfixAdmin, which is a tool to manage e-mail addresses, aliases, domains, etc. It is a great tool, but when you have two servers, you’d have to replicate your database geographically, and that was a pain to maintain. Since I use <a href="https://www.freeipa.org">FreeIPA</a>, setting up replication was a breeze. But FreeIPA doesn’t handle mail aliases, quotas, domains and virtual domains natively. So I developed the <a href="https://github.com/oculos/freeipa-postfixadmin">FreeIPA PostfixAdmin plugin</a> which helped me mimic PostfixAdmin functionality on FreeIPA. It has worked beautifully so far.</p>
+  </li>
+</ul>
+
+<p>The beauty (well, beauty is in the eye of the beholder) of this setup is that I had purely independent components that talked to each other. If one server was down, the other would answer. Each node has its own storage and user/password backend. I replicate the LDAP instances, but the rest doesn’t need any replication because LDAP does it.</p>
+
+<h3 id="dovecots-apocalyptic-removal-of-replication">Dovecot’s apocalyptic removal of replication</h3>
+
+<p>Life was good, more family members started using my mail server. The combination with Roundcube for webmail, Solr for full-text search and Keycloak for single sign-on made this a perfect system. Of course, the lack of <a href="https://francisaugusto.com/2025/Email-quo-vadis-or-where-is-oidc-for-everyone/">modern authentication</a> is still a problem for anyone selfhosting e-mail, but I now have a robust system which could resist downtime of one of the nodes and things would fix themselves.</p>
+
+<p>But Dovecot removed its replication feature starting on version 2.4, leaving people like me in a very difficult situation: it is not good practice to run e-mail systems without a secondary MX server, as e-mail is critical.</p>
+
+<p>The removal of replication has prevented me from upgrading Dovecot, but now I have to do it. Or, I could migrate to Stalwart…</p>
+
+<h3 id="stalwart-and-why-it-is-a-great-option">Stalwart and why it is a great option</h3>
+
+<p>Stalwart is one of these things I wish existed when I started with e-mail. You configure most of the stuff on a GUI, it handles things such as DKIM, certificates, autoconfig/autodiscover and spam for you. And it is basically made for clusters. What is not to like?</p>
+
+<p>I played a bit with it, and I am really impressed.</p>
+
+<p>I also like that the developer, while not as instantly responsive as Dovecot’s mailing list people, always comes with a constructive answer. Fortunately, the Stalwart community is not plagued yet by that besserwisser (know-it-all) attitude one usually finds on mailing lists. You know the drill: you installed something cool, but you don’t aspire to devote all your time to be an expert on it. Then you ask a question on a mailing list and chances are you’ll get condescending answers and a tone that’s not really helpful. My experience with Stalwart was stellar, even though the answers were not always exactly what I wanted to hear.</p>
+
+<h3 id="so-why-wont-i-migrate-to-stalwart">So why won’t I migrate to Stalwart?</h3>
+
+<p>Stalwart doesn’t do mail replication - and that’s the showstopper for me. It does make High Availability easy, but through a completely different mechanism, and that difference is the whole problem.</p>
+
+<p>Here’s the distinction. Dovecot’s replication talks to a second server and synchronizes mailboxes between them, so each node holds its own complete copy of the mail. Stalwart instead treats storage and database as a single shared thing and asks you to make <em>that</em> redundant: you replicate your database (FoundationDB), your storage (Garage) and your cache (Redis or similar), and your mail becomes available from any node. Instead of replicating mail, you replicate the infrastructure underneath it - and that’s powerful.</p>
+
+<p>This is probably great for companies or setups that already have a cluster setup, which allows Stalwart to scale so easily that it is beautiful to see.</p>
+
+<p>However, here are the issues:</p>
+
+<ul>
+  <li>If you don’t have a cluster, you can still install several Stalwart nodes - but replicating the database and storage often (not always) requires three of them. I don’t want three nodes. I just want my mail to still be there if one server goes down.</li>
+  <li>For personal/family use, I don’t want to go through the hassle of setting up and maintaining a geographically redundant cluster.</li>
+  <li>Cluster-based database and storage doesn’t give me the peace of mind Dovecot’s replication does: if I lose all my mail on one node, it will be rebuilt as soon as it is set up. With Stalwart, if you lose your database or storage due to an accidental delete, the mail is gone forever. Stalwart sees the storage and the database as one, regardless of which node you use. You cannot even configure a Stalwart node individually to point to the geographically-closer db/storage. You can overcome this with some DNS rules and maybe with some pod/container affinity.</li>
+</ul>
+
+<p>So, basically, migrating to Stalwart and having redundancy requires you to provide a good deal of infrastructure which will increase the complexity of your setup, and will come with - for me - tough decisions when it comes to how to handle quorum decisions.</p>
+
+<p>Since I have two geographically distinct nodes, I had to set up a third node somewhere else just to accommodate FoundationDB and Garage’s requirements. This is probably handled for you easily by an orchestrator like Kubernetes, but I’m not sure how I’d handle quorum decisions when one geographic region can’t communicate with another.</p>
+
+<p>In other words, Stalwart has much fewer requirements to run compared to Dovecot, but it requires a much more complex infrastructure if you want to have a geographically redundant setup.</p>
+
+<h3 id="was-that-all">Was that all?</h3>
+
+<p>No, unfortunately not. Those were the architectural reasons. Then came the practical ones.</p>
+
+<p>I was willing to cope with that complexity. I installed a VPS on a third location just to cope with the quorum requirements of FoundationDB and Garage. I configured <code class="language-plaintext highlighter-rouge">/etc/hosts</code> so that each node would point to its closest Garage node.</p>
+
+<p>Things started to work, but then I came across other stuff:</p>
+
+<ul>
+  <li>The documentation doesn’t tell you, but if you want to have multiple nodes, you either need to provide some common cache (like Redis) or use what we - me and others - thought was the default mechanism for internode communication: Zenoh. You see, unless you want to go through the process of providing cluster-based cache, you need to use peer-to-peer node coordination.</li>
+</ul>
+
+<p>I could use Redis or something like that, but then I’d need to configure their replication variations so that things would still work if one node goes down. I really don’t want to do that, unless I must.</p>
+
+<p>Unfortunately, you need to build your own Stalwart container to support Zenoh, which didn’t work when I tried. I got a kind offer from the developer to fix it, but at this point I have given up the whole thing, also because I found other problems:</p>
+
+<ul>
+  <li>
+    <p>Stalwart can be opinionated about how some things work. Take aliases. In Postfix, an alias can point to several mailboxes at once, and that single feature shaped how my family uses e-mail: we have one shared address - say, <code class="language-plaintext highlighter-rouge">family@ourdomain</code> - and a message sent there simply lands in each of our personal inboxes. No extra account to log into, no separate mailbox to check; it just shows up where we already read our mail. Stalwart limits you to one mailbox per alias and expects you to use a mailing list for this instead. But a mailing list is a different thing: it’s a managed list with subscriptions and its own address semantics, not a transparent fan-out into the inboxes we already use. For a household, that’s more moving parts to solve a problem Postfix solved with a single line. I really don’t want that.</p>
+
+    <p>My impression is that this comes down to how flexibly each system talks to LDAP. Postfix’s LDAP configuration is remarkably powerful: it can accommodate an existing LDAP tree more or less as it already is, and it can even fire a second query to resolve and deduplicate the results of the first - so an alias that expands to several mailboxes just works, even against a directory that wasn’t designed with mail aliases in mind. Stalwart, by contrast, seems to expect the tree to be laid out in a more rigid, predefined shape. When your directory (FreeIPA, in my case) came first and the mail server has to fit around it, that flexibility matters a lot. At least, that’s my impression.</p>
+  </li>
+  <li>
+    <p>Stalwart’s authentication was a bit buggy for me on the web interface for some mailboxes because of their OAuth2 setup needing an attribute to check when a password was changed. Nothing I wouldn’t be able to fix, and again the developer was quite helpful, but by this point I lost my faith in the whole thing.</p>
+  </li>
+</ul>
+
+<p>You see, all I want for Chanukah is a mail system that works on two distinct regions. Dovecot does that. Well, at least it did that until they removed replication. But then I stumbled on <a href="https://codeberg.org/errror/wormhole">Wormhole</a>. I knew there were patches to Dovecot so one could bring replication back. But I didn’t want to mess with Dovecot or its source code. However, Patrick Cernko created a plugin for Dovecot called Wormhole to bring the replication feature back.</p>
+
+<p>So my plan now is to upgrade to Dovecot 2.4.1 and get replication with Wormhole. That’s all I need.</p>
+
+<p>With Stalwart, I’d need to:</p>
+
+<ul>
+  <li>install and maintain a third node for quorum requirements for database and storage, since one server doesn’t replicate to another;</li>
+  <li>cope with less functionality regarding aliases;</li>
+  <li>deal with node orchestration or move my mail system entirely to a geographically redundant cluster</li>
+</ul>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Stalwart is a great product. I might migrate to it someday - or not, as I start to think about that day when I’ll retire and will have to prepare an e-mail migration somewhere I’m not required to maintain things. This is distant in the future, but time runs fast…</p>
+
+<p>However, for those who think about hosting e-mail themselves and who want some sort of redundancy, Stalwart, while itself being much less complicated than Dovecot to set up, comes with infrastructure requirements that are much more complex to meet - anyway, much more than I am willing to meet.</p>
+
+<p>I do hope that Dovecot peeps will reconsider their decision to remove replication. Many people out there felt left alone in the rain when they did it.</p>
+
+
+  </section>
+  <section id="disqus_thread"></section><!-- /#disqus_thread -->
+</article>
+
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://francisaugusto.com/2026/why-i-wont-migrate-to-stalwart/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '/2026/why-i-wont-migrate-to-stalwart'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+
+      (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//francisaugusto-com.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+       })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2026 Francis Augusto Medeiros-Logeay. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1786181006772862000"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-110056323-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+    </div>
+
+  </body>
+</html>
